@@ -22,9 +22,21 @@ import ListItemText from '@material-ui/core/ListItemText'
 import HomeIcon from '@material-ui/icons/Home'
 import ListIcon from '@material-ui/icons/ViewList'
 
+import Nav from '../components/Nav'
+
+import { useEffect } from 'react'
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { Container, Paper } from '@material-ui/core'
+import color from '@material-ui/core/colors/amber'
+
+
 const drawerWidth = 240
 
 const useStyles = makeStyles(theme => ({
+  nav: {
+    textAlign: 'center',
+    color: 'black'
+  },
   root: {
     display: 'flex',
   },
@@ -33,7 +45,8 @@ const useStyles = makeStyles(theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    background: 'linear-gradient(to right,  #663399, #5B72FF)',
+    
+    background: 'none',
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -94,13 +107,17 @@ const Header = ({ siteTitle }) => {
   function handleDrawerClose() {
     setOpen(false)
   }
+  
+  const breakWidth = useMediaQuery('(min-width:981px)')
+ 
+  
 
   return (
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
         position="fixed"
-        elevation={0}
+        elevation={3}
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
         })}
@@ -111,13 +128,14 @@ const Header = ({ siteTitle }) => {
             aria-label="Open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
+            className={clsx(classes.menuButton, breakWidth && classes.hide || open && classes.hide)}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" color="inherit">
-            {siteTitle}
-          </Typography>
+          <Container className={classes.nav}>
+          <Nav/>
+          </Container>
+          
         </Toolbar>
       </AppBar>
       <Drawer

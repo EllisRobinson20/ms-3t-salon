@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=MonteCarlo&family=Pinyon+Script&family=WindSong:wght@400;500&display=swap');
 html {
   font-family: "Roboto", sans-serif;
   text-decoration: none;
@@ -627,4 +628,8 @@ pre tt:after {
   html {
     font-size: 100%;
   }
+}
+
+h1 .signature {
+  font-family: 'WindSong';
 }
