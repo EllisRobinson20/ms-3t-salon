@@ -187,11 +187,15 @@ export default function FullWidthTabs() {
             <Container className={classes.centered}>
                 <Typography variant="">
                 You have no upcoming appointments
+                </Typography>
+                </Container>
+                <Container className={classes.centered}>
                 <Button variant="contained" color="secondary">
                     Book an Appointment
                 </Button>
-                </Typography>
-            </Container>
+                </Container>
+                
+            
         </TabPanel>
         <TabPanel value={value} index={2} dir={theme.direction}>
           Item Three
