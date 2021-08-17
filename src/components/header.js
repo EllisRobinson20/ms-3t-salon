@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, {useContext} from 'react'
 
 import { Link } from 'gatsby'
 
@@ -28,6 +28,11 @@ import { useEffect } from 'react'
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Container, Paper } from '@material-ui/core'
 import color from '@material-ui/core/colors/amber'
+import { StylesContext } from '@material-ui/styles/StylesProvider'
+
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import Profile from '../components/Profile'
+import { ProfileContext } from '../context/ProfileContext'
 
 
 const drawerWidth = 240
@@ -58,6 +63,9 @@ const useStyles = makeStyles(theme => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
+  },
+  menuIcon: {
+    color: '#5d5d5d',
   },
   hide: {
     display: 'none',
@@ -95,6 +103,13 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const Header = ({ siteTitle }) => {
+
+  const {showProfile, setShowProfile} = useContext(ProfileContext);
+  function handleProfileModal() {
+    setShowProfile(!showProfile)
+    
+  }
+
   const classes = useStyles()
 
   const theme = useTheme()
@@ -130,12 +145,20 @@ const Header = ({ siteTitle }) => {
             edge="start"
             className={clsx(classes.menuButton, breakWidth && classes.hide || open && classes.hide)}
           >
-            <MenuIcon />
+            <MenuIcon className={classes.menuIcon} />
           </IconButton>
           <Container className={classes.nav}>
           <Nav/>
           </Container>
-          
+          <IconButton
+            color="inherit"
+            aria-label="Show Profile"
+            onClick={handleProfileModal}
+            edge="start"
+            className={clsx(classes.menuButton, open && classes.hide)}
+          >
+          <AccountCircleIcon  className={classes.menuIcon}/>
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -174,8 +197,17 @@ const Header = ({ siteTitle }) => {
               <ListItemText>Components</ListItemText>
             </ListItem>
           </Link>
+          <Link to="/profile">
+            <ListItem button>
+              <ListItemIcon>
+              <AccountCircleIcon  className={classes.menuIcon}/>
+              </ListItemIcon>
+              <ListItemText>Profile</ListItemText>
+            </ListItem>
+          </Link>
         </List>
       </Drawer>
+    <Profile/>
     </div>
   )
 }

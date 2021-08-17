@@ -1,6 +1,7 @@
 import React from 'react'
 import * as styles from '../styles/header.module.css'
 import { Link, graphql, useStaticQuery } from 'gatsby'
+import Profile from '../components/Profile'
 import { node } from 'prop-types'
 
 export default function MainHeader() {

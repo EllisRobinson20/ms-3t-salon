@@ -1,8 +1,12 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { Link } from 'gatsby'
 import * as styles from '../styles/header.module.css'
 
+
 export default function Nav() {
+
+    
+
     return (
         <div>
         <nav id={styles.nav}>
