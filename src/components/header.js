@@ -10,7 +10,6 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import List from '@material-ui/core/List'
-import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
@@ -20,7 +19,10 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import HomeIcon from '@material-ui/icons/Home'
-import ListIcon from '@material-ui/icons/ViewList'
+import Storefront from '@material-ui/icons/Storefront';
+import InfoIcon from '@material-ui/icons/Info';
+import BookIcon from '@material-ui/icons/Book';
+
 
 import Nav from '../components/Nav'
 
@@ -33,7 +35,10 @@ import { StylesContext } from '@material-ui/styles/StylesProvider'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Profile from '../components/Profile'
 import { ProfileContext } from '../context/ProfileContext'
+import { SvgIcon } from '@material-ui/core'
+import { mdiContentCut } from '@mdi/js';
 
+import DiarySlotMobile from './subcomponents/DiarySlotMobile'
 
 const drawerWidth = 240
 
@@ -125,6 +130,13 @@ const Header = ({ siteTitle }) => {
   
   const breakWidth = useMediaQuery('(min-width:981px)')
  
+  const SVGIcon = (props , path) => {
+  return (
+    <SvgIcon {...props}>
+      <path d={path} />
+    </SvgIcon>
+  );
+}
   
 
   return (
@@ -173,9 +185,9 @@ const Header = ({ siteTitle }) => {
         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? (
-              <ChevronLeftIcon />
+              <ChevronLeftIcon className={classes.menuIcon} />
             ) : (
-              <ChevronRightIcon />
+              <ChevronRightIcon className={classes.menuIcon} />
             )}
           </IconButton>
         </div>
@@ -192,22 +204,39 @@ const Header = ({ siteTitle }) => {
           <Link to="/components">
             <ListItem button>
               <ListItemIcon>
-                <ListIcon />
+              {SVGIcon(null, mdiContentCut)}  
               </ListItemIcon>
-              <ListItemText>Components</ListItemText>
+              <ListItemText>Salon</ListItemText>
             </ListItem>
           </Link>
           <Link to="/profile">
             <ListItem button>
               <ListItemIcon>
-              <AccountCircleIcon  className={classes.menuIcon}/>
+              <Storefront  className={classes.menuIcon}/>
               </ListItemIcon>
-              <ListItemText>Profile</ListItemText>
+              <ListItemText>Shop</ListItemText>
+            </ListItem>
+          </Link>
+          <Link to="/">
+            <ListItem button>
+              <ListItemIcon>
+                <InfoIcon />
+              </ListItemIcon>
+              <ListItemText>About</ListItemText>
+            </ListItem>
+          </Link>
+          <Link to="/">
+            <ListItem button>
+              <ListItemIcon>
+                <BookIcon />
+              </ListItemIcon>
+              <ListItemText>Blog</ListItemText>
             </ListItem>
           </Link>
         </List>
       </Drawer>
     <Profile/>
+    <DiarySlotMobile/>
     </div>
   )
 }

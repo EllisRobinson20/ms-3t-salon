@@ -92,7 +92,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-
 export default function FullWidthTabs() {
   const classes = useStyles();
   const theme = useTheme();
