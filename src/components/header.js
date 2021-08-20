@@ -38,7 +38,7 @@ import { ProfileContext } from '../context/ProfileContext'
 import { SvgIcon } from '@material-ui/core'
 import { mdiContentCut } from '@mdi/js';
 
-import DiarySlotMobile from './subcomponents/DiarySlotMobile'
+import Diary from './Diary'
 
 const drawerWidth = 240
 
@@ -236,7 +236,6 @@ const Header = ({ siteTitle }) => {
         </List>
       </Drawer>
     <Profile/>
-    <DiarySlotMobile/>
     </div>
   )
 }

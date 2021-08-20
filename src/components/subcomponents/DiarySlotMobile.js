@@ -12,10 +12,13 @@ import CallIcon from '@material-ui/icons/Call';
 
 const useStyles = makeStyles({
   root: {
-    minWidth: 275,
+    minWidth: 200,
   },
   title: {
     fontSize: 14,
+  },
+  timelineIcon: {
+    maxWidth: '1em'
   },
 });
 
@@ -26,7 +29,7 @@ export default function SimpleCard() {
     <div>
         <Grid container spacing={1}>
             <Grid item xs={1}>
-                <Timeline/> 
+                <Timeline className={classes.timelineIcon}/> 
             </Grid>
             <Grid item xs={2}>
             <Typography variant="caption">
