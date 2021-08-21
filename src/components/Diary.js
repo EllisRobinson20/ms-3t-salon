@@ -16,6 +16,8 @@ import Paper from '@material-ui/core/Paper';
 
 import Timeline from '../images/assets/timeline.svg';
 
+import Timetable from 'react-timetable-events'
+import moment from 'moment'
 
 
 
@@ -69,7 +71,6 @@ export default function Diary() {
         return (
             <div>
                 <Timeline className={classes.timelineIcon}/>
-            
             <p>{time}</p>
             </div>
         )
@@ -82,33 +83,31 @@ export default function Diary() {
             </Container>
             <Grid container spacing={0}>
                 <Grid item xs={12}>
-                <TableContainer component={Paper}>
-                    <Table className={classes.table} aria-label="simple table">
-                        <TableHead>
-                        <TableRow>
-                            <TableCell>Day</TableCell>
-                            <TableCell align="left">{renderTimelineSlot("9:00")}</TableCell>
-                            <TableCell align="left">{renderTimelineSlot("10:00")}</TableCell>
-                            <TableCell align="left">{renderTimelineSlot("11:00")}</TableCell>
-                            <TableCell align="left">{renderTimelineSlot("12:00")}</TableCell>
-                            <TableCell align="left">{renderTimelineSlot("13:00")}</TableCell>
-                        </TableRow>
-                        </TableHead>
-                        <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row.name}>
-                            <TableCell component="th" scope="row">
-                                {row.name}
-                            </TableCell>
-                            <TableCell align="right">{row.calories}</TableCell>
-                            <TableCell align="right">{row.fat}</TableCell>
-                            <TableCell align="right">{row.carbs}</TableCell>
-                            <TableCell align="right">{row.protein}</TableCell>
-                            </TableRow>
-                        ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <Timetable 
+  events={{
+    monday: [
+      {
+        id: 1,
+        name: <div><div><p >h1</p></div><br/><div><p>h1</p></div></div>,
+        type: "custom",
+        startTime: moment("2018-02-23T11:30:00"),
+        endTime: moment("2018-02-23T13:30:00"),
+      },
+      {
+        id: 1,
+        name: "Custom Event 1",
+        type: "custom",
+        startTime: moment("2018-02-23T13:30:00"),
+        endTime: moment("2018-02-23T15:30:00"),
+      },
+    ],
+    tuesday: [],
+    wednesday: [],
+    thursday: [],
+    friday: [],
+    saturday: [],
+  }}
+/>
                 </Grid>
                 <Grid item xs={6}>
                 
