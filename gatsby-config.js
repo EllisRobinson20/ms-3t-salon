@@ -6,6 +6,51 @@ module.exports = {
     author: `@dominicabela`,
   },
   plugins: [
+    {
+      resolve: "gatsby-plugin-firebase",
+      options: {
+        credentials: {
+          apiKey: process.env.FIREBASE_API_KEY,
+          authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+
+          projectId: process.env.FIREBASE_PROJECT_ID,
+          
+          messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+          appId: process.env.FIREBASE_APP_ID
+        }
+      }
+    },
+    {
+      resolve: `gatsby-source-firestores`,
+      options: {
+        bases: [
+          {
+            name: 'ms-3t-salon',
+            credential: require('./firebase-creds.json'),
+            types: [
+              {
+                type:  'Service',
+                collection: 'services',
+                map: doc => ({
+                  durationMinutes: doc.durationMinutes,
+                  pricePence: doc.pricePence
+                })
+              },
+            {
+              type:  'Review',
+              collection: 'reviews',
+              map: doc => ({
+                comment: doc.comment,
+                name: doc.name,
+                rating: doc.starRating
+              })
+            }
+            ]
+          }
+        ],
+        
+      }
+    },
     `gatsby-plugin-react-helmet`,
     {
       resolve: 'gatsby-plugin-react-svg',
@@ -61,5 +106,6 @@ module.exports = {
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     `gatsby-plugin-offline`,
+    
   ],
 }

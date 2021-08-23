@@ -1,14 +1,17 @@
 import React, {createContext, useState, useEffect} from 'react'
-import ProfileContext from './ProfileContext'
+import ProfileContextProvider from './ProfileContext'
+import  AuthContextProvider  from './AuthContext'
 
 export const GlobalContext = createContext({})
 
 const GlobalProvider = ({ children }) => {
     return (
         <>
-        <ProfileContext>
-                    {children}
-        </ProfileContext>     
+        <AuthContextProvider>
+            <ProfileContextProvider>
+                        {children}
+            </ProfileContextProvider>     
+        </AuthContextProvider>
         </>
     )
 }

@@ -3,6 +3,8 @@
  *
  * See: https://www.gatsbyjs.org/docs/browser-apis/
  */
+ import "firebase/auth"
+ import "firebase/firestore"
  import React from 'react'
  import GlobalProvider from "./src/context/GlobalContext"
 require('typeface-roboto');

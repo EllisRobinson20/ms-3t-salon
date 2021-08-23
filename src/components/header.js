@@ -38,7 +38,7 @@ import { ProfileContext } from '../context/ProfileContext'
 import { SvgIcon } from '@material-ui/core'
 import { mdiContentCut } from '@mdi/js';
 
-import Diary from './Diary'
+import Login from './Login'
 
 const drawerWidth = 240
 
@@ -109,10 +109,10 @@ const useStyles = makeStyles(theme => ({
 
 const Header = ({ siteTitle }) => {
 
+
   const {showProfile, setShowProfile} = useContext(ProfileContext);
   function handleProfileModal() {
     setShowProfile(!showProfile)
-    
   }
 
   const classes = useStyles()
