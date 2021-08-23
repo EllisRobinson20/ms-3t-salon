@@ -30,6 +30,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-helmet": "^5.2.1",
+    "react-material-ui-carousel": "^2.3.1",
     "react-swipeable-views": "^0.14.0",
     "react-timetable-events": "^1.0.3",
     "react-transition-group": "^4.4.2",

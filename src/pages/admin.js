@@ -1,5 +1,5 @@
 import React from 'react'
-import Layout from '../components/layout'
+import Layout from '../components/Layout'
 import SEO from '../components/seo'
 
 import Diary from '../components/Diary'
@@ -11,8 +11,6 @@ export default function admin() {
                 <SEO title="Admin" />
                 <Diary/>
             </Layout>
-
-            
         </div>
     )
 }

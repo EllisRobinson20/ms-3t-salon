@@ -63,9 +63,9 @@ export default function MainHeader() {
             <section className={styles.last}>
                 <i className={styles.icon}></i>
                 <header>
-                    <h2>Blog</h2>
+                    <h2>Consultation</h2>
                 </header>
-                <p>Topics and guides for ongoing care</p>
+                <p>Advice for ongoing haircare</p>
             </section>
         </div>
     </div>

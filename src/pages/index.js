@@ -1,8 +1,9 @@
 import React from 'react'
-import Layout from '../components/layout'
+import Layout from '../components/Layout'
 import SEO from '../components/seo'
 import { makeStyles } from '@material-ui/core/styles'
 import MainHeader from '../components/MainHeader'
+import RatingsSection from '../components/RatingsSection'
 
 
 const useStyles = makeStyles(theme => ({
@@ -36,6 +37,7 @@ const IndexPage = () => {
     <Layout>
       <SEO title="Home" />
     <MainHeader/>
+    <RatingsSection/>
     </Layout>
   )
 }
