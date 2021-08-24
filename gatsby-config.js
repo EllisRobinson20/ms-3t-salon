@@ -32,8 +32,13 @@ module.exports = {
                 type:  'Service',
                 collection: 'services',
                 map: doc => ({
+                  bookingCount: doc.bookingCount,
+                  description: doc.description,
                   durationMinutes: doc.durationMinutes,
-                  pricePence: doc.pricePence
+                  name: doc.name,
+                  pricePence: doc.pricePence,
+                  upperPriceLimit: doc.upperPriceLimit,
+                  variablePrice: doc.variablePrice
                 })
               },
             {
