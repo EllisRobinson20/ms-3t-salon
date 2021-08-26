@@ -55,7 +55,6 @@ const classes = useStyles();
 const theme = useTheme();
 const matchesSm = useMediaQuery(theme.breakpoints.down('xs'));
 const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-const [currentWidth, setCurrentWidth] = useState()
     return (
         <div className={classes.root}>
             <Container className={matchesSm ? classes.container90: matchesMd ? classes.container60 :  classes.container40}>

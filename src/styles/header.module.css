@@ -1608,6 +1608,7 @@ input, select, textarea {
 	input[type="reset"],
 	button,
 	.button {
+		margin-top: 1em;
 		-webkit-appearance: none;
 		display: inline-block;
 		text-decoration: none;
@@ -2084,7 +2085,6 @@ input, select, textarea {
 
 	#nav {
 		margin: auto 0;
-        
 	}
 
 		#nav > ul {

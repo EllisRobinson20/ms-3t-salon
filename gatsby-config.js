@@ -33,6 +33,7 @@ module.exports = {
                 collection: 'services',
                 map: doc => ({
                   bookingCount: doc.bookingCount,
+                  consultationOnly: doc.consultationOnly,
                   description: doc.description,
                   durationMinutes: doc.durationMinutes,
                   name: doc.name,
@@ -81,7 +82,8 @@ module.exports = {
         apiKey: process.env.CLOUDINARY_API_KEY,
         apiSecret: process.env.CLOUDINARY_API_SECRET,
         resourceType: `image`,
-        prefix: `salon/`
+        prefix: `salon/`, 
+        maxResults: `100`,
       }
     },
     {

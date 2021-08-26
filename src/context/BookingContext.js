@@ -2,6 +2,12 @@ import React, {createContext, useState} from "react"
 
 export const BookingContext = createContext();
 
+const serviceDetailsViewModel = () => {
+    return {
+
+    }
+} 
+
 const BookingContextProvider = ({ children }) => {
     const [selectedDateGlobal, setNewDate] = useState(new Date());
     const [selectedService, setSelectedService] = useState("");
@@ -11,6 +17,9 @@ const BookingContextProvider = ({ children }) => {
     const [coldStarted, setColdStarted] = useState(false);
     
     const [selectedSlot, setSelectedSlot] = useState("");
+    const [serviceListRef, setServiceListRef] = useState();
+    const [serviceDetailsRef, setServiceDetailsRef] = useState();
+
 
     return (
         <BookingContext.Provider value={{selectedDateGlobal, setNewDate, 
@@ -19,7 +28,9 @@ const BookingContextProvider = ({ children }) => {
             slots, setSlots,
             selectedSlot, setSelectedSlot,
             error, setError,
-            coldStarted, setColdStarted}}>
+            coldStarted, setColdStarted,
+            serviceListRef, setServiceListRef,
+            serviceDetailsRef, setServiceDetailsRef}}>
                 {children}
         </BookingContext.Provider>
     )

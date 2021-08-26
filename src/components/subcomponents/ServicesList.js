@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -8,6 +8,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import InboxIcon from '@material-ui/icons/Inbox';
 import DraftsIcon from '@material-ui/icons/Drafts';
+import { BookingContext } from '../../context/BookingContext';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -15,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
+    margin: '2em'
   },
 }));
 
@@ -35,9 +37,12 @@ export default function SelectedListItem() {
 
   const classes = useStyles();
   const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const {setServiceListRef} = useContext(BookingContext)
+  
 
-  const handleListItemClick = (event, index) => {
+  const handleListItemClick = (event, index, serviceId) => {
     setSelectedIndex(index);
+    setServiceListRef(serviceId);
   };
 
   return (
@@ -47,37 +52,11 @@ export default function SelectedListItem() {
               <ListItem
               button
               selected={selectedIndex === index}
-              onClick={(event) => handleListItemClick(event, index)}
+              onClick={(event) => handleListItemClick(event, index, service.node.id)}
             >
               <ListItemText primary={service.node.name} />
             </ListItem>
   ))}
-        <ListItem
-          button
-          selected={selectedIndex === 1}
-          onClick={(event) => handleListItemClick(event, 1)}
-        >
-          <ListItemIcon>
-            <DraftsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Drafts" />
-        </ListItem>
-      </List>
-      <List component="nav" aria-label="secondary mailbox folder">
-        <ListItem
-          button
-          selected={selectedIndex === 2}
-          onClick={(event) => handleListItemClick(event, 2)}
-        >
-          <ListItemText primary="Trash" />
-        </ListItem>
-        <ListItem
-          button
-          selected={selectedIndex === 3}
-          onClick={(event) => handleListItemClick(event, 3)}
-        >
-          <ListItemText primary="Spam" />
-        </ListItem>
       </List>
     </div>
   );
