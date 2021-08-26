@@ -26,11 +26,9 @@ import BookIcon from '@material-ui/icons/Book';
 
 import Nav from '../components/Nav'
 
-import { useEffect } from 'react'
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Container, Paper } from '@material-ui/core'
-import color from '@material-ui/core/colors/amber'
-import { StylesContext } from '@material-ui/styles/StylesProvider'
+
 
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Profile from '../components/Profile'

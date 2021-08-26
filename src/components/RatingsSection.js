@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
     container90: {
         width: '90vw'
     },
+    rating: {
+        marginTop: '1.5em'
+    },
   }));
 
 export default function RatingsSection() {
@@ -62,7 +65,9 @@ const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'));
                 <Divider/>
                 <Typography variant="h5"> Heres what my clients have to say</Typography>
                 <Rating name="half-rating-read" defaultValue={getRatingsAverage()} precision={0.5} readOnly size="large" />
-                <CardCarousel data={data.allReview.edges} />
+                <Container className={classes.rating}>
+                <CardCarousel data={data.allReview.edges} type={"review"} />
+                </Container>
             </Container>  
         </div>
     )

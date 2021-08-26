@@ -1,10 +1,12 @@
-import { Grid, Typography } from '@material-ui/core'
+import { Grid, Paper, Typography, Modal, Backdrop, Slide} from '@material-ui/core'
 import { graphql, Link } from 'gatsby'
-import React from 'react'
+import React, {useEffect} from 'react'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import {useMediaQuery} from '@material-ui/core';
 import Layout from '../components/Layout';
 import * as styles from '../styles/header.module.css'
+import CardCarousel from '../components/subcomponents/CardCarousel';
+
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -18,16 +20,34 @@ const useStyles = makeStyles(theme => ({
     buttons: {
         marginTop: '0.5em 0'
     },
+    modal: {
+        position: 'fixed',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 'auto'
+      },
+      paper: {
+        
+      },
   }));
 
 export default function About({data}) {
-    
+    const [open, setOpen] = React.useState(false);
     const classes = useStyles();
     const theme = useTheme();
     const matchesSm = useMediaQuery(theme.breakpoints.down('xs'));
     const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-    const headerImage = data.allCloudinaryMedia.edges[0].node.secure_url;
-    // head shot of stylist
+    const headerImage = data.header.edges[0].node.secure_url;
+
+    const handleOpen = () => {
+        setOpen(true);
+      };
+    
+      const handleClose = () => {
+        setOpen(false);
+      };
+    
     
     return (
         <Layout >
@@ -42,17 +62,35 @@ export default function About({data}) {
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                     </Typography>
                         <Link to="#" className={styles.button}>View Prices</Link>
-                        <Link to="#" className={styles.button}>Gallery</Link>
+                        <Link to="#" className={styles.button} onClick={handleOpen}>Gallery</Link>
                 </Grid>
             </Grid>
+            <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={open}
+                onClose={handleClose}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                timeout: 300,
+                
+                }}
+            >
+                    <div className={classes.paper}> 
+                    <CardCarousel data={data.gallery.edges} type={"gallery"} />
+                    </div>
+            </Modal>
+            
         </div>
         </Layout>
     )
 }
 export const query = graphql`
-    query AboutPageHeadshotQuery {
+    query AboutPageImageQuery {
                 
-        allCloudinaryMedia(sort: {fields: created_at, order: DESC}, filter: {secure_url: {regex: "/stylists/demo/"}}) {
+        header: allCloudinaryMedia(sort: {fields: created_at, order: DESC}, filter: {secure_url: {regex: "/stylists/demo/"}}) {
         edges {
             node {
             id
@@ -60,6 +98,13 @@ export const query = graphql`
             }
         }
         }
-    
+        gallery: allCloudinaryMedia(sort: {fields: created_at, order: DESC}, filter: {secure_url: {regex: "/clients/"}}) {
+            edges {
+                node {
+                id
+                secure_url
+                }
+            }
+            }
     }
 `

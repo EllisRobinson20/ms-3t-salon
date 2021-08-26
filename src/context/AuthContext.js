@@ -10,7 +10,6 @@ const AuthContextProvider = ({ children }) => {
     useEffect(() => {
         firebase.auth().onAuthStateChanged(user => {setUser(user)
             if (showLogin) {setShowLogin(false)}
-            
             console.log(user)
             console.log(showLogin)
         })

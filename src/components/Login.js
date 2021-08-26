@@ -1,5 +1,4 @@
 import React, {useState, useContext} from 'react'
-import Layout from './Layout'
 import firebase from 'gatsby-plugin-firebase'
 import { AuthContext } from '../context/AuthContext'
 import { Link, navigate } from '@reach/router'

@@ -1,26 +1,43 @@
 import React from 'react'
 import Carousel from 'react-material-ui-carousel'
-import { Paper } from '@material-ui/core'
+import { Paper, Slide} from '@material-ui/core'
 import Rating from '@material-ui/lab/Rating';
+
 function CarouselItem(props)
 {
+    if (props.type === "review") {
     return (
-        <Paper elevation={4} style={{margin: '0 auto',padding: '5px auto'}}>
+        <>
             <h2>{props.item.name}</h2>
             <p>{props.item.feedback}</p>
-            <Rating style={{margin: '5px auto'}} name="half-rating-read" defaultValue={props.item.rating} precision={1} readOnly size="small" />
-        </Paper>
+            <Rating style={{margin: '5px auto'}} name="service-rating" defaultValue={props.item.rating} precision={1} readOnly size="small" />
+        </>  
     )
+    } else
+    if (props.type === "gallery") {
+    return (
+        <div style={window.innerWidth < 600 ? {height:"65vh"} : {height:"75vh"}}>
+    <img src={props.item.image} style={window.innerWidth < 600 ? {maxWidth:"90vw", borderRadius:"8px"}:{maxHeight:"75vh", borderRadius:"8px"}}/>
+    </div>            
+        
+    )
+    }
 }
 export default function CardCarousel(props) {
+    
     var items = props.data.map((item) => {
-        return {name: item.node.name, feedback: item.node.comment, rating: item.node.rating}
+            if (props.type === "review") {
+                return { name: item.node.name, feedback: item.node.comment, rating: item.node.rating}
+            } else
+            if (props.type === "gallery") {
+                return { image: item.node.secure_url}
+            }
         })
         return (
-            <Carousel>
-                {
-                    items.map( (item, i) => <CarouselItem key={i} item={item} /> )
-                }
-            </Carousel>
+            <>
+                <Carousel>
+                    {items.map( (item, i) => <CarouselItem key={i} item={item} type={props.type} /> )}
+                </Carousel>
+            </>
         )
 }
