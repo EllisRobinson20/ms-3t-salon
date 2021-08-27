@@ -19,7 +19,11 @@ const Layout = ({ children }) => {
   const {user, setUser} = useContext(AuthContext)
 const {showLogin, setShowLogin} = useContext(AuthContext)
 const {deviceIsMobile, setDeviceIsMobile} = useContext(AuthContext)
-{setDeviceIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent))}
+
+useEffect(() => {
+  {setDeviceIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent))}
+})
+
 
 
 const renderLayout = () => {
