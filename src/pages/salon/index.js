@@ -41,7 +41,6 @@ function DetailsCard() {
             species, ranging across all continents except Antarctica
           </Typography>
         </CardContent>
-        
             <CardActions>
             <Button  color="textSecondary">Share</Button>
             <Button size="small">Learn More</Button>

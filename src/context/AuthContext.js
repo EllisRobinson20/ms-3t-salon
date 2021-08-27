@@ -6,6 +6,7 @@ export  const AuthContext = createContext({})
 const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState()
     const [showLogin, setShowLogin] = useState(false)
+    const [deviceIsMobile, setDeviceIsMobile] = useState()
 
     useEffect(() => {
         firebase.auth().onAuthStateChanged(user => {setUser(user)
@@ -16,7 +17,8 @@ const AuthContextProvider = ({ children }) => {
     }, [])
     return (
         <AuthContext.Provider value={{user, setUser,
-            showLogin, setShowLogin}}>
+            showLogin, setShowLogin,
+            deviceIsMobile, setDeviceIsMobile}}>
             {children}
         </AuthContext.Provider>
     )
