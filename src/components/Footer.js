@@ -8,6 +8,9 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import { graphql, Link, useStaticQuery } from 'gatsby'
 
 export default function Footer() {
+    const callSalon = () => {
+        window.open('tel:07517140732')
+    }
     const {deviceIsMobile, setDeviceIsMobile} = useContext(AuthContext)
     const mapImage = useStaticQuery(graphql`
         query MapLocationQuery {
@@ -76,7 +79,7 @@ export default function Footer() {
 										<li>
 											<h3>Phone</h3>
                                             {deviceIsMobile ? 
-                                            <p><Button onclick={window.open('tel:07517140732')}>
+                                            <p><Button onClick={callSalon}>
                                                     <IconButton aria-label={"call"}>
                                                         <CallIcon/>
                                                     </IconButton>

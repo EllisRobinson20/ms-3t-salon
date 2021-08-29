@@ -11,12 +11,14 @@
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@material-ui/styles": "^4.0.1",
     "@mdi/js": "^5.9.55",
+    "@shopify/buy-button-js": "^2.1.7",
     "core-js": "^3.16.3",
     "dotenv": "^4.0.0",
     "firebase": "^8.10.0",
     "gatsby": "^2.32.13",
     "gatsby-image": "^2.11.0",
     "gatsby-plugin-firebase": "^0.2.0-beta.4",
+    "gatsby-plugin-image": "^1.12.0",
     "gatsby-plugin-manifest": "^2.12.1",
     "gatsby-plugin-material-ui": "^2.1.10",
     "gatsby-plugin-offline": "^2.2.10",
@@ -26,6 +28,7 @@
     "gatsby-source-cloudinary": "^0.1.14",
     "gatsby-source-filesystem": "^2.11.1",
     "gatsby-source-firestores": "^1.1.1",
+    "gatsby-source-shopify": "^5.4.0",
     "gatsby-transformer-sharp": "^2.12.1",
     "glob-parent": "^6.0.1",
     "lodash": "^4.17.21",
@@ -44,6 +47,7 @@
     "typescript": "^4.3.5"
   },
   "devDependencies": {
+    "@types/js-base64": "^3.3.1",
     "prettier": "^1.19.1"
   },
   "keywords": [
