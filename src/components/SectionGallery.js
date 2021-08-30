@@ -54,7 +54,7 @@ export default function SectionGallery() {
 
   return (
     <div className={classes.root}>
-      <ImageList rowHeight={matchesSm ? 160 : 520} className={classes.imageList} cols={matchesSm ? 1.5 : 2.5}>
+      <ImageList gap={8} rowHeight={matchesSm ? 160 : 520} className={classes.imageList} cols={matchesSm ? 1.5 : 2.5}>
         {data.allCloudinaryMedia.edges.map((item) => (
           <ImageListItem key={item.node.img}>
             <img src={item.node.secure_url} alt={item.node.internal.description} />
