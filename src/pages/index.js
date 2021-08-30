@@ -4,6 +4,8 @@ import SEO from '../components/seo'
 import { makeStyles } from '@material-ui/core/styles'
 import MainHeader from '../components/MainHeader'
 import RatingsSection from '../components/RatingsSection'
+import SectionGallery from '../components/SectionGallery'
+import { Grid } from '@material-ui/core'
 
 
 const useStyles = makeStyles(theme => ({
@@ -14,6 +16,9 @@ const useStyles = makeStyles(theme => ({
   nested: {
     paddingLeft: theme.spacing(4),
   },
+  borders: {
+    backgroundColor: 'e4dcc5'
+  }
 }));
 
 const IndexPage = () => {
@@ -36,8 +41,21 @@ const IndexPage = () => {
   return(
     <Layout>
       <SEO title="Home" />
-    <MainHeader/>
-    <RatingsSection/>
+      <Grid container spacing={0}>
+        <Grid item xs={12}>
+        <MainHeader/>
+        </Grid>
+        <Grid item md={1} xs={0}>
+        </Grid>
+        <Grid item md={10} xs={12}>
+        <RatingsSection/>
+        <SectionGallery/>
+        </Grid>
+        <Grid item md={1} xs={0}>
+
+        </Grid>
+      </Grid>
+   
     </Layout>
   )
 }

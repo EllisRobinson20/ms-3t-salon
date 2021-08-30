@@ -1,8 +1,7 @@
-import { graphql, Link } from 'gatsby'
+import { graphql} from 'gatsby'
 import React, {useContext} from 'react'
 import Layout from '../../components/Layout'
 import { BookingContext } from '../../context/BookingContext'
-import * as styles from '../../styles/services.module.css'
 import { makeStyles} from '@material-ui/core/styles';
 import ServicesList from '../../components/subcomponents/ServicesList'
 

@@ -1,6 +1,6 @@
-import { Grid, Paper, Typography, Modal, Backdrop, Slide} from '@material-ui/core'
+import { Grid, Typography, Modal, Backdrop} from '@material-ui/core'
 import { graphql, Link } from 'gatsby'
-import React, {useEffect} from 'react'
+import React from 'react'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import {useMediaQuery} from '@material-ui/core';
 import Layout from '../components/Layout';

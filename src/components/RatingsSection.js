@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import Rating from '@material-ui/lab/Rating';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { graphql, useStaticQuery } from 'gatsby'

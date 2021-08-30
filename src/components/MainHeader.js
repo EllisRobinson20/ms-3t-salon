@@ -1,10 +1,29 @@
 import React from 'react'
 import * as styles from '../styles/header.module.css'
 import { Link, graphql, useStaticQuery } from 'gatsby'
-import Profile from '../components/Profile'
-import { node } from 'prop-types'
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import {useMediaQuery} from '@material-ui/core';
+
+const useStyles = makeStyles((theme) => ({
+    headerImageLg: { 
+        maxWidth: '70%', 
+        borderRadius: '25px',
+    },
+    headerImageMd: { 
+        maxWidth: '90%', 
+        borderRadius: '25px',
+    },
+    headerImageSm: { 
+        maxWidth: '98%', 
+        borderRadius: '25px',
+    },
+}))
 
 export default function MainHeader() {
+    const theme = useTheme();
+    const classes = useStyles();
+    const matchesSm = useMediaQuery(theme.breakpoints.down('xs'));
+    const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const queryData = useStaticQuery(graphql`
         query HeaderImageQuery {
             
@@ -20,7 +39,6 @@ export default function MainHeader() {
         }
     `)
     const headerPicture = queryData.allCloudinaryMedia.edges[0].node.secure_url
-    const header = queryData.allCloudinaryMedia.edges[0]
 
     return (
         <div>
@@ -34,7 +52,8 @@ export default function MainHeader() {
 
 
 
-<section id={styles.banner}  style={{backgroundImage: 'url('+ headerPicture +')'}}>
+<section id={styles.banner} className={matchesSm? classes.headerImageSm : matchesMd ? classes.headerImageMd : classes.headerImageLg}  style={{marginLeft: 'auto', 
+        marginRight: 'auto',  backgroundImage: 'url('+ headerPicture +')'}}>
 
 </section>
 
