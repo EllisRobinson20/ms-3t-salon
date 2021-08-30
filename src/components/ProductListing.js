@@ -20,9 +20,11 @@ const PRODUCTS_LISTING_QUERY = graphql`
                   }
                 }
                 status
-                images {
-                  src
-                }
+                featuredImage {
+                    altText
+                    gatsbyImageData
+                    id
+                  }
                 seo {
                   description
                 }

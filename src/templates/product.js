@@ -15,8 +15,8 @@ export default ProductPageTemplate
 
 
 export const data = graphql`
-query ProductLayOutQuery {
-  shopifyProduct(handle: {eq: "example"}) {
+query ProductLayOutQuery($handle: String!) {
+  shopifyProduct(handle: {eq: $handle}) {
       handle
       images {
         id

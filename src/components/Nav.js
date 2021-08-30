@@ -15,9 +15,9 @@ export default function Nav() {
             <li>
                 <Link to="/salon">Salon</Link>
             </li>
-            <li><Link to="left-sidebar.html">Shop</Link></li>
+            <li><Link to="/shop">Shop</Link></li>
             <li><Link to="/about">About</Link></li>
-            <li><Link to="no-sidebar.html">Blog</Link></li>
+            <li><Link to="/blog">Blog</Link></li>
         </ul>
         </nav>
         </div>
