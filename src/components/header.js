@@ -27,7 +27,7 @@ import BookIcon from '@material-ui/icons/Book';
 import Nav from '../components/Nav'
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Container, Paper } from '@material-ui/core'
+import { Container} from '@material-ui/core'
 
 
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -199,7 +199,7 @@ const Header = ({ siteTitle }) => {
               <ListItemText>Home</ListItemText>
             </ListItem>
           </Link>
-          <Link to="/components">
+          <Link to="/salon">
             <ListItem button>
               <ListItemIcon>
               {SVGIcon(null, mdiContentCut)}  
@@ -207,7 +207,7 @@ const Header = ({ siteTitle }) => {
               <ListItemText>Salon</ListItemText>
             </ListItem>
           </Link>
-          <Link to="/profile">
+          <Link to="/shop">
             <ListItem button>
               <ListItemIcon>
               <Storefront  className={classes.menuIcon}/>
@@ -215,7 +215,7 @@ const Header = ({ siteTitle }) => {
               <ListItemText>Shop</ListItemText>
             </ListItem>
           </Link>
-          <Link to="/">
+          <Link to="/about">
             <ListItem button>
               <ListItemIcon>
                 <InfoIcon />
@@ -223,7 +223,7 @@ const Header = ({ siteTitle }) => {
               <ListItemText>About</ListItemText>
             </ListItem>
           </Link>
-          <Link to="/">
+          <Link to="/blog">
             <ListItem button>
               <ListItemIcon>
                 <BookIcon />

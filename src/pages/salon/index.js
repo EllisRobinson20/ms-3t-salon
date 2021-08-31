@@ -2,7 +2,8 @@ import { graphql, Link} from 'gatsby'
 import React, {useContext} from 'react'
 import Layout from '../../components/Layout'
 import { BookingContext } from '../../context/BookingContext'
-import { makeStyles} from '@material-ui/core/styles';
+import { makeStyles, useTheme} from '@material-ui/core/styles';
+import {useMediaQuery} from '@material-ui/core';
 import ServicesList from '../../components/subcomponents/ServicesList'
 
 import Card from '@material-ui/core/Card';
@@ -87,33 +88,34 @@ export default function Services({data}) {
             margin: '0 auto'
         },
         wrapper: {
-          padding: '0 8em'
+          padding: '0 2em'
         },
+        stickyButton: {
+          width: '80vw',
+          position: 'fixed',
+          top: '90vh',
+          left: '10%', 
+        },
+        buttonHidden: {
+          display: 'none'
+        }
       }));
   
   //setprops in here for which service is selected
     const {setSelectedService} = useContext(BookingContext);
     const {serviceListRef} = useContext(BookingContext);
     const services = data.allService.edges
+    const theme = useTheme();
     const classes = useStyles();
+    const matchesMd = useMediaQuery(theme.breakpoints.down('md'));
     return (
         <Layout>
-            <Grid container className={classes.wrapper}>
-                <Grid item container xs={4}>
-                  <Link to="/">
-                    <IconButton href="/" color="textSecondary" aria-label="upload picture" component="span">
-                    <ArrowBackIcon/>
-                  </IconButton>
-                  </Link>
-                  <Typography variant="h4">
-                    Select A Service
-                  </Typography>
-                    <ServicesList/>
-                </Grid>
-                <Grid item xs={8}>
+            <Grid container direction="row-reverse" className={classes.wrapper} justifyContent="center">
+                
+                <Grid item xs={12} md={10} lg={6} xl={4}>
                     {services.map(service => (
                         service.node.id === serviceListRef ?
-                            <Card elevation={3} className={clsx(classes.container40, classes.detailsCard)}>
+                            <Card elevation={3} className={clsx(classes.detailsCard)}>
                                 <CardContent>
                                 <Typography gutterBottom variant="h4" component="div">
                                 {service.node.name}
@@ -161,7 +163,29 @@ export default function Services({data}) {
                         ''
                     ))}
                 </Grid>
+                <Grid item container xs={12} md={10} lg={6} xl={8}>
+                  <Link to="/">
+                    <IconButton href="/" color="textSecondary" aria-label="upload picture" component="span">
+                    <ArrowBackIcon/>
+                  </IconButton>
+                  </Link>
+                  <Typography variant="h4">
+                    Select A Service
+                  </Typography>
+                    <ServicesList/>
+                </Grid>
+                <Grid item xs={12}></Grid>
             </Grid>
+            <ThemeProvider theme={customTheme}>
+            <Button size="large"
+                    color="primary"
+                    variant="contained" 
+                    className={clsx(serviceListRef && matchesMd ? classes.stickyButton: classes.buttonHidden) }
+                    onClick={() => {setSelectedService(serviceListRef)} }
+                    >
+                Book Now
+            </Button>
+            </ThemeProvider>
         </Layout>
     )
 }
