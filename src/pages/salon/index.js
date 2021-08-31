@@ -1,4 +1,4 @@
-import { graphql} from 'gatsby'
+import { graphql, Link} from 'gatsby'
 import React, {useContext} from 'react'
 import Layout from '../../components/Layout'
 import { BookingContext } from '../../context/BookingContext'
@@ -19,6 +19,9 @@ import clsx from 'clsx'
 
 import { ThemeProvider, createTheme } from '@material-ui/core/styles'
 import { red, grey } from '@material-ui/core/colors'
+import { IconButton } from '@material-ui/core';
+
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const customTheme = createTheme({ palette: { primary: red, secondary: grey } })
 
@@ -82,7 +85,10 @@ export default function Services({data}) {
         c: {
             display: 'block',
             margin: '0 auto'
-        }
+        },
+        wrapper: {
+          padding: '0 8em'
+        },
       }));
   
   //setprops in here for which service is selected
@@ -92,8 +98,16 @@ export default function Services({data}) {
     const classes = useStyles();
     return (
         <Layout>
-            <Grid container>
-                <Grid item xs={4}>
+            <Grid container className={classes.wrapper}>
+                <Grid item container xs={4}>
+                  <Link to="/">
+                    <IconButton href="/" color="textSecondary" aria-label="upload picture" component="span">
+                    <ArrowBackIcon/>
+                  </IconButton>
+                  </Link>
+                  <Typography variant="h4">
+                    Select A Service
+                  </Typography>
                     <ServicesList/>
                 </Grid>
                 <Grid item xs={8}>

@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import React, {useContext} from 'react'
 import * as styles from '../styles/header.module.css'
 import { AuthContext } from '../context/AuthContext'
-import { Button, IconButton } from '@material-ui/core'
+import { Button, Grid, IconButton } from '@material-ui/core'
 import CallIcon from '@material-ui/icons/Call';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import { graphql, Link, useStaticQuery } from 'gatsby'
@@ -27,10 +27,10 @@ export default function Footer() {
         }
     `)
     return (
-        <div>
-            <section id={styles.footer} style={{backgroundColor: "#252122"}}>
-					<div className={styles.container}>
-					<div className={clsx(styles.col4, styles.col6Medium, styles.col12Small) }>
+        <div style={{backgroundColor: "#252122"}}>
+            <section id={styles.footer} >
+					<Grid container justifyContent="center" >
+						<Grid item xs={11} sm={10} md={8} lg={4}>
 						<section>
 								<header>
 									<h2>Want to know more?</h2>
@@ -47,20 +47,20 @@ export default function Footer() {
 									</ul>
 								</footer>
 							</section>
-						</div>
-						<div className={styles.row}>
-							<div className={clsx(styles.col8, styles.col12Medium) }>
-								<section>
-									<header>
+						</Grid>
+						<Grid item container xs={10} spacing={6}>
+							<Grid item xs={12} md={8}>
+							<section>
+									<header style={{textAlign: "left"}}>
 										<h2>Our location</h2>
 									</header>
 									<img src={mapImage.allCloudinaryMedia.edges[0].node.secure_url} alt={"where to find us"}/>
 								</section>
-							</div>
-							<div className={clsx(styles.col4, styles.col12Medium) }>
-                            <section>
-									<header>
-										<h2>Contact us</h2>
+							</Grid>
+							<Grid item xs={12} md={4}>
+							<section>
+									<header style={{textAlign: "right"}}>
+										<h2 >Contact us</h2>
 									</header>
 									<ul className={styles.social}>
 										
@@ -68,10 +68,11 @@ export default function Footer() {
 									<ul className={styles.contact}>
 										<li>
 											<h3>Address</h3>
-											<p>
+											<p style={{textAlign: "right"}}>
 												Miss 3T Salon<br />
 												15B King Street<br />
-												Sutton-Ashfield, NG17 1AT
+												Sutton-Ashfield<br/>
+												NG17 1AT
 											</p>
 										</li>
                                         <li style={{textAlign: "right"}}>
@@ -86,7 +87,7 @@ export default function Footer() {
                                             
 											
 										</li>
-										<li>
+										<li style={{textAlign: "right"}}>
 											<h3>Facebook</h3>
                                             <a target={"_blank"} href={"https://www.facebook.com/Ms-3T-Salon-105060704338984"}>
                                                 <IconButton aria-label={"call"}>
@@ -94,7 +95,7 @@ export default function Footer() {
                                                 </IconButton></a>
 											<p></p>
 										</li>
-										<li>
+										<li style={{textAlign: "right"}}>
 											<h3>Phone</h3>
                                             {deviceIsMobile ? 
                                             <p><Button onClick={callSalon}>
@@ -109,6 +110,21 @@ export default function Footer() {
 										</li>
 									</ul>
 								</section>
+							</Grid>
+						</Grid>
+					</Grid>
+					<div className={styles.container}>
+					<div className={clsx(styles.col4, styles.col6Medium, styles.col12Small) }>
+						
+
+
+						</div>
+						<div className={styles.row}>
+							<div className={clsx(styles.col8, styles.col12Medium) }>
+								
+							</div>
+							<div className={clsx(styles.col4, styles.col12Medium) }>
+                            
 							</div>
 							<div className={clsx(styles.col4, styles.col6Medium, styles.col12Small)}>
 								<section>

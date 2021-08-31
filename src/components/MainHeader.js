@@ -44,20 +44,13 @@ export default function MainHeader() {
         <div>
             	<section id={styles.header}>
 
-
 <h1>Hair by </h1>
 <h1><Link className="signature" to="index.html">Ms. 3T Salon</Link></h1>
-
-
-
-
 
 <section id={styles.banner} className={matchesSm? classes.headerImageSm : matchesMd ? classes.headerImageMd : classes.headerImageLg}  style={{marginLeft: 'auto', 
         marginRight: 'auto',  backgroundImage: 'url('+ headerPicture +')'}}>
 
 </section>
-
-
 <section id={styles.intro} className={styles.container}>
     <div className={styles.row}>
         <div className={styles.col4+ ' ' +styles.col12medium}>
