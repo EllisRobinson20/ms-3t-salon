@@ -7,6 +7,7 @@ import RatingsSection from '../components/RatingsSection'
 import SectionGallery from '../components/SectionGallery'
 import SectionPriceList from '../components/SectionPriceList'
 import { Grid } from '@material-ui/core'
+import SectionPromotion from '../components/SectionPromotion'
 
 
 const useStyles = makeStyles(theme => ({
@@ -58,6 +59,9 @@ const IndexPage = () => {
         </Grid>
         <Grid item md={12} xs={0}>
         <SectionPriceList/>
+        </Grid>
+        <Grid item md={12} xs={0}>
+        <SectionPromotion/>
         </Grid>
         
       </Grid>

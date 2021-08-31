@@ -30,6 +30,24 @@ export default function Footer() {
         <div>
             <section id={styles.footer} style={{backgroundColor: "#252122"}}>
 					<div className={styles.container}>
+					<div className={clsx(styles.col4, styles.col6Medium, styles.col12Small) }>
+						<section>
+								<header>
+									<h2>Want to know more?</h2>
+								</header>
+								<a href="#" className={styles.image, styles.featured}><img src="images/pic10.jpg" alt="" /></a>
+								<p>
+									If you want to see a list of prices and styles available just go to our <strong>Salon page</strong>.
+									New styles may not be listed so be sure to enquire if you do not see what you're looking for. You can book online,
+									give us a call, or send a message via facebook.
+								</p>
+								<footer>
+									<ul className={styles.actions}>
+										<Link to="/salon" className={styles.button}>Salon page</Link>
+									</ul>
+								</footer>
+							</section>
+						</div>
 						<div className={styles.row}>
 							<div className={clsx(styles.col8, styles.col12Medium) }>
 								<section>
@@ -95,24 +113,6 @@ export default function Footer() {
 							<div className={clsx(styles.col4, styles.col6Medium, styles.col12Small)}>
 								<section>
 									
-								</section>
-							</div>
-							<div className={clsx(styles.col4, styles.col6Medium, styles.col12Small) }>
-                            <section>
-									<header>
-										<h2>Want to know more?</h2>
-									</header>
-									<a href="#" className={styles.image, styles.featured}><img src="images/pic10.jpg" alt="" /></a>
-									<p>
-										If you want to see a list of prices and styles available just go to our <strong>Salon page</strong>.
-                                        New styles may not be listed so be sure to enquire if you do not see what you're looking for. You can book online,
-                                        give us a call, or send a message via facebook.
-									</p>
-									<footer>
-										<ul className={styles.actions}>
-                                            <Link to="/salon" className={styles.button}>Salon page</Link>
-										</ul>
-									</footer>
 								</section>
 							</div>
 							<div className={clsx(styles.col4, styles.col12Medium)}>

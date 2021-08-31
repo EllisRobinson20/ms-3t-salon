@@ -69,7 +69,7 @@ export default function SpacingGrid() {
             </Grid>
             
         </Grid>
-        <Grid container justifyContent="start" spacing={spacing}>
+        <Grid container justifyContent="center" spacing={spacing}>
           {data.allService.edges.map((value) => (
             <Grid key={value.node.id} item xs={matchesSm ? 6 : matchesMd ? 3 : 2}>
               <Paper className={classes.paper} >
