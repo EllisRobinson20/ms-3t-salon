@@ -107,7 +107,7 @@ const useStyles = makeStyles(theme => ({
 
 const Header = ({ siteTitle }) => {
 
-
+  
   const {showProfile, setShowProfile} = useContext(ProfileContext);
   function handleProfileModal() {
     setShowProfile(!showProfile)
