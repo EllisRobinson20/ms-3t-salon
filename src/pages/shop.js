@@ -1,14 +1,17 @@
-import React from "react"
+import React, {useContext} from "react"
 import { graphql, Link} from 'gatsby'
 import Layout from "../components/Layout"
 import ProductListing from "../components/ProductListing"
 import { Grid, IconButton } from '@material-ui/core';
-
+import { NavigationContext } from "../context/NavigationContext";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 
 
-const ProductsPage = ({ data }) => (
+const ProductsPage = ({location, data }) => {
+  const {setPageState} = useContext(NavigationContext);
+  setPageState(location.pathname);
+  return (
   <Layout>
     <Grid item container justifyContent="flex-start" style={{padding: "2em"}}>
     <Link to="/"><IconButton href="/" color="textSecondary" aria-label="upload picture" component="span">
@@ -18,7 +21,7 @@ const ProductsPage = ({ data }) => (
     </Grid>
     
     <ProductListing/>
-  </Layout>
-)
+  </Layout>)
+}
 
 export default ProductsPage

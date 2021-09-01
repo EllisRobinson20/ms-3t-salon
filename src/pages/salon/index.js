@@ -1,6 +1,7 @@
 import { graphql, Link} from 'gatsby'
 import React, {useContext} from 'react'
 import Layout from '../../components/Layout'
+import { NavigationContext } from '../../context/NavigationContext'
 import { BookingContext } from '../../context/BookingContext'
 import { makeStyles, useTheme} from '@material-ui/core/styles';
 import {useMediaQuery} from '@material-ui/core';
@@ -27,38 +28,10 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 const customTheme = createTheme({ palette: { primary: red, secondary: grey } })
 
 
-function DetailsCard() {
-    return (
-      <Card sx={{ maxWidth: 345 }}>
-        <CardMedia
-          sx={{ height: 140 }}
-          image="/static/images/cards/contemplative-reptile.jpg"
-          title="Contemplative Reptile"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            Lizard
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
-          </Typography>
-        </CardContent>
-            <CardActions>
-            <Button  color="textSecondary">Share</Button>
-            <Button size="small">Learn More</Button>
-            </CardActions>
-       
-      </Card>
-    );
-  }
 
-
-export default function Services({data}) {
-    // for this code to work (set selected service) will need the calendar in here and the booking context also
-    //get all the treatments from firebase display in this page
-    //double check cannot use express in fb hosting. is it possible in heroku to firestore for free?
-    // may have to use functions if not
+export default function Services({location, data}) {
+    const {setPageState} = useContext(NavigationContext);
+    setPageState(location.pathname);
     
 
     const useStyles = makeStyles((theme) => ({
@@ -143,17 +116,14 @@ export default function Services({data}) {
                                 :
                                 <CardActions className={classes.c}>
                                     <ThemeProvider theme={customTheme}>
-                                <Button size="small"
+                                <Link to="./booking">
+                                <Button size="large"
                                         color="primary"
                                         variant="contained" 
                                         onClick={() => {setSelectedService(service.node.name)} }>
                                     Book Now
                                 </Button>
-                                <Button size="small"
-                                        variant="contained"
-                                        color="secondary">
-                                    Learn More
-                                </Button>
+                                </Link>
                                 </ThemeProvider>
                                 </CardActions>
                                 }
@@ -177,6 +147,7 @@ export default function Services({data}) {
                 <Grid item xs={12}></Grid>
             </Grid>
             <ThemeProvider theme={customTheme}>
+              <Link to="./booking">
             <Button size="large"
                     color="primary"
                     variant="contained" 
@@ -185,12 +156,13 @@ export default function Services({data}) {
                     >
                 Book Now
             </Button>
+            </Link>
             </ThemeProvider>
         </Layout>
     )
 }
 export const query = graphql`
-query ListServicesQuery {
+query ListServicesPageQuery {
     allService {
       edges {
         node {

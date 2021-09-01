@@ -1,13 +1,15 @@
 import React, {createContext, useState, useEffect} from 'react'
 import ProfileContextProvider from './ProfileContext'
-import  AuthContextProvider  from './AuthContext'
+import AuthContextProvider from './AuthContext'
 import BookingContextProvider from './BookingContext'
+import NavigationContextProvider from './NavigationContext'
 
 export const GlobalContext = createContext({})
 
 const GlobalProvider = ({ children }) => {
     return (
         <>
+        <NavigationContextProvider>
         <AuthContextProvider>
             <ProfileContextProvider>
                 <BookingContextProvider>
@@ -15,6 +17,7 @@ const GlobalProvider = ({ children }) => {
                 </BookingContextProvider>
             </ProfileContextProvider>     
         </AuthContextProvider>
+        </NavigationContextProvider>
         </>
     )
 }

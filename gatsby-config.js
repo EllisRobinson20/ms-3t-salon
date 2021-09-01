@@ -1,9 +1,9 @@
 require('dotenv').config();
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Material UI Starter`,
-    description: `Kick off your next, great Gatsby project with this Material UI starter. This barebones starter ships with the main Gatsby and Material UI configuration files you might need.`,
-    author: `@dominicabela`,
+    title: `Ms 3T Salon`,
+    description: `Afro hair styles and treatments, book an appointment online with us today. Hair care products for sale online, we are based in Suttin-in-Ashfield and deliver within the UK.`,
+    author: `@ellis`,
   },
   plugins: [
     {

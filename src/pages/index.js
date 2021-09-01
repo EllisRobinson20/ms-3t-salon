@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import Layout from '../components/Layout'
 import SEO from '../components/seo'
 import { makeStyles } from '@material-ui/core/styles'
@@ -8,6 +8,7 @@ import SectionGallery from '../components/SectionGallery'
 import SectionPriceList from '../components/SectionPriceList'
 import { Grid } from '@material-ui/core'
 import SectionPromotion from '../components/SectionPromotion'
+import { NavigationContext } from "../context/NavigationContext";
 
 
 const useStyles = makeStyles(theme => ({
@@ -24,8 +25,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const IndexPage = () => {
-
+const IndexPage = ({location}) => {
+  const {setPageState} = useContext(NavigationContext);
+  setPageState(location.pathname);
   const classes = useStyles()
   const [features, setFeatures] = React.useState(true)
   const [info, setInfo] = React.useState(true)

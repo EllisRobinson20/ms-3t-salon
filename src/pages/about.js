@@ -1,11 +1,12 @@
 import { Grid, Typography, Modal, Backdrop} from '@material-ui/core'
 import { graphql, Link } from 'gatsby'
-import React from 'react'
+import React, {useContext} from 'react'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import {useMediaQuery} from '@material-ui/core';
 import Layout from '../components/Layout';
 import * as styles from '../styles/header.module.css'
 import CardCarousel from '../components/subcomponents/CardCarousel';
+import { NavigationContext } from "../context/NavigationContext";
 
 
 const useStyles = makeStyles(theme => ({
@@ -32,7 +33,9 @@ const useStyles = makeStyles(theme => ({
       },
   }));
 
-export default function About({data}) {
+export default function About({location, data}) {
+    const {setPageState} = useContext(NavigationContext);
+    setPageState(location.pathname);
     const [open, setOpen] = React.useState(false);
     const classes = useStyles();
     const theme = useTheme();
