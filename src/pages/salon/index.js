@@ -31,6 +31,7 @@ const customTheme = createTheme({ palette: { primary: red, secondary: grey } })
 
 export default function Services({location, data}) {
     const {setPageState} = useContext(NavigationContext);
+    const {lastPage} = useContext(NavigationContext);
     setPageState(location.pathname);
     
 
@@ -134,8 +135,8 @@ export default function Services({location, data}) {
                     ))}
                 </Grid>
                 <Grid item container xs={12} md={10} lg={6} xl={8}>
-                  <Link to="/">
-                    <IconButton href="/" color="textSecondary" aria-label="upload picture" component="span">
+                  <Link to={lastPage}>
+                    <IconButton href={lastPage} color="textSecondary" aria-label="upload picture" component="span">
                     <ArrowBackIcon/>
                   </IconButton>
                   </Link>
