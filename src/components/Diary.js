@@ -87,8 +87,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function Diary() {
 
-    
-
     const [value, setValue] = React.useState(0);
 
     const [id, setId] = React.useState();
@@ -109,9 +107,7 @@ export default function Diary() {
             </div>
         )
     }
-    const d = () => {
-        alert("d")
-    }
+    
 
 
 
@@ -125,8 +121,21 @@ export default function Diary() {
     setOpen(false);
   };
 
-
-
+            // id: 1,
+            // name: renderDetails(1),
+            // type: "booking",
+            // startTime: moment("2018-02-23T11:30:00"),
+            // endTime: moment("2018-02-23T13:30:00"),
+  const bookingData = 
+    {
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: [],
+        saturday: [],
+    }
+  
     const renderDetails = (id) => {
         
         return (
