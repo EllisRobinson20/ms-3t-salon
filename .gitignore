@@ -71,3 +71,6 @@ yarn-error.log
 # Environment Variables
 .env
 .env.development
+
+# Firebase
+firebase-creds.json
