@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { Link, graphql, useStaticQuery, navigate } from 'gatsby';
 import * as styles from '../styles/appointmentSummary.module.css'
 import format from "date-fns/format";
-
+import firebase from "firebase"
 
 
 
@@ -44,7 +44,21 @@ export default function AppointmentSummary() {
     const listItems = [];
     // Functions
     const bookProvisionalIfAvail = () => {
-        
+        console.log(user)
+        // ! Must Check Auth First
+        if (user) {
+            const bookingAttempt = firebase.functions().httpsCallable('bookProvisionalIfAvail');
+            bookingAttempt({user: user, service: selectedService, 
+                bookingDate: selectedDateGlobal, bookingTime: selectedSlot.id, durationService: durationSelectedService()})
+            .then(result => console.log(returnResult(result.data)))  
+        } else {
+            // login
+            //console.log("login please")
+            // navigate("../../authentication/login")
+            // need to keep the details of the booking if they login or sign up
+
+            setShowLogin(true);
+        }
         
     }
     const returnResult = (result) => {

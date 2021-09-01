@@ -3,7 +3,7 @@ import React, { useContext } from "react"
 import Layout from "../../components/Layout"
 import TimeSlotPicker from "../../components/TimeSlotPicker"
 import AppointmentSummary from '../../components/AppointmentSummary'
-
+import firebase from "firebase"
 import {BookingContext} from "../../context/BookingContext"
 import { NavigationContext } from "../../context/NavigationContext";
 
@@ -19,7 +19,12 @@ const {isAvailability, setAvailability} = useContext(BookingContext);
 // setting the global slots array
 const {slots, setSlots} = useContext(BookingContext);
 
-
+const getAvailabilityForDate = (day) => {
+const availability = firebase.functions().httpsCallable('getAvailabilityForDate');
+availability({date: day, serviceName: selectedService })
+.then( result => {setSlots(result.data)
+})
+};
 
   return (
     <Layout>
