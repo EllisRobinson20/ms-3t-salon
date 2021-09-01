@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import * as dateFns from "date-fns";
-import '../styles/global.css'
+import './calendar.css'
 import {BookingContext} from "../context/BookingContext";
 import add from "date-fns/add";
 
