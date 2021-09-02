@@ -1,5 +1,6 @@
 import { Container, Grid } from '@material-ui/core'
-import React from 'react'
+import React, {useEffect} from 'react'
+import {graphql, useStaticQuery} from 'gatsby'
 
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import DiarySlotMobile from './subcomponents/DiarySlotMobile'
@@ -30,6 +31,33 @@ import CallIcon from '@material-ui/icons/Call';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+
+import { getDay, parseISO } from 'date-fns'
+
+/**
+   * Adds two numbers together.
+   * @param {int} timeMinutes The first number.
+   * @return {string} The sum of the two numbers.
+   */
+ function getButtonLabel(timeMinutes) {
+    let timeAsString = "";
+    const timeInhours = timeMinutes / 60;
+    const hasMinutes = (timeInhours - Math.floor(timeInhours)) !== 0;
+    if (hasMinutes) {
+      const remainder = timeInhours - Math.floor(timeInhours);
+      const minutesPastHour = remainder * 60;
+      const hoursOnly = Math.floor(timeInhours);
+      timeAsString = (timeInhours < 10 ? "0"+hoursOnly.toString() :
+      hoursOnly.toString()) +
+      ":" +
+      (minutesPastHour < 10 ? "0"+minutesPastHour.toString() :
+      minutesPastHour.toString() );
+      return timeAsString;
+    } else {
+      return (timeInhours < 10 ? "0"+timeInhours.toString() :
+      timeInhours.toString()) + ":00";
+    }
+  }
 
 function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
@@ -86,7 +114,26 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function Diary() {
-
+    const data = useStaticQuery(graphql`
+    query AdminBookingComponentQuery {
+        allBooking {
+          edges {
+            node {
+              id
+              finishISO
+              startISO
+              name
+              selectedService
+              startTimeMinutes
+              durationMinutes
+            }
+          }
+        }
+      }
+    `)
+    useEffect(() => {
+        sortBookings()
+      })
     const [value, setValue] = React.useState(0);
 
     const [id, setId] = React.useState();
@@ -98,18 +145,6 @@ export default function Diary() {
     const classes = useStyles()
 
     const theme = useTheme()
-
-    const renderTimelineSlot = (time) => {
-        return (
-            <div>
-                <Timeline className={classes.timelineIcon}/>
-            <p>{time}</p>
-            </div>
-        )
-    }
-    
-
-
 
     const [open, setOpen] = React.useState(false);
 
@@ -126,63 +161,56 @@ export default function Diary() {
             // type: "booking",
             // startTime: moment("2018-02-23T11:30:00"),
             // endTime: moment("2018-02-23T13:30:00"),
-  const bookingData = 
-    {
-        monday: [],
-        tuesday: [],
-        wednesday: [],
-        thursday: [],
-        friday: [],
-        saturday: [],
+    const [bookingDetails, setBookingDetails] = React.useState ({
+        name: 'data.name',
+        service: 'data.selectedService',
+        start: 'startTime',
+        finish: 'finishTime'
+    })
+   
+    const setSelectedBooking = (data) => {
+        setBookingDetails({
+        name: data.name,
+        service: data.selectedService,
+        start: getButtonLabel(data.startTimeMinutes),
+        finish: getButtonLabel(data.startTimeMinutes + data.durationMinutes)
+        })
+        handleOpen()
     }
+    
   
-    const renderDetails = (id) => {
+    const renderDetails = (data) => {
         
         return (
             <div>
-                <Card onClick={handleOpen}>
+                <Card onClick={() => {setSelectedBooking(data)}}>
                 <CardContent >
-                    <Grid container spacing={1}>
-                        <Grid item xs={12}>
-                            <Typography className={classes.title} color="textSecondary" gutterBottom>
-                            Name: Trish
+                    
+                    <Grid  container spacing={0} >
+                        <Grid  style={{paddingTop:"auot 0"}} item container xs={6} >
+                            <Grid item container xs={12} justifyContent="flex-start">
+                            <Typography color="textSecondary" >
+                            <strong>Name:</strong> {data.name}
                             </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="h5" component="h2">
-                            {id}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
                             <Typography variant="body2" component="p">
-                            Start: 09:00
+                            <strong>Service: </strong>{data.selectedService}
                             </Typography>
+                            </Grid>
+                           
                         </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="body2" component="p">
-                            Finish: 11:30
+                        <Grid style={{paddingTop:"auto 0"}} item container xs={6} >
+                            <Grid item container xs={12} justifyContent="flex-end">
+                        <Typography variant="body2" color="textSecondary">
+                            <strong>Start:</strong> {getButtonLabel(data.startTimeMinutes)}
                             </Typography>
+                            <Typography variant="body2" component="p">
+                            <strong>Finish: </strong>{getButtonLabel((data.startTimeMinutes+data.durationMinutes))}
+                            </Typography>
+                            </Grid>
                         </Grid>
                     </Grid>    
                 </CardContent>
-                <CardActions>
-                    <Grid container spacing={0}>
-                        <Grid item xs={2} >
-                        <CallIcon />
-                        </Grid>
-                        <Grid item xs={10}>
-                            <Typography color="textSecondary">
-                            0781234567 
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                </CardActions>
             </Card>
-
-
-           
-
-
             </div>
         )
     }
@@ -210,22 +238,22 @@ export default function Diary() {
                       <Grid container spacing={1}>
                           <Grid item xs={12}>
                               <Typography className={classes.title} color="textSecondary" gutterBottom>
-                              Name: Trish
+                              <strong>{bookingDetails.name}</strong>
                               </Typography>
                           </Grid>
                           <Grid item xs={12}>
                               <Typography variant="h5" component="h2">
-                              Weave
+                              {bookingDetails.service}
                               </Typography>
                           </Grid>
                           <Grid item xs={12}>
                               <Typography variant="body2" component="p">
-                              Start: 09:00
+                              Start: {bookingDetails.start}
                               </Typography>
                           </Grid>
                           <Grid item xs={12}>
                               <Typography variant="body2" component="p">
-                              Finish: 11:30
+                              Finish: {bookingDetails.finish}
                               </Typography>
                           </Grid>
                       </Grid>    
@@ -250,70 +278,106 @@ export default function Diary() {
         )
     }
 
+    const bookingData = 
+    {
+      monday: [],
+      tuesday: [],
+      wednesday: [],
+      thursday: [],
+      friday: [],
+      saturday: [],
+  }
+  const sortBookings = () => {
+      data.allBooking.edges.forEach((booking) => {
+        switch(getDay(parseISO(booking.node.startISO))) {
+            case 1:
+              // monday
+              bookingData.monday.push(
+                {
+                    id: booking.node.id,
+                    name: renderDetails(booking.node),
+                    type: "booking",
+                    startTime: moment(booking.node.startISO),
+                    endTime: moment(booking.node.finishISO),
+                }
+              )
+              break;
+            case 2:
+              // tuesday
+              bookingData.tuesday.push(
+                {
+                    id: booking.node.id,
+                    name: renderDetails(booking.node),
+                    type: "booking",
+                    startTime: moment(booking.node.startISO),
+                    endTime: moment(booking.node.finishISO),
+                }
+              )
+              break;
+            case 3:
+              // wednesday
+              bookingData.wednesday.push(
+                {
+                    id: booking.node.id,
+                    name: renderDetails(booking.node),
+                    type: "booking",
+                    startTime: moment(booking.node.startISO),
+                    endTime: moment(booking.node.finishISO),
+                }
+              )
+              break;
+            case 4:
+              //thursday
+              bookingData.thursday.push(
+                {
+                    id: booking.node.id,
+                    name: renderDetails(booking.node),
+                    type: "booking",
+                    startTime: moment(booking.node.startISO),
+                    endTime: moment(booking.node.finishISO),
+                }
+              )
+              break;
+            case 5:
+              // friday
+              bookingData.friday.push(
+                {
+                    id: booking.node.id,
+                    name: renderDetails(booking.node),
+                    type: "booking",
+                    startTime: moment(booking.node.startISO),
+                    endTime: moment(booking.node.finishISO),
+                }
+              )
+              break;
+            case 6:
+              // saturday
+              bookingData.saturday.push(
+                {
+                    id: booking.node.id,
+                    name: renderDetails(booking.node),
+                    type: "booking",
+                    startTime: moment(booking.node.startISO),
+                    endTime: moment(booking.node.finishISO),
+                }
+              )
+              break;
+            default:
+              // NOT a business day
+          }
+      })
+  }
 
+  
     return (
         <div className={classes.root}>
+            {sortBookings()}
             <Container className={classes.container}>
             </Container>
             <Grid container spacing={0}>
                 <Grid item xs={12}>  
                 <Timetable 
-                    events={{
-                        monday: [
-                        {
-                            id: 1,
-                            name: renderDetails(1),
-                            type: "booking",
-                            startTime: moment("2018-02-23T11:30:00"),
-                            endTime: moment("2018-02-23T13:30:00"),
-                        },
-                        {
-                            id: 2,
-                            name: renderDetails(2),
-                            type: "booking",
-                            startTime: moment("2018-02-23T13:30:00"),
-                            endTime: moment("2018-02-23T14:30:00"),
-                        },
-                        {
-                            id: 3,
-                            name: renderDetails(3),
-                            type: "booking",
-                            startTime: moment("2018-02-23T15:30:00"),
-                            endTime: moment("2018-02-23T16:30:00"),
-                        },
-                        ],
-                        tuesday: [{
-                            id: 2,
-                            name: renderDetails(2),
-                            type: "booking",
-                            startTime: moment("2018-02-23T07:30:00"),
-                            endTime: moment("2018-02-23T10:30:00"),
-                        },
-                        {
-                            id: 3,
-                            name: renderDetails(3),
-                            type: "booking",
-                            startTime: moment("2018-02-23T15:30:00"),
-                            endTime: moment("2018-02-23T16:30:00"),
-                        },],
-                        wednesday: [{
-                            id: 2,
-                            name: renderDetails(2),
-                            type: "booking",
-                            startTime: moment("2018-02-23T13:30:00"),
-                            endTime: moment("2018-02-23T14:30:00"),
-                        },
-                        {
-                            id: 3,
-                            name: renderDetails(3),
-                            type: "booking",
-                            startTime: moment("2018-02-23T15:30:00"),
-                            endTime: moment("2018-02-23T16:30:00"),
-                        },],
-                        thursday: [],
-                        friday: [],
-                        saturday: [],
-                    }}
+                    events={bookingData}
                     />
                     {renderModal()}
                 </Grid>

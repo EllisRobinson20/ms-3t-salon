@@ -37,6 +37,18 @@ module.exports = {
             credential: require('./firebase-creds.json'),
             types: [
               {
+              type:  'Booking',
+              collection: 'bookingHistory',
+              map: doc => ({
+                startISO: doc.startISO,
+                finishISO: doc.finishISO,
+                selectedService: doc.selectedService,
+                name: doc.name,
+                durationMinutes: doc.durationMinutes,
+                startTimeMinutes: doc.startTimeMinutes
+              })
+            },
+              {
                 type:  'Service',
                 collection: 'services',
                 map: doc => ({
