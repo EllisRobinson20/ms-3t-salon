@@ -80,7 +80,7 @@ const useStyles = makeStyles(theme => ({
         
     },
     table: {
-        minWidth: 650,
+        minWidth: 400,
       },
       timelineIcon: {
         transform: 'rotate(90deg)',
@@ -105,7 +105,7 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'center',
       },
       paper: {
-        
+        maxWidth: '25vw',
         padding: theme.spacing(2, 4, 3),
       },
   }))
@@ -236,40 +236,61 @@ export default function Diary() {
             <Card >
                   <CardContent >
                       <Grid container spacing={1}>
+                          <Grid item container xs={0} justifyContent="center">
+                              <Typography className={classes.title} color="textSecondary">
+                              
+                              </Typography>
+                          </Grid>
+                          <Grid item container xs={11} justifyContent="center">
+                              <Typography variant="h6" className={classes.title} color="textSecondary">
+                              Booking
+                                  
+                              </Typography>
+                          </Grid>
+                          <Grid item container xs={1} justifyContent="flex-end">
+                          
+                          <CallIcon />
+                          
+                          </Grid>
                           <Grid item xs={12}>
-                              <Typography className={classes.title} color="textSecondary" gutterBottom>
-                              <strong>{bookingDetails.name}</strong>
+                              <Typography variant="h5" component="h2">
+                              
+                              </Typography>
+                          </Grid>
+                          <Grid item xs={4}>
+                              <Typography className={classes.title} color="textSecondary">
+                              Name: <strong>{bookingDetails.name}</strong>
+                              </Typography>
+                          </Grid>
+                          <Grid item xs={4}>
+                            <Typography className={classes.title} color="textSecondary">
+                              For: <strong>{bookingDetails.service}</strong>
+                              </Typography>
+                          </Grid>
+                          <Grid item xs={4} gutterBottom>
+                              <Typography color="textSecondary">
+                              <strong>0781234567</strong>
+                              </Typography>
+                          </Grid>
+                          <Grid item xs={4}>
+                              <Typography variant="body2" component="p">
+                              Start: <strong>{bookingDetails.start}</strong>
+                              </Typography>
+                          </Grid>
+                          <Grid item xs={4}>
+                              <Typography variant="body2" component="p">
+                              Finish: <strong>{bookingDetails.finish}</strong>
                               </Typography>
                           </Grid>
                           <Grid item xs={12}>
                               <Typography variant="h5" component="h2">
-                              {bookingDetails.service}
+                              
                               </Typography>
                           </Grid>
-                          <Grid item xs={12}>
-                              <Typography variant="body2" component="p">
-                              Start: {bookingDetails.start}
-                              </Typography>
-                          </Grid>
-                          <Grid item xs={12}>
-                              <Typography variant="body2" component="p">
-                              Finish: {bookingDetails.finish}
-                              </Typography>
-                          </Grid>
+                          
                       </Grid>    
                   </CardContent>
-                  <CardActions>
-                      <Grid container spacing={0}>
-                          <Grid item xs={2} >
-                          <CallIcon />
-                          </Grid>
-                          <Grid item xs={10}>
-                              <Typography color="textSecondary">
-                              0781234567 
-                              </Typography>
-                          </Grid>
-                      </Grid>
-                  </CardActions>
+                  
               </Card>
             </div>
           </Fade>
