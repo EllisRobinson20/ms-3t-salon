@@ -183,28 +183,29 @@ export default function Diary() {
         
         return (
             <div>
-                <Card onClick={() => {setSelectedBooking(data)}}>
+                <Card elevation={0}style={{width: "100%", height: "100%"}} onClick={() => {setSelectedBooking(data)}}>
                 <CardContent >
                     
-                    <Grid  container spacing={0} >
-                        <Grid  style={{paddingTop:"auot 0"}} item container xs={6} >
+                    <Grid container spacing={0}>
+                        <Grid style={{paddingTop:"1em"}} item container xs={6} >
                             <Grid item container xs={12} justifyContent="flex-start">
-                            <Typography color="textSecondary" >
-                            <strong>Name:</strong> {data.name}
+                            <Typography variant="body2" color="textSecondary" >
+                            Name: <strong>{data.name}</strong> 
                             </Typography>
-                            <Typography variant="body2" component="p">
-                            <strong>Service: </strong>{data.selectedService}
+                            <Typography variant="body2" color="textSecondary">
+                            Start: <strong>{getButtonLabel(data.startTimeMinutes)}</strong> 
                             </Typography>
                             </Grid>
                            
                         </Grid>
-                        <Grid style={{paddingTop:"auto 0"}} item container xs={6} >
-                            <Grid item container xs={12} justifyContent="flex-end">
-                        <Typography variant="body2" color="textSecondary">
-                            <strong>Start:</strong> {getButtonLabel(data.startTimeMinutes)}
+                        <Grid style={{paddingTop:"1em"}} item container xs={6} >
+                            <Grid item container xs={12} justifyContent="flex-start">
+                        
+                            <Typography variant="body2" component="p">
+                            Service: <strong>{data.selectedService}</strong>
                             </Typography>
                             <Typography variant="body2" component="p">
-                            <strong>Finish: </strong>{getButtonLabel((data.startTimeMinutes+data.durationMinutes))}
+                            Finish: <strong>{getButtonLabel((data.startTimeMinutes+data.durationMinutes))}</strong>
                             </Typography>
                             </Grid>
                         </Grid>
