@@ -38,7 +38,7 @@ export default function SectionGallery() {
   const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const data = useStaticQuery(graphql`
   query GalleryComponentQuery {
-    allCloudinaryMedia(filter: {secure_url: {regex: "/clients/"}}, sort: {order: ASC, fields: created_at}) {
+    allCloudinaryMedia(filter: {secure_url: {regex: "/clients/"}}, sort: {order: DESC, fields: created_at}) {
       edges {
         node {
           id

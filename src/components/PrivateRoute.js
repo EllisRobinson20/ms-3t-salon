@@ -7,7 +7,7 @@ const PrivateRoute = ({ component: Component, location, ...rest }) => {
   const {login, setShowLogin} = useContext(AuthContext);
   if (!user && setShowLogin !== true) {
     setShowLogin(true)
-    navigate("index")
+    navigate("../../")
     return null
   }
 

@@ -2,8 +2,9 @@ import { graphql, Link} from 'gatsby'
 import React, {useContext} from 'react'
 import Layout from '../../components/Layout'
 import { NavigationContext } from '../../context/NavigationContext'
+import { AuthContext } from '../../context/AuthContext'
 import { BookingContext } from '../../context/BookingContext'
-import { makeStyles, useTheme} from '@material-ui/core/styles';
+import { makeStyles, useTheme, ThemeProvider, createTheme} from '@material-ui/core/styles';
 import {useMediaQuery} from '@material-ui/core';
 import ServicesList from '../../components/subcomponents/ServicesList'
 
@@ -18,20 +19,20 @@ import Grid from '@material-ui/core/Grid';
 
 import clsx from 'clsx'
 
-
-import { ThemeProvider, createTheme } from '@material-ui/core/styles'
 import { red, grey } from '@material-ui/core/colors'
 import { IconButton } from '@material-ui/core';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
-const customTheme = createTheme({ palette: { primary: red, secondary: grey } })
+
+const buttonTheme = createTheme({ palette: { primary: {main:'#d52349',}, secondary: grey } })
 
 
 
 export default function Services({location, data}) {
     const {setPageState} = useContext(NavigationContext);
     const {lastPage} = useContext(NavigationContext);
+    const {deviceIsMobile} =useContext(AuthContext)
     setPageState(location.pathname);
     
 
@@ -89,6 +90,7 @@ export default function Services({location, data}) {
                 <Grid item xs={12} md={10} lg={6} xl={4}>
                     {services.map(service => (
                         service.node.id === serviceListRef ?
+                        <>
                             <Card elevation={3} className={clsx(classes.detailsCard)}>
                                 <CardContent>
                                 <Typography gutterBottom variant="h4" component="div">
@@ -116,7 +118,7 @@ export default function Services({location, data}) {
                                 </Typography>
                                 :
                                 <CardActions className={classes.c}>
-                                    <ThemeProvider theme={customTheme}>
+                                    <ThemeProvider theme={buttonTheme}>
                                 <Link to="./booking">
                                 <Button size="large"
                                         color="primary"
@@ -129,6 +131,30 @@ export default function Services({location, data}) {
                                 </CardActions>
                                 }
                             </Card>
+
+<ThemeProvider theme={buttonTheme}>
+<Link to="./booking">
+<Button size="large"
+      color="primary"
+      variant="contained" 
+      className={clsx(serviceListRef && matchesMd && !service.node.consultationOnly ? classes.stickyButton: classes.buttonHidden) }
+      onClick={() => {setSelectedService(serviceListRef)} }
+      >
+  Book Now
+</Button>
+</Link>
+<a href="tel:07517140732">
+<Button size="large"
+      color="primary"
+      variant="contained" 
+      className={clsx(serviceListRef && matchesMd && service.node.consultationOnly ? classes.stickyButton: classes.buttonHidden) }
+      
+      >
+  Call for Consultation
+</Button>
+</a>
+</ThemeProvider>
+</>
                         
                         : 
                         ''
@@ -147,18 +173,7 @@ export default function Services({location, data}) {
                 </Grid>
                 <Grid item xs={12}></Grid>
             </Grid>
-            <ThemeProvider theme={customTheme}>
-              <Link to="./booking">
-            <Button size="large"
-                    color="primary"
-                    variant="contained" 
-                    className={clsx(serviceListRef && matchesMd ? classes.stickyButton: classes.buttonHidden) }
-                    onClick={() => {setSelectedService(serviceListRef)} }
-                    >
-                Book Now
-            </Button>
-            </Link>
-            </ThemeProvider>
+            
         </Layout>
     )
 }
