@@ -4,9 +4,11 @@ export const NavigationContext = createContext();
 
 const NavigationContextProvider = ({children}) => {
     
-    const [pageState, setPageState] = useState(false);
-    const [thisPage, setThisPage] = useState(false);
+    const [pageState, setPageState] = useState("/");
+    const [thisPage, setThisPage] = useState("/");
     const [lastPage, setLastPage] = useState("/");
+
+    
 
     useEffect(() => {
         const newPage = thisPage !== pageState;

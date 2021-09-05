@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme, ThemeProvider, createTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -26,6 +26,10 @@ import { Divider, Tooltip, Button, Container, TextField } from '@material-ui/cor
 import { StylesContext } from '@material-ui/styles/StylesProvider';
 
 import Rating from '@material-ui/lab/Rating';
+import { grey } from '@material-ui/core/colors'
+
+
+const buttonTheme = createTheme({ palette: { primary: {main:'#d52349',}, secondary: grey } })
 
 
 function TabPanel(props) {
@@ -111,6 +115,7 @@ export default function FullWidthTabs() {
   };
 
   return (
+    <ThemeProvider theme={buttonTheme}>
     <div className={classes.root}>
       <AppBar position="static" color="secondary">
         <Tabs
@@ -234,5 +239,6 @@ export default function FullWidthTabs() {
         </TabPanel>
       </SwipeableViews>
     </div>
+    </ThemeProvider>
   );
 }

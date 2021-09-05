@@ -1,3 +1,12 @@
+:root {
+    --main-color: #d52349;
+    --text-color: #777;
+    --text-color-light: #ccc;
+    --border-color: #eee;
+    --bg-color: #fff;
+    --neutral-color: #fff;
+  }
+
 .services {
     text-align: center;
 }
@@ -12,7 +21,7 @@
 }
 .btn {
     display: inline-block;
-    background: #D42990;
+    background: var(--main-color);
     padding: 10px 16px;
     border-radius: 10px;
     margin-top: 2px;

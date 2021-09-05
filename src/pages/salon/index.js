@@ -68,8 +68,8 @@ export default function Services({location, data}) {
         stickyButton: {
           width: '80vw',
           position: 'fixed',
-          top: '90vh',
-          left: '10%', 
+          top: '87vh',
+          left: '10%',
         },
         buttonHidden: {
           display: 'none'
@@ -83,6 +83,7 @@ export default function Services({location, data}) {
     const theme = useTheme();
     const classes = useStyles();
     const matchesMd = useMediaQuery(theme.breakpoints.down('md'));
+    const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
     return (
         <Layout>
             <Grid container direction="row-reverse" className={classes.wrapper} justifyContent="center">
@@ -118,44 +119,41 @@ export default function Services({location, data}) {
                                 </Typography>
                                 :
                                 <CardActions className={classes.c}>
-                                    <ThemeProvider theme={buttonTheme}>
-                                <Link to="./booking">
-                                <Button size="large"
-                                        color="primary"
-                                        variant="contained" 
-                                        onClick={() => {setSelectedService(service.node.name)} }>
-                                    Book Now
-                                </Button>
-                                </Link>
+                                  <ThemeProvider theme={buttonTheme}>
+                                  <Link to="./booking">
+                                    <Button size="large"
+                                            color="primary"
+                                            variant="contained" 
+                                            onClick={() => {setSelectedService(service.node.name)} }>
+                                        Book Now
+                                    </Button>
+                                  </Link>
                                 </ThemeProvider>
                                 </CardActions>
                                 }
                             </Card>
-
-<ThemeProvider theme={buttonTheme}>
-<Link to="./booking">
-<Button size="large"
-      color="primary"
-      variant="contained" 
-      className={clsx(serviceListRef && matchesMd && !service.node.consultationOnly ? classes.stickyButton: classes.buttonHidden) }
-      onClick={() => {setSelectedService(serviceListRef)} }
-      >
-  Book Now
-</Button>
-</Link>
-<a href="tel:07517140732">
-<Button size="large"
-      color="primary"
-      variant="contained" 
-      className={clsx(serviceListRef && matchesMd && service.node.consultationOnly ? classes.stickyButton: classes.buttonHidden) }
-      
-      >
-  Call for Consultation
-</Button>
-</a>
-</ThemeProvider>
-</>
-                        
+                            <ThemeProvider theme={buttonTheme}>
+                            <Link to="./booking">
+                            <Button size="large"
+                                  color="primary"
+                                  variant="contained" 
+                                  className={clsx(serviceListRef && matchesMd && !service.node.consultationOnly ? classes.stickyButton: classes.buttonHidden) }
+                                  onClick={() => {setSelectedService(serviceListRef)} }
+                                  >
+                              Book Now
+                            </Button>
+                            </Link>
+                            <a href="tel:07517140732">
+                            <Button size="large"
+                                  color="primary"
+                                  variant="contained" 
+                                  className={clsx(serviceListRef && matchesMd && service.node.consultationOnly ? classes.stickyButton: classes.buttonHidden) } 
+                                  >
+                              Call for Consultation
+                            </Button>
+                            </a>
+                            </ThemeProvider>
+                            </>
                         : 
                         ''
                     ))}

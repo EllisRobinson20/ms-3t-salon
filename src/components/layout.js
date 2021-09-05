@@ -10,6 +10,7 @@ import PropTypes from 'prop-types'
 import { StaticQuery, graphql } from 'gatsby'
 import Header from './header'
 import './layout.css'
+import { NavigationContext } from '../context/NavigationContext'
 import { AuthContext } from '../context/AuthContext'
 import Login from './Login'
 import Footer from './Footer'
@@ -18,6 +19,7 @@ import Footer from './Footer'
 const Layout = ({ children }) => {
 const {showLogin} = useContext(AuthContext)
 const {setDeviceIsMobile} = useContext(AuthContext)
+const {thisPage} = useContext(NavigationContext)
 
 useEffect(() => {
   {setDeviceIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent))}
@@ -41,7 +43,7 @@ const renderLayout = () => {
             <>
               <Header siteTitle={data.site.siteMetadata.title} />
               <main>{children}</main>
-              <Footer/>
+              {thisPage === "/salon" ? "" : <Footer/>}
             </>
             )}
             />    

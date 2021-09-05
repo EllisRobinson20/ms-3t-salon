@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     backgroundColor: theme.palette.background.paper,
-    margin: '2em'
+    margin: '2em 2em 10em'
   },
 }));
 

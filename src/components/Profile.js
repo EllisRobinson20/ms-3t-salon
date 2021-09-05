@@ -57,10 +57,7 @@ export default function TransitionsModal() {
         }}
       >
         <Fade in={open}>
-          <div className={classes.paper}>
             <ProfileTabs/>
-            
-          </div>
         </Fade>
       </Modal>
     </div>

@@ -1,6 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
 @import url(https://fonts.googleapis.com/icon?family=Material+Icons);
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
+
 
 .icon {
   font-family: 'Material Icons', serif;
@@ -24,7 +24,7 @@
 /* VARIABLES */
 
 :root {
-  --main-color: #D42990;
+  --main-color: #d52349;
   --text-color: #777;
   --text-color-light: #ccc;
   --border-color: #eee;
@@ -75,7 +75,7 @@
 main {
   display: block;
   margin: 0 auto;
-  margin-top: 5em;
+  margin-top: 0;
 }
 
 
@@ -179,7 +179,7 @@ main {
 
 .calendar .body .selected {
   border-left: 10px solid transparent;
-  border-image: linear-gradient(45deg, #D42990 0%,#d64fa0 40%);
+  border-image: linear-gradient(45deg, var(--main-color) 0%,var(--main-color) 40%);
   border-image-slice: 1;
 }
 
@@ -232,6 +232,8 @@ main {
   flex-basis: calc(100%/7);
   width: calc(100%/7);
 }
+
+
 
 
 

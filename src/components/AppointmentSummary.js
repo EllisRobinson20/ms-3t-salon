@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState } from 'react'
 import { BookingContext } from '../context/BookingContext'
 import { AuthContext } from '../context/AuthContext';
-import { Link, graphql, useStaticQuery, navigate } from 'gatsby';
+import { Link, graphql, useStaticQuery } from 'gatsby';
 import * as styles from '../styles/appointmentSummary.module.css'
 import format from "date-fns/format";
 import firebase from "firebase"
@@ -17,6 +17,7 @@ export default function AppointmentSummary() {
           nodes {
             id
             durationMinutes
+            name
           }
         }
       }
@@ -40,6 +41,7 @@ export default function AppointmentSummary() {
     const {setSlots} = useContext(BookingContext);
     // State
     const [buttonIsEnabled, setButtonIsEnabled] = useState(false);
+    const [listName, setListName] = useState("");
     const [dropdownList, setDropdownList] = useState();
     const listItems = [];
     // Functions
@@ -70,6 +72,11 @@ export default function AppointmentSummary() {
             "please try another time slot")
         }
     }
+
+    const setListState = (data) => {
+        setSelectedService(data.id)
+        setListName(data.name)
+    }
   
         useEffect(() => {
             setSlots([])
@@ -78,18 +85,18 @@ export default function AppointmentSummary() {
             data.allService.nodes.forEach(service => {
                 if (service.id === selectedService) {
                 listItems.push(
-                    <option selected value={service.id}>{service.id}</option>
+                    <option selected value={service.id}>{service.name}</option>
                 )
                 } else {
                     listItems.push(
-                        <option value={service.id}>{service.id}</option>
+                        <option value={service.id}>{service.name}</option>
                     )
                 }
             })
                 listItems.unshift(<option>...</option>)
             
             setDropdownList(
-            <select onChange={(e) => {setSelectedService(data.allService.nodes[e.target.options.selectedIndex-1].id)}}>
+            <select onChange={(e) => {setListState(data.allService.nodes[e.target.options.selectedIndex-1])}}>
                 {listItems}
             </select>)
            
@@ -133,7 +140,7 @@ export default function AppointmentSummary() {
     
     return (
         <div className={styles.card}>
-            {!selectedService ? dropdownList : <p className={styles.serviceLabel}>{selectedService}</p> }
+            {!selectedService ? dropdownList : <p className={styles.serviceLabel}>{listName}</p> }
             <p className={styles.error}>{error === "service" ? " Select a treatment or service first ... " : "" }</p>
             <li className={styles.changeSelection} onClick={() => {setSelectedService("")}} >{selectedService ? " Change selection" : "" }</li>
             <h2>{selectedSlot.buttonLabel}</h2>
