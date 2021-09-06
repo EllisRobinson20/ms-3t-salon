@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useEffect} from 'react'
 import { graphql, useStaticQuery } from 'gatsby'
 import { makeStyles } from '@material-ui/core/styles'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -78,7 +78,7 @@ export default function Consultation() {
   };
 
   const [dialogValue, setDialogValue] = React.useState({
-    name: '',
+    name: null,
     email: '',
     telephone: '',
     defaultService: '',
@@ -97,6 +97,15 @@ export default function Consultation() {
 
     handleClose();
   };
+  useEffect(() => {
+    setDialogValue({
+      name: null,
+      email: null,
+      telephone: null,
+      defaultService: null,
+      durationService: null,
+    })
+  }, [userObject])
   const MemberDetails = () => {
     return (
       <Grid container>
@@ -105,7 +114,7 @@ export default function Consultation() {
                   autoFocus
                   margin="dense"
                   id="name"
-                  value={userObject ? userObject[0].name : "No user selected"}
+                  value={ typeof dialogValue.name === "string" ? dialogValue.name :userObject[0].name}
                   onChange={event =>
                     setDialogValue({ ...dialogValue, name: event.target.value })
                   }
@@ -117,7 +126,7 @@ export default function Consultation() {
                 <TextField
                   margin="dense"
                   id="email"
-                  value={userObject ? userObject[0].email : ""}
+                  value={typeof dialogValue.email === "string" ? dialogValue.email : userObject[0].email}
                   onChange={event =>
                     setDialogValue({
                       ...dialogValue,
@@ -133,7 +142,7 @@ export default function Consultation() {
                 <TextField
                   margin="dense"
                   id="tel"
-                  value={userObject[0].telephone}
+                  value={typeof dialogValue.telephone === "string" ? dialogValue.telephone : userObject[0].telephone}
                   onChange={event =>
                     setDialogValue({
                       ...dialogValue,
@@ -149,12 +158,12 @@ export default function Consultation() {
                 <TextField
                   margin="dense"
                   id="serviceName"
-                  value={data.allMembers.edges.map((edge) => (
+                  value={typeof dialogValue.defaultService === "string" ? dialogValue.defaultService :  data.allMembers.edges.map((edge) => (
                       edge.node.email === userObject[0].email ?
                       edge.node.defaultService
                       :
                       ""
-                  ))}
+                  )).filter(value => value ? Object.keys(value).length !== 0 : null )}
                   onChange={event =>
                     setDialogValue({
                       ...dialogValue,
@@ -169,12 +178,12 @@ export default function Consultation() {
                 <TextField
                   margin="dense"
                   id="durationService"
-                  value={data.allMembers.edges.map((edge) => (
+                  value={typeof dialogValue.durationService === "string" ? dialogValue.durationService : data.allMembers.edges.map((edge) => (
                       edge.node.email === userObject[0].email ?
                       edge.node.durationService
                       :
                       ""
-                  ))}
+                  )).filter(value => typeof value !== "string")}
                   onChange={event =>
                     setDialogValue({
                       ...dialogValue,

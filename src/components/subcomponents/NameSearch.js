@@ -97,7 +97,7 @@ export default function FreeSoloCreateOptionDialog({ data }) {
                 }
                 :
                 {}
-  )))
+  )).filter(value => Object.keys(value).length !== 0))
           }
         }}
         filterOptions={(options, params) => {
