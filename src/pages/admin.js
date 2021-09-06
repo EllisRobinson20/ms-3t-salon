@@ -1,10 +1,9 @@
 import React, {useContext} from 'react'
 import Layout from '../components/Layout'
-import SEO from '../components/seo'
 import { NavigationContext } from "../context/NavigationContext";
 import { Router } from "@reach/router"
 import PrivateRoute from '../components/PrivateRoute'
-
+import Consultation from '../components/Consultation';
 import Diary from '../components/Diary'
 
 export default function Admin({location}) {
@@ -13,8 +12,9 @@ export default function Admin({location}) {
     return (
         <div>
             <Layout>
-                <Router basepath="admin">
+                <Router >
                     <PrivateRoute path="/diary" component={Diary} />
+                    <Consultation path="/admin/consultation"/>
                 </Router>
             </Layout>
         </div>

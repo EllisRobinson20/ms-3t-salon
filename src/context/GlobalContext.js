@@ -3,12 +3,14 @@ import ProfileContextProvider from './ProfileContext'
 import AuthContextProvider from './AuthContext'
 import BookingContextProvider from './BookingContext'
 import NavigationContextProvider from './NavigationContext'
+import AdminContextProvider from './AdminContext'
 
 export const GlobalContext = createContext({})
 
 const GlobalProvider = ({ children }) => {
     return (
         <>
+        <AdminContextProvider>
         <NavigationContextProvider>
         <AuthContextProvider>
             <ProfileContextProvider>
@@ -18,6 +20,7 @@ const GlobalProvider = ({ children }) => {
             </ProfileContextProvider>     
         </AuthContextProvider>
         </NavigationContextProvider>
+        </AdminContextProvider>
         </>
     )
 }
