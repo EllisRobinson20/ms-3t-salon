@@ -19,6 +19,7 @@ import Button from '@material-ui/core/Button';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 
 import NameSearch from '../components/subcomponents/NameSearch'
+import MemberDetails from './subcomponents/MemberDetails'
 import { AdminContext } from '../context/AdminContext'
 import { map } from 'lodash'
 
@@ -61,7 +62,6 @@ export default function Consultation() {
   const classes = useStyles()
 
   const [value, setValue] = React.useState(null);
-  const [open, toggleOpen] = React.useState(false);
 
   const {userObject} = useContext(AdminContext)
 
@@ -74,7 +74,7 @@ export default function Consultation() {
       durationService: 0,
     });
 
-    toggleOpen(false);
+    
   };
 
   const [dialogValue, setDialogValue] = React.useState({
@@ -106,101 +106,7 @@ export default function Consultation() {
       durationService: null,
     })
   }, [userObject])
-  const MemberDetails = () => {
-    return (
-      <Grid container>
-              <Grid item xs={6}>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  value={ typeof dialogValue.name === "string" ? dialogValue.name :userObject[0].name}
-                  onChange={event =>
-                    setDialogValue({ ...dialogValue, name: event.target.value })
-                  }
-                  label="name"
-                  type="text"
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  margin="dense"
-                  id="email"
-                  value={typeof dialogValue.email === "string" ? dialogValue.email : userObject[0].email}
-                  onChange={event =>
-                    setDialogValue({
-                      ...dialogValue,
-                      email: event.target.value,
-                    })
-                  }
-                  label="email"
-                  type="email"
-                  
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  margin="dense"
-                  id="tel"
-                  value={typeof dialogValue.telephone === "string" ? dialogValue.telephone : userObject[0].telephone}
-                  onChange={event =>
-                    setDialogValue({
-                      ...dialogValue,
-                      telephone: event.target.value,
-                    })
-                  }
-                  label="telephone"
-                  type="tel"
-                  style={{color: "black"}}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  margin="dense"
-                  id="serviceName"
-                  value={typeof dialogValue.defaultService === "string" ? dialogValue.defaultService :  data.allMembers.edges.map((edge) => (
-                      edge.node.email === userObject[0].email ?
-                      edge.node.defaultService
-                      :
-                      ""
-                  )).filter(value => value ? Object.keys(value).length !== 0 : null )}
-                  onChange={event =>
-                    setDialogValue({
-                      ...dialogValue,
-                      defaultService: event.target.value,
-                    })
-                  }
-                  label="Selected Service"
-                  type="text"
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  margin="dense"
-                  id="durationService"
-                  value={typeof dialogValue.durationService === "string" ? dialogValue.durationService : data.allMembers.edges.map((edge) => (
-                      edge.node.email === userObject[0].email ?
-                      edge.node.durationService
-                      :
-                      ""
-                  )).filter(value => typeof value !== "string")}
-                  onChange={event =>
-                    setDialogValue({
-                      ...dialogValue,
-                      durationService: event.target.value,
-                    })
-                  }
-                  label="Duration"
-                  type="text"
-                />
-              </Grid>
-              <Grid item xs={2}></Grid>
-              <Grid item xs={2}>
-              <Button style={{marginTop: '1em',width: '80%'}} size="large" variant="contained" color="primary">Next</Button>
-              </Grid>
-            </Grid>
-    )
-  }
+
 
   return (
     <div>
@@ -209,13 +115,14 @@ export default function Consultation() {
           <Grid item xs={3}>
           <NameSearch data={data.allMembers.edges}/>
           </Grid>
+          <Grid item xs={12}>
+          {userObject ? "" : <Typography variant="body1"> select name to begin</Typography>}
+          </Grid>
           <Grid item xs={4}>
-         
           </Grid>
         </Grid>  
       </Card>
       {userObject ? <MemberDetails/> : ""}
-     
       
     </div>
   )
