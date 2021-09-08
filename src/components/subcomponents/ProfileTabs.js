@@ -178,13 +178,13 @@ export default function FullWidthTabs() {
               </Typography>
             </Container>
             <Container className={classes.centered}>
-              <Button variant="contained" color="secondary">
+              <Button href="/salon/booking/" variant="contained" color="secondary">
                 Book an Appointment
               </Button>
             </Container>
           </TabPanel>
           <TabPanel value={value} index={2} dir={theme.direction}>
-            Item Three
+            Booking history
           </TabPanel>
           <TabPanel value={value} index={3} dir={theme.direction}>
             <Box

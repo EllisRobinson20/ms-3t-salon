@@ -16,7 +16,7 @@ export default function ServiceDetailsPanel() {
                 <h3>{serviceDetailsRef.node.name}</h3>
                 <p>time {serviceDetailsRef.node.durationMinutes} minutes</p>
                 <p>price £{serviceDetailsRef.node.pricePence}</p>
-                <Link className={styles.btn} to={"./booking" } onClick={() => {setSelectedService(serviceDetailsRef.node.name)} }  key={serviceDetailsRef.node.id}>
+                <Link className={styles.btn} to={"./booking" } onClick={() => {setSelectedService({id: serviceDetailsRef.node.id, name: serviceDetailsRef.node.name})} }  key={serviceDetailsRef.node.id}>
                     Book 
                 </Link>
             </div>

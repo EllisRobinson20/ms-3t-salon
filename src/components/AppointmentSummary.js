@@ -25,7 +25,7 @@ export default function AppointmentSummary() {
     const servicesRef = data.allService.nodes;
     const durationSelectedService = () => {
         for (var i = 0; i < servicesRef.length; i++) {
-        if(servicesRef[i].id === selectedService) {
+        if(servicesRef[i].id === selectedService.id) {
             return servicesRef[i].durationMinutes
         }
     }}
@@ -50,7 +50,7 @@ export default function AppointmentSummary() {
         // ! Must Check Auth First
         if (user) {
             const bookingAttempt = firebase.functions().httpsCallable('bookProvisionalIfAvail');
-            bookingAttempt({user: user, service: selectedService, 
+            bookingAttempt({user: user, service: selectedService.id, 
                 bookingDate: selectedDateGlobal, bookingTime: selectedSlot.id, durationService: durationSelectedService()})
             .then(result => console.log(returnResult(result.data)))  
         } else {
@@ -74,16 +74,19 @@ export default function AppointmentSummary() {
     }
 
     const setListState = (data) => {
-        setSelectedService(data.id)
+        setSelectedService({id: data.id, name: data.name})
         setListName(data.name)
     }
+        useEffect(() => {
+            setListName(selectedService.name)
+        }, [])
   
         useEffect(() => {
             setSlots([])
             setSelectedSlot("")
-            console.log("date is " +selectedDateGlobal)
+            console.log("selected service is" + selectedService.id)
             data.allService.nodes.forEach(service => {
-                if (service.id === selectedService) {
+                if (service.id === selectedService.id) {
                 listItems.push(
                     <option selected value={service.id}>{service.name}</option>
                 )
@@ -100,10 +103,10 @@ export default function AppointmentSummary() {
                 {listItems}
             </select>)
            
-        }, [selectedService])
+        }, [selectedService.id])
         // Clear the error message when a service is selected
         useEffect(() => {
-            if (selectedService) {
+            if (selectedService.id) {
                 setError("")
             }
             
@@ -122,8 +125,8 @@ export default function AppointmentSummary() {
     // enable only if there is a timeslot selected
     // enable only if there is a service selected
     useEffect(() => {
-        setButtonIsEnabled(selectedSlot && selectedService && isAvailability ? true : false)
-    }, [selectedSlot, selectedService, isAvailability])
+        setButtonIsEnabled(selectedSlot && selectedService.id && isAvailability ? true : false)
+    }, [selectedSlot, selectedService.id, isAvailability])
     useEffect(() => {
         const d = new Date(selectedDateGlobal)
         const h = d.getHours()
@@ -140,9 +143,9 @@ export default function AppointmentSummary() {
     
     return (
         <div className={styles.card}>
-            {!selectedService ? dropdownList : <p className={styles.serviceLabel}>{listName}</p> }
+            {!selectedService.id ? dropdownList : <p className={styles.serviceLabel}>{listName}</p> }
             <p className={styles.error}>{error === "service" ? " Select a treatment or service first ... " : "" }</p>
-            <li className={styles.changeSelection} onClick={() => {setSelectedService("")}} >{selectedService ? " Change selection" : "" }</li>
+            <li className={styles.changeSelection} onClick={() => {setSelectedService("")}} >{selectedService.id ? " Change selection" : "" }</li>
             <h2>{selectedSlot.buttonLabel}</h2>
             <p>{format(selectedDateGlobal, "EEEE do MMMM")}</p>
             <Link className={`${ buttonIsEnabled ? styles.btn : styles.btnDisabled }`}  to={"." } onClick={() => {bookProvisionalIfAvail()}} >

@@ -106,12 +106,12 @@ export default function MainHeader() {
           </div>
           <ul className={styles.actions}>
             <li>
-              <Link to="#" className={styles.button}>
+              <Link to="/salon/" className={styles.button}>
                 Book Now
               </Link>
             </li>
             <li>
-              <Link to="#" className={styles.button}>
+              <Link to="/shop/" className={styles.button}>
                 Shop
               </Link>
             </li>

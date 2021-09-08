@@ -1,4 +1,4 @@
-import React, {useContext} from "react"
+import React, {useContext, useEffect} from "react"
 import { graphql, Link} from 'gatsby'
 import Layout from "../components/Layout"
 import ProductListing from "../components/ProductListing"
@@ -11,10 +11,15 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 const ProductsPage = ({location, data }) => {
   const {setPageState} = useContext(NavigationContext);
   const {lastPage} = useContext(NavigationContext);
-  setPageState(location.pathname);
+  useEffect(() => {
+    
+    setPageState(location.pathname);
+    
+  })
+  
   return (
   <Layout>
-    <Grid item container justifyContent="flex-start" style={{padding: "2em"}}>
+    <Grid container justifyContent="flex-start" style={{padding: "2em"}}>
     <Link to={lastPage}><IconButton href="/" color="textSecondary" aria-label="upload picture" component="span">
       <ArrowBackIcon/>
     </IconButton>

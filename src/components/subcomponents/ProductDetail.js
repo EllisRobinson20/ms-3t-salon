@@ -1,9 +1,13 @@
-import React, { useLayoutEffect } from 'react'
+import React, { useLayoutEffect, useContext } from 'react'
 import ShopifyBuy from '@shopify/buy-button-js'
-
+import { Grid, IconButton } from '@material-ui/core';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { graphql, Link} from 'gatsby'
+import { NavigationContext } from '../../context/NavigationContext';
 
 
 const ProductDetail = ({ product }) => {
+  const {lastPage} = useContext(NavigationContext);
     useLayoutEffect(() => {
         const client = ShopifyBuy.buildClient({
             domain: process.env.GATSBY_SHOPIFY_DOMAIN,
@@ -200,6 +204,10 @@ const ProductDetail = ({ product }) => {
     return (
         <div>
             <script src="http://sdks.shopifycdn.com/buy-button/2.1.7/buybutton.js"></script>
+            <Link to={lastPage}><IconButton href="/" color="textSecondary" aria-label="upload picture" component="span">
+      <ArrowBackIcon/>
+    </IconButton>
+    </Link>
             <div id="button"></div>
         </div>
     )

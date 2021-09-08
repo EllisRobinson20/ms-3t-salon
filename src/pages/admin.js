@@ -13,7 +13,7 @@ export default function Admin({location}) {
         <div>
             <Layout>
                 <Router >
-                    <PrivateRoute path="/diary" component={Diary} />
+                    <PrivateRoute path="admin/" component={Diary} />
                     <Consultation path="/admin/consultation"/>
                 </Router>
             </Layout>

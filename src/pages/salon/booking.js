@@ -10,6 +10,7 @@ import { NavigationContext } from "../../context/NavigationContext";
 import { Grid, IconButton, Typography } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
+const isBrowser = typeof window !== "undefined"
 
 const App = ({location}) => { 
 const {setPageState} = useContext(NavigationContext);
@@ -26,9 +27,12 @@ const {lastPage} = useContext(NavigationContext);
 
 const getAvailabilityForDate = (day) => {
 const availability = firebase.functions().httpsCallable('getAvailabilityForDate');
-availability({date: day, serviceName: selectedService })
+if (isBrowser) {
+  availability({date: day, serviceName: selectedService.id })
 .then( result => {setSlots(result.data)
 })
+}
+
 };
 
   return (
@@ -51,7 +55,7 @@ availability({date: day, serviceName: selectedService })
         </Grid>
       </Grid>
       
-      <Calendar /*action={getAvailabilityForDate}*//>
+      <Calendar action={getAvailabilityForDate}/>
       <TimeSlotPicker/>
       <AppointmentSummary/>
     </Layout>

@@ -124,7 +124,7 @@ export default function Services({location, data}) {
                                     <Button size="large"
                                             color="primary"
                                             variant="contained" 
-                                            onClick={() => {setSelectedService(service.node.name)} }>
+                                            onClick={() => {setSelectedService({ id: service.node.id, name: service.node.name})} }>
                                         Book Now
                                     </Button>
                                   </Link>
@@ -138,7 +138,7 @@ export default function Services({location, data}) {
                                   color="primary"
                                   variant="contained" 
                                   className={clsx(serviceListRef && matchesMd && !service.node.consultationOnly ? classes.stickyButton: classes.buttonHidden) }
-                                  onClick={() => {setSelectedService(serviceListRef)} }
+                                  onClick={() => {setSelectedService(service.node.id)} }
                                   >
                               Book Now
                             </Button>
