@@ -14,11 +14,13 @@ export default function ProfileBookingsHistory() {
         <div>
             <Container className={classes.centered}>
               <Typography variant="">
-                No booking history
+                You have no upcoming appointments
               </Typography>
             </Container>
             <Container className={classes.centered}>
-              
+              <Button href="/salon/booking/" variant="contained" color="secondary">
+                Book an Appointment
+              </Button>
             </Container>
         </div>
     )

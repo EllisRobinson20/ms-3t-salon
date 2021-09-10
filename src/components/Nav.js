@@ -1,11 +1,15 @@
-import React, {useContext} from 'react'
+import React, {useContext, useEffect} from 'react'
 import { Link } from 'gatsby'
 import * as styles from '../styles/header.module.css'
 import { NavigationContext } from "../context/NavigationContext";
+import { AuthContext } from '../context/AuthContext';
+const isBrowser = typeof window !== "undefined"
 
 
 export default function Nav() {
     const {thisPage} = useContext(NavigationContext);
+    const {user} = useContext(AuthContext);
+    const {admin} = useContext(AuthContext);
     
 
     return (
@@ -24,11 +28,27 @@ export default function Nav() {
             <li className={thisPage === "/about" ? styles.current : null}>
                 <Link to="/about">About</Link>
             </li>
-            <li className={thisPage === "/blog" ? styles.current : null}>
-                <Link to="/blog">Blog</Link>
-            </li>
+            {admin ? 
+            <>
+            <li className={thisPage === "/admin" || thisPage === "/admin/diary" ? styles.current : null}>
+            <Link to="/admin">Diary</Link>
+        </li>
+        <li className={thisPage === "/admin/consultation" ? styles.current : null}>
+            <Link to="/admin/consultation">Consultation</Link>
+        </li>
+        </>
+        :
+<>
+</>
+        }
+            
         </ul>
         </nav>
         </div>
     )
 }
+
+//<li className={thisPage === "/blog" ? styles.current : null}>
+//<Link to="/blog">Blog</Link>
+//</li>
+//

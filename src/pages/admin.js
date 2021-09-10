@@ -25,5 +25,3 @@ export default function Admin({location}) {
     )
 }
 
-// need some structure like:
-// admin/ - this is the route 

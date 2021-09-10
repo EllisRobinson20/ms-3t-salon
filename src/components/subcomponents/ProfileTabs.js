@@ -18,6 +18,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday'
 import HistoryIcon from '@material-ui/icons/History'
 import StarHalfIcon from '@material-ui/icons/StarHalf'
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -38,12 +39,17 @@ import {
 } from '@material-ui/core'
 import { StylesContext } from '@material-ui/styles/StylesProvider'
 
-import Rating from '@material-ui/lab/Rating'
+
 import { grey } from '@material-ui/core/colors'
 import ProfileEdit from './ProfileEdit'
 import {AuthContext} from '../../context/AuthContext'
 import LoginPrompt from './LoginPrompt'
 import { async } from '@firebase/util'
+import ProfileAdmin from './ProfileAdmin'
+import { navigate } from 'gatsby'
+import ProfileBookingsHistory from './ProfileBookingsHistory'
+import ProfileUpcomingBookings from './ProfileUpcomingBookings'
+import ProfilePostRating from '../ProfilePostRating'
 
 const buttonTheme = createTheme({
   palette: { primary: { main: '#d52349' }, secondary: grey },
@@ -118,11 +124,12 @@ export default function FullWidthTabs() {
   const [value, setValue] = React.useState(0)
 
   const {user} = useContext(AuthContext)
+  const {admin} = useContext(AuthContext)
 
   const [dense, setDense] = React.useState(false)
   const [secondary, setSecondary] = React.useState(false)
 
-  const [rating, setRating] = React.useState(0)
+  
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
@@ -132,17 +139,30 @@ export default function FullWidthTabs() {
     setValue(index)
   }
   const logout = (e) => {
+    navigate("/")
     e.preventDefault();
     const result = firebase.auth()
-    .signOut().then(() => {
-      console.log("user signed out")
+    .signOut().then(() => { 
     })
   }
 
-  return (
-    <ThemeProvider theme={buttonTheme}>
-      <div className={classes.root}>
-        <AppBar position="static" color="secondary">
+
+  const CustomTabs = ({isAdmin}) => (
+    isAdmin ?
+    <Tabs
+            value={value}
+            onChange={handleChange}
+            indicatorColor="primary"
+            variant="fullWidth"
+            aria-label="full width tabs example"
+          >
+            <Tab
+              label="Admin"
+              {...a11yProps(0)}
+              icon={<SupervisorAccountIcon />}
+            />
+          </Tabs>
+          :
           <Tabs
             value={value}
             onChange={handleChange}
@@ -171,6 +191,14 @@ export default function FullWidthTabs() {
               icon={<StarHalfIcon />}
             />
           </Tabs>
+  )
+  
+
+  return (
+    <ThemeProvider theme={buttonTheme}>
+      <div className={classes.root}>
+        <AppBar position="static" color="secondary">
+          <CustomTabs isAdmin={admin}></CustomTabs>
         </AppBar>
         <SwipeableViews
           axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
@@ -178,63 +206,16 @@ export default function FullWidthTabs() {
           onChangeIndex={handleChangeIndex}
         >
           <TabPanel value={value} index={0} dir={theme.direction}>
-            { user ? <ProfileEdit/> : <LoginPrompt/> }
+            { user ? admin ? <ProfileAdmin/> : <ProfileEdit/> : <LoginPrompt/> }
           </TabPanel>
           <TabPanel value={value} index={1} dir={theme.direction}>
-            <Container className={classes.centered}>
-              <Typography variant="">
-                You have no upcoming appointments
-              </Typography>
-            </Container>
-            <Container className={classes.centered}>
-              <Button href="/salon/booking/" variant="contained" color="secondary">
-                Book an Appointment
-              </Button>
-            </Container>
+            {user ? <ProfileUpcomingBookings/> : <LoginPrompt/>}
           </TabPanel>
           <TabPanel value={value} index={2} dir={theme.direction}>
-            Booking history
+            {user ? <ProfileBookingsHistory/> : <LoginPrompt/>}
           </TabPanel>
           <TabPanel value={value} index={3} dir={theme.direction}>
-            <Box
-              component="fieldset"
-              mb={3}
-              borderColor="transparent"
-              className={classes.centered}
-            >
-              <Typography>
-                "Good experience? We would really appreciate your feedback"
-              </Typography>
-              <Rating
-                name="simple-controlled"
-                value={rating}
-                onChange={(event, newValue) => {
-                  event.preventDefault()
-                  setRating(newValue)
-                }}
-                size="large"
-              />
-            </Box>
-            <Container className={classes.centered}>
-              <TextField
-                id="outlined-multiline-flexible"
-                label="Comments"
-                multiline
-                maxRows={4}
-                /*value={}*/
-                /*onChange={}*/
-                variant="outlined"
-              />
-            </Container>
-            <Container className={classes.centered}>
-              <Button
-                variant="contained"
-                color="secondary"
-                className={classes.formSubmit}
-              >
-                Send
-              </Button>
-            </Container>
+            {user ? <ProfilePostRating/> : <LoginPrompt/> }
           </TabPanel>
         </SwipeableViews>
         <Link style={{padding: '1em'}} href="#" onClick={(e) => {logout(e)}}>Logout</Link>
