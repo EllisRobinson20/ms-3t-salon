@@ -1,9 +1,12 @@
 import { Grid, Link, Typography } from '@material-ui/core'
-import React from 'react'
+import React, {useContext} from 'react'
+import { AuthContext } from '../../context/AuthContext'
 
 export default function LoginPrompt() {
+    const {setShowLogin} = useContext(AuthContext)
     const openLogin = () => {
         // set login state to true
+        setShowLogin(true)
     }
     return (
         <div>

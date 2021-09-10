@@ -91,7 +91,7 @@ export default function Login() {
                     })
                 setUser(result)
                 console.log(result)
-                navigate("../")
+                navigate("/")
             } catch (err) {
                 setData({ ...data, error: err.message})
             }

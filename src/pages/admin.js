@@ -5,6 +5,8 @@ import { Router } from "@reach/router"
 import PrivateRoute from '../components/PrivateRoute'
 import Consultation from '../components/Consultation';
 import Diary from '../components/Diary'
+import CreateAdmin from '../components/CreateAdmin';
+import AdminRoute from '../components/AdminRoute';
 
 export default function Admin({location}) {
     const {setPageState} = useContext(NavigationContext);
@@ -13,10 +15,15 @@ export default function Admin({location}) {
         <div>
             <Layout>
                 <Router >
-                    <PrivateRoute path="admin/" component={Diary} />
-                    <Consultation path="/admin/consultation"/>
+                    <AdminRoute path="/admin/"component={Diary}></AdminRoute>
+                    <AdminRoute path="/admin/create" component={CreateAdmin}></AdminRoute>
+                    <AdminRoute path="/admin/diary" component={Diary}></AdminRoute>
+                    <AdminRoute path="/admin/consultation" component={Consultation}></AdminRoute>
                 </Router>
             </Layout>
         </div>
     )
 }
+
+// need some structure like:
+// admin/ - this is the route 

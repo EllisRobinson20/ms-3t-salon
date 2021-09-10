@@ -28,6 +28,7 @@ const AuthContextProvider = ({ children }) => {
     const [showLogin, setShowLogin] = useState(false)
     const [deviceIsMobile, setDeviceIsMobile] = useState()
     const [profile, setProfile] = useState({})
+    const [admin, setAdmin] = useState()
 
     const getMemberObject = () => {
         const member = data.allMembers.edges.map((edge) => {
@@ -51,13 +52,21 @@ const AuthContextProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        firebase.auth().onAuthStateChanged(user => {setUser(user)
-            if (!user) {setProfile({})}
-            else {
-                getMemberObject()}
-            if (showLogin) {setShowLogin(false)}
+        firebase.auth().onAuthStateChanged(user => {
+            setUser(user)
+            console.log("chaned auth to -> " )
             console.log(user)
-            console.log(showLogin)
+            if (!user) {setProfile({}) 
+        console.log("user out")
+    }
+            else {
+                // get member object is for setting additional properties though there is an less erroneous way to do this
+                //getMemberObject()
+                
+
+            }
+            if (showLogin) {setShowLogin(false)}
+            
         })
     }, [])
     return (
@@ -65,6 +74,7 @@ const AuthContextProvider = ({ children }) => {
             showLogin, setShowLogin,
             deviceIsMobile, setDeviceIsMobile,
             profile, setProfile,
+            admin, setAdmin,
             }}>
             {children}
         </AuthContext.Provider>

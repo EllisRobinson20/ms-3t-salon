@@ -1,4 +1,5 @@
 import React, {useContext} from 'react'
+import firebase from 'firebase'
 import PropTypes from 'prop-types'
 import SwipeableViews from 'react-swipeable-views'
 import {
@@ -42,6 +43,7 @@ import { grey } from '@material-ui/core/colors'
 import ProfileEdit from './ProfileEdit'
 import {AuthContext} from '../../context/AuthContext'
 import LoginPrompt from './LoginPrompt'
+import { async } from '@firebase/util'
 
 const buttonTheme = createTheme({
   palette: { primary: { main: '#d52349' }, secondary: grey },
@@ -128,6 +130,13 @@ export default function FullWidthTabs() {
 
   const handleChangeIndex = index => {
     setValue(index)
+  }
+  const logout = (e) => {
+    e.preventDefault();
+    const result = firebase.auth()
+    .signOut().then(() => {
+      console.log("user signed out")
+    })
   }
 
   return (
@@ -228,6 +237,7 @@ export default function FullWidthTabs() {
             </Container>
           </TabPanel>
         </SwipeableViews>
+        <Link style={{padding: '1em'}} href="#" onClick={(e) => {logout(e)}}>Logout</Link>
       </div>
     </ThemeProvider>
   )

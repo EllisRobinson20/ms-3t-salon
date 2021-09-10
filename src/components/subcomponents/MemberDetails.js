@@ -71,6 +71,7 @@ export default function MemberDetails() {
       telephone: '',
       defaultService: '',
       durationService: 0,
+      costServicePence: 0,
     });
 
     
@@ -82,6 +83,7 @@ export default function MemberDetails() {
     telephone: '',
     defaultService: '',
     durationService: 0,
+    costService: 0,
   });
 
   const handleSubmit = (event) => {
@@ -92,6 +94,7 @@ export default function MemberDetails() {
       telephone: dialogValue.telephone,
       durationService: dialogValue.durationService,
       defaultService: dialogValue.defaultService,
+      costService: dialogValue.costService,
     });
 
     handleClose();
@@ -103,6 +106,7 @@ export default function MemberDetails() {
       telephone: null,
       defaultService: null,
       durationService: null,
+      costService: null,
     })
   }, [userObject])
 
@@ -205,6 +209,37 @@ export default function MemberDetails() {
             name="duration"
           />
         </Grid>
+        
+          <Grid item xs={6} container >
+            <Grid item container justifyContent="flex-end" spacing={0} xs={1}>
+            <Typography style={{marginTop: "1.3em"}} variant="body1">£</Typography>
+            </Grid>
+            <Grid item xs={10}>
+            <TextField
+            margin="dense"
+            id="costServicePence"
+            value={typeof dialogValue.costServicePence === "string" ? dialogValue.costService : userObject ? data.allMembers.edges.map((edge) => (
+                edge.node.email === userObject[0].email ?
+                edge.node.costServicePence/100
+                :
+                ""
+            )).filter(value => typeof value !== "string")
+          :
+          ""
+          }
+            onChange={event =>
+              setDialogValue({
+                ...dialogValue,
+                costServicePence: event.target.value,
+              })
+            }
+            label="Price"
+            type="text"
+            name="duration"
+          />
+            </Grid>
+          </Grid>
+        
         <Grid item xs={2}></Grid>
         <Grid item xs={2}>
         <Button style={{marginTop: '1em',width: '80%'}} size="large" variant="contained" color="primary">Next</Button>
