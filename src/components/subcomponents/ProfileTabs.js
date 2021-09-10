@@ -91,31 +91,7 @@ function a11yProps(index) {
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-  },
-  list: {
-    flexGrow: 1,
-    maxWidth: 752,
-  },
-  listGroup: {
-    backgroundColor: theme.palette.background.paper,
-  },
-  editButton: {
-    color: '#5d5d5d',
-  },
-  small: {
-    width: theme.spacing(3),
-    height: theme.spacing(3),
-  },
-  large: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
-  },
-  centered: {
-    textAlign: 'center',
-  },
-  formSubmit: {
-    marginTop: '1em',
-  },
+  }
 }))
 
 export default function FullWidthTabs() {
@@ -126,11 +102,7 @@ export default function FullWidthTabs() {
   const {user} = useContext(AuthContext)
   const {admin} = useContext(AuthContext)
 
-  const [dense, setDense] = React.useState(false)
-  const [secondary, setSecondary] = React.useState(false)
-
   
-
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
