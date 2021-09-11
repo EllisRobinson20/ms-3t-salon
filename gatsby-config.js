@@ -59,7 +59,7 @@ module.exports = {
                 selectedService: doc.selectedService,
                 name: doc.name,
                 durationMinutes: doc.durationMinutes,
-                startTimeMinutes: doc.startTimeMinutes
+                startTimeMinutes: doc.startTimeMinutes,
               })
             },
               {

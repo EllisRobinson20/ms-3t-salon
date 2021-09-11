@@ -1,5 +1,5 @@
 import { Container, Grid } from '@material-ui/core'
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {graphql, useStaticQuery} from 'gatsby'
 
 import { makeStyles, useTheme } from '@material-ui/core/styles'
@@ -32,7 +32,11 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 
-import { getDay, parseISO } from 'date-fns'
+import { getDay, parseISO, getWeek, endOfWeek, startOfWeek } from 'date-fns'
+
+import firebase from 'firebase/app'
+import 'firebase/firestore'
+
 
 /**
    * Adds two numbers together.
@@ -114,6 +118,27 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function Diary() {
+
+  const [dataRT, setDataRT] = useState()
+  const ref = firebase.firestore().collection("bookingHistory");
+  useEffect(() => {
+
+    const bookingsRef = ref.where('dateOfBooking', '<', new Date())
+       
+         const results = []
+         bookingsRef.docs.forEach((doc) => {
+           results.push(doc.data())
+           console.log(results)
+         })
+         setDataRT(results)
+       
+  })
+
+
+
+
+
+
     const data = useStaticQuery(graphql`
     query AdminBookingComponentQuery {
         allBooking {
@@ -180,7 +205,7 @@ export default function Diary() {
     
   
     const renderDetails = (data) => {
-        
+  
         return (
             <div>
                 <Card elevation={0}style={{width: "100%", height: "100%"}} onClick={() => {setSelectedBooking(data)}}>
