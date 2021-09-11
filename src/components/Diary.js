@@ -1,5 +1,5 @@
 import { Container, Grid } from '@material-ui/core'
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useLayoutEffect} from 'react'
 import {graphql, useStaticQuery} from 'gatsby'
 
 import { makeStyles, useTheme } from '@material-ui/core/styles'
@@ -61,19 +61,8 @@ import 'firebase/firestore'
       return (timeInhours < 10 ? "0"+timeInhours.toString() :
       timeInhours.toString()) + ":00";
     }
-  }
-
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
+  }  
   
-  const rows = [
-    createData('Monday', <DiarySlot/>,<DiarySlot/>,<DiarySlot/>),
-    createData('Tuesday', <DiarySlot/>,<DiarySlot/>,<DiarySlot/>,<DiarySlot/>),
-    createData('Wednesday', <DiarySlot/>,<DiarySlot/>,<DiarySlot/>,<DiarySlot/>),
-    createData('Thursday', <DiarySlot/>,<DiarySlot/>,<DiarySlot/>,<DiarySlot/>),
-    createData('Friday', <DiarySlot/>,<DiarySlot/>,<DiarySlot/>,<DiarySlot/>),
-  ];
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -121,18 +110,30 @@ export default function Diary() {
 
   const [dataRT, setDataRT] = useState()
   const ref = firebase.firestore().collection("bookingHistory");
-  useEffect(() => {
+  const bookings = []
+  useLayoutEffect(() => {
 
-    const bookingsRef = ref.where('dateOfBooking', '<', new Date())
+    const bookingsRef = ref.where('dateOfBooking', '<', new Date()).get()
        
-         const results = []
-         bookingsRef.docs.forEach((doc) => {
-           results.push(doc.data())
-           console.log(results)
-         })
-         setDataRT(results)
+    bookingsRef.catch(error => {
+      console.log(error)
+    }).then(results => {
+      results.docs.forEach(doc => {
+
+        sortBooking(doc.data(), doc.id)
+        
+      })
+    })
+    
+    
+         
+          
+           
+         
+         
+         //setDataRT(results)
        
-  })
+  }, [])
 
 
 
@@ -156,10 +157,20 @@ export default function Diary() {
         }
       }
     `)
-    useEffect(() => {
+    /* useEffect(() => {
         sortBookings()
-      })
+      }) */
     const [value, setValue] = React.useState(0);
+    const [bookingState, setBookingState] = React.useState(
+      {
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: [],
+        saturday: [],
+    }
+    );
 
     const [id, setId] = React.useState();
 
@@ -334,18 +345,20 @@ export default function Diary() {
       friday: [],
       saturday: [],
   }
-  const sortBookings = () => {
-      data.allBooking.edges.forEach((booking) => {
-        switch(getDay(parseISO(booking.node.startISO))) {
+  const sortBooking = (data, id) => {
+    console.log(getDay(parseISO(data.startISO)))
+    console.log(bookingData)
+
+        switch(getDay(parseISO(data.startISO))) {
             case 1:
               // monday
               bookingData.monday.push(
                 {
-                    id: booking.node.id,
-                    name: renderDetails(booking.node),
+                    id: id,
+                    name: renderDetails(data),
                     type: "booking",
-                    startTime: moment(booking.node.startISO),
-                    endTime: moment(booking.node.finishISO),
+                    startTime: moment(data.startISO),
+                    endTime: moment(data.finishISO),
                 }
               )
               break;
@@ -353,11 +366,11 @@ export default function Diary() {
               // tuesday
               bookingData.tuesday.push(
                 {
-                    id: booking.node.id,
-                    name: renderDetails(booking.node),
+                    id: id,
+                    name: renderDetails(data),
                     type: "booking",
-                    startTime: moment(booking.node.startISO),
-                    endTime: moment(booking.node.finishISO),
+                    startTime: moment(data.startISO),
+                    endTime: moment(data.finishISO),
                 }
               )
               break;
@@ -365,11 +378,11 @@ export default function Diary() {
               // wednesday
               bookingData.wednesday.push(
                 {
-                    id: booking.node.id,
-                    name: renderDetails(booking.node),
+                    id: id,
+                    name: renderDetails(data),
                     type: "booking",
-                    startTime: moment(booking.node.startISO),
-                    endTime: moment(booking.node.finishISO),
+                    startTime: moment(data.startISO),
+                    endTime: moment(data.finishISO),
                 }
               )
               break;
@@ -377,54 +390,57 @@ export default function Diary() {
               //thursday
               bookingData.thursday.push(
                 {
-                    id: booking.node.id,
-                    name: renderDetails(booking.node),
+                    id: id,
+                    name: renderDetails(data),
                     type: "booking",
-                    startTime: moment(booking.node.startISO),
-                    endTime: moment(booking.node.finishISO),
+                    startTime: moment(data.startISO),
+                    endTime: moment(data.finishISO),
                 }
               )
               break;
             case 5:
               // friday
-              bookingData.friday.push(
+              setBookingState({...bookingState, friday: [
                 {
-                    id: booking.node.id,
-                    name: renderDetails(booking.node),
-                    type: "booking",
-                    startTime: moment(booking.node.startISO),
-                    endTime: moment(booking.node.finishISO),
-                }
-              )
+                  id: id,
+                  name: renderDetails(data),
+                  type: "booking",
+                  startTime: moment(data.startISO),
+                  endTime: moment(data.finishISO),
+              }
+              ]})
+              
               break;
             case 6:
               // saturday
               bookingData.saturday.push(
                 {
-                    id: booking.node.id,
-                    name: renderDetails(booking.node),
+                    id: id,
+                    name: renderDetails(data),
                     type: "booking",
-                    startTime: moment(booking.node.startISO),
-                    endTime: moment(booking.node.finishISO),
+                    startTime: moment(data.startISO),
+                    endTime: moment(data.finishISO),
                 }
               )
               break;
             default:
               // NOT a business day
           }
-      })
+          console.log("bookingData")
+          console.log(bookingData)
+
   }
 
   
     return (
         <div className={classes.root}>
-            {sortBookings()}
+            {/* {sortBookings()} */}
             <Container className={classes.container}>
             </Container>
             <Grid container spacing={0}>
                 <Grid item xs={12}>  
                 <Timetable 
-                    events={bookingData}
+                    events={bookingState}
                     />
                     {renderModal()}
                 </Grid>

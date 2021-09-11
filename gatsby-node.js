@@ -6,7 +6,7 @@
 
 // You can delete this file if you're not using it
 const path = require(`path`)
-exports.createPages = async ({ graphql, actions }) => {
+/* exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions
   // Query for all products in Shopify
   const result = await graphql(`
@@ -34,7 +34,7 @@ exports.createPages = async ({ graphql, actions }) => {
       },
     })
   })
-}
+} */
 
 // Implement the Gatsby API “onCreatePage”. This is
 // called after every page is created.
