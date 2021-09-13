@@ -43,7 +43,7 @@ const renderLayout = () => {
             <>
               <Header siteTitle={data.site.siteMetadata.title} />
               <main>{children}</main>
-              {thisPage === "/salon/" || thisPage === "/admin/consultation" ? "" : <Footer/>}
+              {thisPage === "/salon/" || thisPage === "/admin/consultation" || thisPage === "/admin" ? "" : <Footer/>}
             </>
             )}
             />    
