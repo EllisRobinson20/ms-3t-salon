@@ -5,7 +5,7 @@ import { useState } from 'react'
 import PromotionItem from './subcomponents/PromotionItem'
 
 export default function SectionPromotion() {
-    /* const data = useStaticQuery(graphql`
+    const data = useStaticQuery(graphql`
     query AllPromotionComponentQuery {
         allShopifyProduct(limit: 2, sort: {order: DESC, fields: createdAt}) {
           edges {
@@ -21,7 +21,7 @@ export default function SectionPromotion() {
           }
         }
       }
-    `) */
+    `)
     const [maxItems, setMaxItems] = useState(4)
     const colSpan = () => {
         return 12/maxItems
@@ -40,7 +40,7 @@ export default function SectionPromotion() {
                 {count().map((item, index) => (
                     <Grid item sm={12/maxItems}>
                         {console.log(index)}
-                        {/* <PromotionItem index={index} data={data} count={count()}/> */}
+                        <PromotionItem index={index} data={data} count={count()}/>
                     </Grid>
                 ))}
             </Grid>

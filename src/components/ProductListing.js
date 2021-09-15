@@ -3,7 +3,7 @@ import { useStaticQuery, graphql } from "gatsby"
 import Product from "./subcomponents/Product"
 
 
-/* const PRODUCTS_LISTING_QUERY = graphql`
+const PRODUCTS_LISTING_QUERY = graphql`
     query ProductsListingQuery {
         allShopifyProduct {
             edges {
@@ -41,16 +41,16 @@ import Product from "./subcomponents/Product"
             }
           }
     }
-` */
+`
 
 const ProductListing = () => {
-    /* const { allShopifyProduct } = useStaticQuery(PRODUCTS_LISTING_QUERY) */
+    const { allShopifyProduct } = useStaticQuery(PRODUCTS_LISTING_QUERY)
     return (
         <div>
             {
-               /*  allShopifyProduct.edges.map(edge => {
+                allShopifyProduct.edges.map(edge => {
                     return <Product key={edge.node.id} product={edge.node} /> 
-                }) */
+                })
             }
         </div>
     )

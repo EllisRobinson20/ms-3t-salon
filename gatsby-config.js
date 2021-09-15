@@ -7,6 +7,14 @@ module.exports = {
   },
   plugins: [
     {
+      resolve: `gatsby-source-shopify`,
+      options: {
+        storeUrl: process.env.SHOPIFY_API_URL,
+        password: process.env.SHOPIFY_API_PASSWORD
+        
+      },
+    },
+    {
       resolve: "gatsby-plugin-firebase",
       options: {
         credentials: {
