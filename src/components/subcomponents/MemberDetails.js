@@ -66,7 +66,7 @@ export default function MemberDetails({ data }) {
           .firestore()
           .collection('members')
           .doc(userObject[0].id)
-          .set({
+          .update({
             telephone: data.telephone,
             costServicePence: parseInt(data.costServicePence) * 100,
             defaultService: data.defaultService,
@@ -76,16 +76,15 @@ export default function MemberDetails({ data }) {
       })
       .catch(err => {
         console.log(err)
-        
       })
-      .then((err) => {
+      .then(err => {
         if (err) {
-          onResult(true, "Oops!... Something went wrong", "please try again")
+          onResult(true, 'Oops!... Something went wrong', 'please try again')
         } else {
           console.log('successfully updated to database')
-          onResult(false, "Successfully updated user", "")
+          onResult(false, 'Successfully updated user', '')
         }
-        
+
         handleClose()
       })
 
@@ -117,17 +116,23 @@ export default function MemberDetails({ data }) {
     console.log('check old')
     console.log(oldValue !== null && !!oldValue)
     return (
-      !equal && oldValue !== null && !!oldValue && oldValue !== '' && oldValue !== undefined
+      !equal &&
+      oldValue !== null &&
+      !!oldValue &&
+      oldValue !== '' &&
+      oldValue !== undefined
     )
   }
 
   const onResult = (isError, message, subMessage) => {
-    setResult({error: isError, message: message, subMessage: subMessage})
-    setTimeout(function(){ setResult("") }, 3000);
+    setResult({ error: isError, message: message, subMessage: subMessage })
+    setTimeout(function() {
+      setResult('')
+    }, 3000)
   }
 
   const handleClose = () => {
-    setDialogValue({ 
+    setDialogValue({
       name: '',
       email: '',
       telephone: '',
@@ -172,11 +177,11 @@ export default function MemberDetails({ data }) {
   return (
     <Grid container>
       <Grid item xs={12}>
-      <Typography variant="h4" color={result ? "error" : "secondary"}>
-          {result? result.message : ""}
+        <Typography variant="h4" color={'secondary'}>
+          {result ? result.message : ''}
         </Typography>
-      <Typography variant="h6" color={result ? "error" : "secondary"}>
-      {result? result.subMessage : ""}
+        <Typography variant="h6" color={'secondary'}>
+          {result ? result.subMessage : ''}
         </Typography>
       </Grid>
       <Grid item xs={6}>

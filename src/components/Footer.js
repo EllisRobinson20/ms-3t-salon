@@ -6,6 +6,7 @@ import { Button, Grid, IconButton } from '@material-ui/core'
 import CallIcon from '@material-ui/icons/Call';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import { graphql, Link, useStaticQuery } from 'gatsby'
+import OpeningTimes from './subcomponents/OpeningTimes'
 
 export default function Footer() {
     const callSalon = () => {
@@ -77,15 +78,7 @@ export default function Footer() {
 										</li>
                                         <li style={{textAlign: "right"}}>
 											<h3>Hours</h3>
-                                            <p><strong>Monday: </strong> 9:00am - 4:30pm</p>
-                                            <p><strong>Tuesday: </strong> 9:00am - 4:30pm</p>
-                                            <p><strong>Wednesday: </strong> 9:00am - 4:30pm</p>
-                                            <p><strong>Thursday: </strong> 9:00am - 4:30pm</p>
-                                            <p><strong>Friday: </strong> 9:00am - 4:30pm</p>
-                                            <p><strong>Saturday: </strong> 9:00am - 4:30pm</p>
-                                            <p><strong>Sunday: </strong> closed </p>
-                                            
-											
+                                            <OpeningTimes/>
 										</li>
 										<li style={{textAlign: "right"}}>
 											<h3>Facebook</h3>
