@@ -88,7 +88,7 @@ export default function Footer() {
                                                 </IconButton></a>
 											<p></p>
 										</li>
-										<li style={{textAlign: "right"}}>
+										<li id={"contact"} style={{textAlign: "right"}}>
 											<h3>Phone</h3>
                                             {deviceIsMobile ? 
                                             <p><Button onClick={callSalon}>

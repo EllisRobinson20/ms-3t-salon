@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import * as styles from '../styles/header.module.css'
 import { Link, graphql, useStaticQuery } from 'gatsby'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
@@ -30,6 +30,8 @@ export default function MainHeader() {
   const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
   const matchesXl = useMediaQuery(theme.breakpoints.up('xl'))
+
+  const [headerClick, setHeaderClick] = useState(["Book Now", "/salon/"])
   const queryData = useStaticQuery(graphql`
     query HeaderImageQuery {
       allCloudinaryMedia(
@@ -77,7 +79,12 @@ export default function MainHeader() {
         <section id={styles.intro} className={styles.container}>
           <div className={styles.row}>
             <div className={styles.col4 + ' ' + styles.col12medium}>
-              <section className={styles.first}>
+              <section
+                onClick={() => {
+                  setHeaderClick(["Shop", "/shop/"])
+                }}
+                className={styles.middle}
+              >
                 <i className={styles.icon}></i>
                 <header>
                   <h2>Products</h2>
@@ -86,7 +93,9 @@ export default function MainHeader() {
               </section>
             </div>
             <div className={styles.col4 + ' ' + styles.col12medium}>
-              <section className={styles.middle}>
+              <section onClick={() => {
+                setHeaderClick(["Book Now", "/salon/"])
+              }} className={styles.middle}>
                 <i className={styles.icon}></i>
                 <header>
                   <h2>Hair Services</h2>
@@ -95,7 +104,9 @@ export default function MainHeader() {
               </section>
             </div>
             <div className={styles.col4 + ' ' + styles.col12medium}>
-              <section className={styles.last}>
+              <section onClick={() => {
+                setHeaderClick(["Consultation", "#contact"])
+              }} className={styles.middle}>
                 <i className={styles.icon}></i>
                 <header>
                   <h2>Consultation</h2>
@@ -106,13 +117,8 @@ export default function MainHeader() {
           </div>
           <ul className={styles.actions}>
             <li>
-              <Link to="/salon/" className={styles.button}>
-                Book Now
-              </Link>
-            </li>
-            <li>
-              <Link to="/shop/" className={styles.button}>
-                Shop
+              <Link to={headerClick[1]} className={styles.button}>
+                {headerClick[0]}
               </Link>
             </li>
           </ul>
