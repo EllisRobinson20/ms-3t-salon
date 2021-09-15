@@ -11,7 +11,7 @@ export default function Footer() {
     const callSalon = () => {
         window.open('tel:07517140732')
     }
-    const {deviceIsMobile, setDeviceIsMobile} = useContext(AuthContext)
+    const {deviceIsMobile} = useContext(AuthContext)
     const mapImage = useStaticQuery(graphql`
         query MapLocationQuery {
             
@@ -106,7 +106,6 @@ export default function Footer() {
                                             :
                                             <p>07517140732</p>
                                             }
-											
 										</li>
 									</ul>
 								</section>

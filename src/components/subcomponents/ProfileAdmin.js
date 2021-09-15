@@ -5,12 +5,12 @@ import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { AuthContext } from '../../context/AuthContext'
 import { Typography } from '@material-ui/core';
 
-import * as styles from '../../styles/header.module.css'
+import * as styles from '../../styles/nav.module.css'
 
 
 const useStyles = makeStyles(theme => ({
   root: {
-    color: "red"
+   
   },
   icon: {
       backgroundColor: "red"
@@ -36,7 +36,7 @@ export default function ProfileAdmin() {
   };
   
   return (
-    <div>
+    <div className={classes.root}>
         <nav id={styles.nav}>
         <Typography className={classes.title} variant="h6" color="textSecondary">Welome {user.displayName}</Typography>
         <ul>

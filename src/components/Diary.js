@@ -17,8 +17,10 @@ import Modal from '@material-ui/core/Modal'
 import Backdrop from '@material-ui/core/Backdrop'
 import Fade from '@material-ui/core/Fade'
 import DatePicker from './subcomponents/DatePicker'
+import { Button, IconButton } from '@material-ui/core'
 
 import { AdminContext } from '../context/AdminContext'
+import { AuthContext } from '../context/AuthContext'
 
 /**
  * Adds two numbers together.
@@ -91,8 +93,13 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function Diary() {
+  const callSalon = () => {
+    window.open('tel:0')
+  }
+  const { deviceIsMobile } = useContext(AuthContext)
   const { datePicker } = useContext(AdminContext)
   const { dateStart } = useContext(AdminContext)
+  const { dateEnd } = useContext(AdminContext)
   const theme = useTheme()
   const matchesMd = useMediaQuery(theme.breakpoints.down('md'))
   const matchesSm = useMediaQuery(theme.breakpoints.down('sm'))
@@ -104,18 +111,17 @@ export default function Diary() {
   const ref = firebase.firestore().collection('bookingHistory')
   const bookings = []
   useEffect(() => {
-    const bookingsRef = ref.where('dateOfBooking', '>', dateStart).get()
-    bookingsRef
-      .catch(error => {
-        console.log(error)
+    const bookingsRef = ref
+      .where('dateOfBooking', '>', dateStart)
+      .where('dateOfBooking', '<', dateEnd)
+      .get()
+    bookingsRef.then(results => {
+      results.docs.forEach(doc => {
+        //console.log(doc.data(), doc.id)
+        bookings.push(doc.data(), doc.id)
       })
-      .then(results => {
-        results.docs.forEach(doc => {
-          //console.log(doc.data(), doc.id)
-          bookings.push(doc.data(), doc.id)
-        })
-        sortBookings(results)
-      })
+      sortBookings(results)
+    })
   }, [datePicker])
 
   const classes = useStyles()
@@ -223,7 +229,17 @@ export default function Diary() {
                       </Typography>
                     </Grid>
                     <Grid item container xs={1} justifyContent="flex-end">
-                      <CallIcon />
+                      {deviceIsMobile ? (
+                        <p>
+                          <a href='tel:0'>
+                            <IconButton aria-label={'call'}>
+                              <CallIcon />
+                            </IconButton>
+                          </a>{' '}
+                        </p>
+                      ) : (
+                        ''
+                      )}
                     </Grid>
                     <Grid item xs={12}>
                       <Typography variant="h5" component="h2"></Typography>

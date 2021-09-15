@@ -1,27 +1,17 @@
-import React, {useContext, useEffect} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import { graphql, useStaticQuery } from 'gatsby'
 import { makeStyles } from '@material-ui/core/styles'
-import InputLabel from '@material-ui/core/InputLabel'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import FormControl from '@material-ui/core/FormControl'
-import Select from '@material-ui/core/Select'
+import firebase from 'gatsby-plugin-firebase'
+import 'firebase/firestore'
 
-import { Box, Card, Grid, Typography } from '@material-ui/core'
+import { Card, Grid, Typography } from '@material-ui/core'
 
-
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 
 import NameSearch from '../components/subcomponents/NameSearch'
 import MemberDetails from './subcomponents/MemberDetails'
 import { AdminContext } from '../context/AdminContext'
-import { map } from 'lodash'
+
 
 const filter = createFilterOptions();
 
@@ -41,6 +31,18 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function Consultation() {
+  const [members, setMembers] = useState([])
+  useEffect(() => {
+    const ref = firebase.firestore().collection('members').get();
+    ref.then(results => {
+      results.docs.forEach(doc => {
+        setMembers(members => [...members, doc.data(), doc.id])
+        console.log("members")
+        console.log(members)
+      })
+    })
+  }, [])
+
   const data = useStaticQuery(graphql`
     query AdminConsultationComponentQuery {
       allMembers {
