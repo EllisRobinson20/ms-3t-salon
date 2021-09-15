@@ -52,13 +52,13 @@ export default function FreeSoloCreateOptionDialog({ data }) {
 
     handleClose()
   }
-  // push graphql data to the membersData array
+  // push data to the membersData array
   useEffect(() => {
     data.forEach(edge => {
       membersData.push({
-        name: edge.node.name,
-        email: edge.node.email,
-        telephone: edge.node.telephone,
+        name: edge[0].name,
+        email: edge[0].email,
+        telephone: edge[0].telephone,
       })
     })
   })
@@ -90,10 +90,11 @@ export default function FreeSoloCreateOptionDialog({ data }) {
           } else {
             setValue(newValue)
             setUserObject(data.map((edge) => (
-                edge.node.name === newValue.name ?  
-                {name: edge.node.name,
-                email: edge.node.email,
-                telephone: edge.node.telephone,
+                edge[0].email === newValue.email ?  
+                { id: edge[1],
+                  name: edge[0].name,
+                email: edge[0].email,
+                telephone: edge[0].telephone,
                 }
                 :
                 {}

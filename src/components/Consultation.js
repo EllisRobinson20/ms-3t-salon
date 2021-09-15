@@ -33,17 +33,17 @@ const useStyles = makeStyles(theme => ({
 export default function Consultation() {
   const [members, setMembers] = useState([])
   useEffect(() => {
-    const ref = firebase.firestore().collection('members').get();
-    ref.then(results => {
+    const ref = firebase.firestore().collection('members')
+    const observer = ref.onSnapshot(results => {
       results.docs.forEach(doc => {
-        setMembers(members => [...members, doc.data(), doc.id])
-        console.log("members")
+        console.log("snapshot listener called")
         console.log(members)
+        setMembers(members => [...members, [doc.data(), doc.id]])
       })
     })
   }, [])
 
-  const data = useStaticQuery(graphql`
+ /*  const data = useStaticQuery(graphql`
     query AdminConsultationComponentQuery {
       allMembers {
         edges {
@@ -59,7 +59,7 @@ export default function Consultation() {
         }
       }
     }
-  `)
+  `) */
 
   const classes = useStyles()
 
@@ -115,7 +115,7 @@ export default function Consultation() {
       <Card className={classes.container} variant="outlined">
         <Grid container>
           <Grid item xs={3}>
-          <NameSearch data={data.allMembers.edges}/>
+          <NameSearch data={members}/>
           </Grid>
           <Grid item xs={12}>
           {userObject ? "" : <Typography variant="body1"> select name to begin</Typography>}
@@ -124,7 +124,7 @@ export default function Consultation() {
           </Grid>
         </Grid>  
       </Card>
-      {userObject ? <MemberDetails/> : ""}
+      {userObject ? <MemberDetails data={members}/> : ""}
       
     </div>
   )

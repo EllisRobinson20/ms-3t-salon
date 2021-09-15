@@ -80,10 +80,10 @@ export default function MemberDetails({ data }) {
       })
       .then((err) => {
         if (err) {
-          onResult("error", "Oops!... Something went wrong", "please try again")
+          onResult(true, "Oops!... Something went wrong", "please try again")
         } else {
           console.log('successfully updated to database')
-          onResult("success", "Successfully updated user", "")
+          onResult(false, "Successfully updated user", "")
         }
         
         handleClose()
@@ -121,8 +121,8 @@ export default function MemberDetails({ data }) {
     )
   }
 
-  const onResult = (type, message, subMessage) => {
-    setResult({type: type, message: message, subMessage: subMessage})
+  const onResult = (isError, message, subMessage) => {
+    setResult({error: isError, message: message, subMessage: subMessage})
     setTimeout(function(){ setResult("") }, 3000);
   }
 
@@ -172,11 +172,11 @@ export default function MemberDetails({ data }) {
   return (
     <Grid container>
       <Grid item xs={12}>
-      <Typography variant="h4" color={result.type}>
-          {result.message}
+      <Typography variant="h4" color={result ? "error" : "secondary"}>
+          {result? result.message : ""}
         </Typography>
-      <Typography variant="h6" color={result.type}>
-          {result.subMessage}
+      <Typography variant="h6" color={result ? "error" : "secondary"}>
+      {result? result.subMessage : ""}
         </Typography>
       </Grid>
       <Grid item xs={6}>
