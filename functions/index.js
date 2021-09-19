@@ -1,13 +1,19 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const addDays = require("date-fns/addDays");
-
 const setHours = require("date-fns/setHours");
+const addHours = require("date-fns/addHours");
+
+const getDay = require("date-fns/getDay");
+const setMonth = require("date-fns/setMonth");
+const isWithinInterval = require("date-fns/isWithinInterval");
 
 
 const parseISO = require("date-fns/parseISO");
 const format = require("date-fns/format");
 
+const lastDayOfMonth = require("date-fns/lastDayOfMonth");
+const previousSunday = require("date-fns/previousSunday");
 const nodemailer = require("nodemailer");
 admin.initializeApp();
 const firestore = admin.firestore();
@@ -27,19 +33,59 @@ exports.sendEmailNotification=functions.firestore
           pass: process.env.NODEMAILER_PASSWORD,
         },
       });
+      const dateIsSunday = (date) => {
+        console.log("function dateis sunday");
+        console.log(getDay(date));
+        console.log(getDay(date) === 0);
+        return getDay(date) === 0;
+      };
       const removeHyphens = (string) => {
         const alteredString = string.replace(/-/g, " ");
         return alteredString;
       };
+      const getDateBST = (date) => {
+        console.log("date");
+        console.log(date);
+        let marchThisYear = setMonth(date, 2);
+        console.log("march");
+        console.log(marchThisYear);
+        marchThisYear = lastDayOfMonth(marchThisYear);
+        console.log(marchThisYear);
+
+        if (!dateIsSunday(marchThisYear)) {
+          marchThisYear = previousSunday(marchThisYear);
+        }
+        console.log(marchThisYear);
+        let octoberThisYear = setMonth(date, 9);
+        console.log("october");
+        console.log(octoberThisYear);
+        octoberThisYear = lastDayOfMonth(octoberThisYear);
+        console.log(octoberThisYear);
+
+        if (!dateIsSunday(octoberThisYear)) {
+          octoberThisYear = previousSunday(octoberThisYear);
+        }
+        console.log(octoberThisYear);
+        console.log(isWithinInterval(date, {
+          start: marchThisYear,
+          end: octoberThisYear,
+        }));
+        return isWithinInterval(date, {
+          start: marchThisYear,
+          end: octoberThisYear,
+        }) ? addHours(date, 1) : date;
+      };
+      console.log("data.dateOfBooking");
+      console.log(data.dateOfBooking.toDate());
+      console.log(getDateBST(data.dateOfBooking.toDate()));
+      const bookingDateBST = getDateBST(data.dateOfBooking.toDate());
+      const serviceName = removeHyphens(data.selectedService);
       transporter.sendMail({
         from: "ms3tsalon@outlook.com",
         to: `${data.email}`,
         subject: "Successful booking confirmation",
         text: "email body",
         html: `<html>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet">
         <body>
         <h2>Your booking was successful</h2>
                 </br><p><strong>${data.name}</strong>,</p>
@@ -48,14 +94,13 @@ exports.sendEmailNotification=functions.firestore
                 </br>
                 <div style="border:2px solid grey; 
                 border-radius:5px; padding: 1em;">
-                  <h6>${removeHyphens(data.selectedService)}</h6>
+                  <h6>${serviceName}</h6>
                   </br>
                   <h6><strong>Date:</strong> 
-                  ${format(data.dateOfBooking.toDate(),
+                  ${format(bookingDateBST,
       "EEEE do LLLL HH:mm")},
       </h6>
-                  </br>
-                  
+                  </br>  
                 </div>
                 </br>
         <i style="margin-top: 2em;">Look forward to seeing you</i>
@@ -273,7 +318,6 @@ exports.bookProvisionalIfAvail = functions.https.onCall((data, context) => {
       .catch((error) => {
         console.log(error);
       }).then((bookingHistory) => {
-        console.log("running for each next ");
         const arr = [];
         const test = [];
         let overlap = false;
@@ -310,7 +354,6 @@ exports.bookProvisionalIfAvail = functions.https.onCall((data, context) => {
       }).catch((error) => {
         console.log(error);
       }).then((overlap) => {
-        let doc = null;
         if (!overlap) {
           console.log("No overlap");
           // save to db
@@ -331,19 +374,20 @@ exports.bookProvisionalIfAvail = functions.https.onCall((data, context) => {
               html: "This is an <code>HTML</code> email body.",
             },
           }) */
-          doc = firestore.collection("bookingHistory")
+          return firestore.collection("bookingHistory")
               .add({dateOfBooking: selectedDate,
                 durationMinutes: data.durationService,
                 email: data.email,
                 name: data.name,
                 selectedService: data.service,
-                startTimeMinutes: data.bookingTime});
-          return doc;
-          /* .then((documentReference) => {
+                startTimeMinutes: data.bookingTime})
+              .then((documentReference) => {
                 console.
                     log(`Added document with name: ${documentReference.id}`);
                 return documentReference;
-              }); */
+              }).catch((error) => {
+                console.log(error);
+              });
         } /* else {
           console.log("Booking overlaps existing booking");
         }

@@ -2235,7 +2235,6 @@ input, select, textarea {
 
 		#intro .middle {
 			position: relative;
-			transition: z-index 2s;
 		}
 		#intro .middle:active {
 			z-index: 1;

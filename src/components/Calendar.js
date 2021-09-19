@@ -101,7 +101,7 @@ const renderCells = () =>{
       //passed the selected day to props as useContext is ineffective
       //setNewDate may now be redundant
       props.action(day)
-      console.log("Match "+day);
+      console.log("Match "+day.toLocaleTimeString());
       console.log("Match "+selectedDateGlobal)
       console.log("Match "+selectedDate.toString())
     } else
