@@ -1,11 +1,75 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const addDays = require("date-fns/addDays");
+
 const setHours = require("date-fns/setHours");
+
+
 const parseISO = require("date-fns/parseISO");
 const format = require("date-fns/format");
+
+const nodemailer = require("nodemailer");
 admin.initializeApp();
 const firestore = admin.firestore();
+require("dotenv").config();
+
+
+exports.sendEmailNotification=functions.firestore
+    .document("bookingHistory/{docId}")
+    .onCreate((snapshot, context) => {
+      const data = snapshot.data();
+      const transporter = nodemailer.createTransport({
+        host: "smtp-mail.outlook.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: process.env.NODEMAILER_EMAIL,
+          pass: process.env.NODEMAILER_PASSWORD,
+        },
+      });
+      const removeHyphens = (string) => {
+        const alteredString = string.replace(/-/g, " ");
+        return alteredString;
+      };
+      transporter.sendMail({
+        from: "ms3tsalon@outlook.com",
+        to: `${data.email}`,
+        subject: "Successful booking confirmation",
+        text: "email body",
+        html: `<html>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet">
+        <body>
+        <h2>Your booking was successful</h2>
+                </br><p><strong>${data.name}</strong>,</p>
+                </br><p>Thanks for booking with us. 
+                Your time slot is provided below:</p>
+                </br>
+                <div style="border:2px solid grey; 
+                border-radius:5px; padding: 1em;">
+                  <h6>${removeHyphens(data.selectedService)}</h6>
+                  </br>
+                  <h6><strong>Date:</strong> 
+                  ${format(data.dateOfBooking.toDate(),
+      "EEEE do LLLL HH:mm")},
+      </h6>
+                  </br>
+                  
+                </div>
+                </br>
+        <i style="margin-top: 2em;">Look forward to seeing you</i>
+        </br>
+        <h4>Latoyah</h4>
+        <h2 style="font-family: Pinyon Script;">Ms 3T Salon</h2>
+        </body>
+        </html>`,
+      }).then((res) => {
+        console.log("Successful booking");
+      }).catch((err) => {
+        console.log(err);
+      });
+    });
 
 exports.addAdminRole = functions.https.onCall((data, context) => {
   return admin.auth().getUserByEmail(data.email).then((user) => {
@@ -246,16 +310,16 @@ exports.bookProvisionalIfAvail = functions.https.onCall((data, context) => {
       }).catch((error) => {
         console.log(error);
       }).then((overlap) => {
-        const doc = null;
+        let doc = null;
         if (!overlap) {
           console.log("No overlap");
           // save to db
-          const emailRef = firestore.collection("emails");
+          /* const emailRef = firestore.collection("emails");
           const batch = firestore.batch();
-          batch.set(bookingHistory, {
+          batch.set(bookingHistory, { // may need to be "add" not "set"
             dateOfBooking: selectedDate,
             durationMinutes: data.durationService,
-            name: data.user.displayNam,
+            name: data.user.displayName,
             selectedService: data.service,
             startTimeMinutes: data.bookingTime,
           });
@@ -266,27 +330,30 @@ exports.bookProvisionalIfAvail = functions.https.onCall((data, context) => {
               subject: "New order",
               html: "This is an <code>HTML</code> email body.",
             },
-          })
-          // doc = firestore.collection("bookingHistory")
-              // .add({dateOfBooking: selectedDate,
-              // durationMinutes: data.durationService,
-              // name: data.name,
-              // selectedService: data.service,
-              // startTimeMinutes: data.bookingTime})
-              .then((documentReference) => {
+          }) */
+          doc = firestore.collection("bookingHistory")
+              .add({dateOfBooking: selectedDate,
+                durationMinutes: data.durationService,
+                email: data.email,
+                name: data.name,
+                selectedService: data.service,
+                startTimeMinutes: data.bookingTime});
+          return doc;
+          /* .then((documentReference) => {
                 console.
                     log(`Added document with name: ${documentReference.id}`);
                 return documentReference;
-              });
-        } else {
+              }); */
+        } /* else {
           console.log("Booking overlaps existing booking");
         }
-        return doc;
-      }).catch((error) => {
+        return doc; */
+      });
+  /*       .catch((error) => {
         console.log(error);
       }).then((doc) => {
         return doc;
-      });
+      }); */
   // for each record - > if record greater than start but less than finish
 
   // take the slot - leave payment confirmed set to false

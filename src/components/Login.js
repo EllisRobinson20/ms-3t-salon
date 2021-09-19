@@ -4,6 +4,8 @@ import 'firebase/firestore'
 import { AuthContext } from '../context/AuthContext'
 import { Link, navigate } from '@reach/router'
 import * as styles from '../styles/login.module.css'
+import CloseIcon from '@material-ui/icons/Close';
+import { Grid, Typography } from '@material-ui/core'
 
 export default function Login() {
   const toggleView = e => {
@@ -54,12 +56,22 @@ export default function Login() {
     }
     return (
       <div className={styles.background}>
+        <Grid container>
+        <Grid item xs={1}>
         <Link to={''} onClickCapture={closeLogin}>
-          Close
+        <CloseIcon/>
         </Link>
+          </Grid>
+        <Grid item xs={10}>
+          <Typography variant="body2">Not yet a member?</Typography>
         <Link to={''} onClickCapture={toggleView}>
-          Not yet a member? Register here.
+           Go to register ...
         </Link>
+          </Grid>
+          <Grid item xs={1}>
+        
+          </Grid>
+        </Grid>
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="email">Email</label>
@@ -142,13 +154,25 @@ export default function Login() {
     }
 
     return (
-      <div className={styles.background}>
+      <div id={"login"} className={styles.background}>
+        <Grid container>
+        <Grid item xs={1}>
         <Link to={''} onClickCapture={closeLogin}>
-          Close
+          <CloseIcon/>
         </Link>
-        <Link to={''} onClickCapture={toggleView}>
-          Already a member? Go to login ...
+          </Grid>
+        <Grid item xs={10}>
+          <Typography variant="body2">Already a member?</Typography>
+          <Link to={''} onClickCapture={toggleView}>
+           Go to login ...
         </Link>
+          </Grid>
+          <Grid item xs={1}>
+        
+          </Grid>
+        </Grid>
+        
+        
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="email">Name</label>

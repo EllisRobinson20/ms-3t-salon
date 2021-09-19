@@ -5,7 +5,7 @@ import { Link, graphql, useStaticQuery } from 'gatsby';
 import * as styles from '../styles/appointmentSummary.module.css'
 import format from "date-fns/format";
 import firebase from "firebase"
-
+import { navigate } from 'gatsby-link';
 
 
 export default function AppointmentSummary() {
@@ -50,13 +50,14 @@ export default function AppointmentSummary() {
         // ! Must Check Auth First
         if (user) {
             const bookingAttempt = firebase.functions().httpsCallable('bookProvisionalIfAvail');
-            bookingAttempt({user: user, service: selectedService.id, 
+            console.log("booking attempt fired")
+            bookingAttempt({name: user.displayName, email: user.email, service: selectedService.id, 
                 bookingDate: selectedDateGlobal, bookingTime: selectedSlot.id, durationService: durationSelectedService()})
             .then(result => console.log(returnResult(result.data)))  
         } else {
             // login
             //console.log("login please")
-            // navigate("../../authentication/login")
+             //navigate("../../authentication/login")
             // need to keep the details of the booking if they login or sign up
 
             setShowLogin(true);
