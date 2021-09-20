@@ -3,6 +3,7 @@ const admin = require("firebase-admin");
 const addDays = require("date-fns/addDays");
 const setHours = require("date-fns/setHours");
 const addHours = require("date-fns/addHours");
+const addMinutes = require("date-fns/addMinutes");
 
 const getDay = require("date-fns/getDay");
 const setMonth = require("date-fns/setMonth");
@@ -10,6 +11,7 @@ const isWithinInterval = require("date-fns/isWithinInterval");
 
 
 const parseISO = require("date-fns/parseISO");
+const formatISO = require("date-fns/formatISO");
 const format = require("date-fns/format");
 
 const lastDayOfMonth = require("date-fns/lastDayOfMonth");
@@ -304,9 +306,54 @@ exports.bookProvisionalIfAvail = functions.https.onCall((data, context) => {
   function between(x, min, max) {
     return x >= min && x <= max;
   }
+  const dateIsSunday = (date) => {
+    console.log("function dateis sunday");
+    console.log(getDay(date));
+    console.log(getDay(date) === 0);
+    return getDay(date) === 0;
+  };
+  const getDateBST = (date) => {
+    console.log("date");
+    console.log(date);
+    let marchThisYear = setMonth(date, 2);
+    console.log("march");
+    console.log(marchThisYear);
+    marchThisYear = lastDayOfMonth(marchThisYear);
+    console.log(marchThisYear);
+
+    if (!dateIsSunday(marchThisYear)) {
+      marchThisYear = previousSunday(marchThisYear);
+    }
+    console.log(marchThisYear);
+    let octoberThisYear = setMonth(date, 9);
+    console.log("october");
+    console.log(octoberThisYear);
+    octoberThisYear = lastDayOfMonth(octoberThisYear);
+    console.log(octoberThisYear);
+
+    if (!dateIsSunday(octoberThisYear)) {
+      octoberThisYear = previousSunday(octoberThisYear);
+    }
+    console.log(octoberThisYear);
+    console.log(isWithinInterval(date, {
+      start: marchThisYear,
+      end: octoberThisYear,
+    }));
+    return isWithinInterval(date, {
+      start: marchThisYear,
+      end: octoberThisYear,
+    }) ? addHours(date, 1) : date;
+  };
   // if the passed in time slot on date given is not booked
   // first get db
   const selectedDate = parseISO(data.bookingDate);
+  console.log("checking selected date");
+  console.log(selectedDate);
+  console.log(data.bookingDate);
+  console.log(data.bookingDate.toString());
+  console.log(formatISO(addMinutes(selectedDate,
+      data.durationService)));
+
   let dayAfter = addDays(selectedDate, 1);
   dayAfter = setHours(dayAfter, 2);
   const bookingHistory = firestore.collection("bookingHistory")
@@ -355,7 +402,6 @@ exports.bookProvisionalIfAvail = functions.https.onCall((data, context) => {
         console.log(error);
       }).then((overlap) => {
         if (!overlap) {
-          console.log("No overlap");
           // save to db
           /* const emailRef = firestore.collection("emails");
           const batch = firestore.batch();
@@ -374,13 +420,18 @@ exports.bookProvisionalIfAvail = functions.https.onCall((data, context) => {
               html: "This is an <code>HTML</code> email body.",
             },
           }) */
+          const startTime = getDateBST(parseISO(data.bookingDate));
           return firestore.collection("bookingHistory")
               .add({dateOfBooking: selectedDate,
                 durationMinutes: data.durationService,
                 email: data.email,
                 name: data.name,
                 selectedService: data.service,
-                startTimeMinutes: data.bookingTime})
+                startTimeMinutes: data.bookingTime,
+                startISO: formatISO(startTime),
+                finishISO:
+                formatISO(addMinutes(startTime, data.durationService)),
+              })
               .then((documentReference) => {
                 console.
                     log(`Added document with name: ${documentReference.id}`);

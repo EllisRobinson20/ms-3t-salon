@@ -26,6 +26,7 @@ const AuthContextProvider = ({ children }) => {
     `)
     const [user, setUser] = useState()
     const [showLogin, setShowLogin] = useState(false)
+    const [loginAttempt, setLoginAttempt] = useState(false)
     const [deviceIsMobile, setDeviceIsMobile] = useState()
     const [profile, setProfile] = useState({})
     const [admin, setAdmin] = useState(false)
@@ -73,13 +74,32 @@ const AuthContextProvider = ({ children }) => {
         })
     }, [])
     useEffect(() => {
-        if (user) {
-            
+        if (user) { 
+            firebase.auth().onAuthStateChanged(user => {
+                setUser(user)
+                console.log("chaned auth to -> " )
+                console.log(user)
+                if (!user) {setProfile({}) 
+            console.log("user out")
+            setAdmin(false)
         }
-    }, [user])
+                else {
+                    // get member object is for setting additional properties though there is an less erroneous way to do this
+                    //getMemberObject()
+                    user.getIdTokenResult().then(idTokenResult => {
+                        setAdmin(idTokenResult.claims.admin ? true : false)
+                      })
+    
+                }
+                if (showLogin) {setShowLogin(false)}
+                
+            })  
+        }
+    }, [loginAttempt])
     return (
         <AuthContext.Provider value={{user, setUser,
             showLogin, setShowLogin,
+            loginAttempt, setLoginAttempt,
             deviceIsMobile, setDeviceIsMobile,
             profile, setProfile,
             admin, setAdmin,

@@ -156,6 +156,10 @@ export default function Diary() {
     })
     handleOpen()
   }
+  const removeHyphens = (string) => {
+    const alteredString = string.replace(/-/g, " ");
+    return alteredString;
+  };
   const renderDetails = data => {
     return (
       <div>
@@ -172,17 +176,17 @@ export default function Diary() {
               spacing={0}
               style={{ display: matchesSm ? 'none' : '' }}
             >
-              <Grid style={{ paddingTop: '1em' }} item container xs={6}>
+              {/* <Grid style={{ paddingTop: '1em' }} item container xs={12}>
                 <Grid item container xs={12} justifyContent="flex-start">
                   <Typography variant="body2" color="textSecondary">
                     Name: <strong>{data.name}</strong>
                   </Typography>
                 </Grid>
-              </Grid>
-              <Grid style={{ paddingTop: '1em' }} item container xs={6}>
+              </Grid> */}
+              <Grid style={{ paddingTop: '1em' }} item container xs={12}>
                 <Grid item container xs={12} justifyContent="flex-start">
-                  <Typography variant="body2" component="p">
-                    Service: <strong>{data.selectedService}</strong>
+                  <Typography variant="body1" component="p">
+                    <strong>{removeHyphens(data.selectedService)}</strong>
                   </Typography>
                 </Grid>
               </Grid>
@@ -244,7 +248,7 @@ export default function Diary() {
                     <Grid item xs={12}>
                       <Typography variant="h5" component="h2"></Typography>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={12}>
                       <Typography
                         className={classes.title}
                         color="textSecondary"
@@ -252,25 +256,25 @@ export default function Diary() {
                         Name: <strong>{bookingDetails.name}</strong>
                       </Typography>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={12}>
                       <Typography
                         className={classes.title}
                         color="textSecondary"
                       >
-                        For: <strong>{bookingDetails.service}</strong>
+                        For: <strong>{removeHyphens(bookingDetails.service)}</strong>
                       </Typography>
                     </Grid>
-                    <Grid item xs={4} gutterBottom>
+                    <Grid item xs={12} gutterBottom>
                       <Typography color="textSecondary">
-                        <strong>0781234567</strong>
+                        Tel: <strong>0781234567</strong>
                       </Typography>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={6}>
                       <Typography variant="body2" component="p">
                         Start: <strong>{bookingDetails.start}</strong>
                       </Typography>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={6}>
                       <Typography variant="body2" component="p">
                         Finish: <strong>{bookingDetails.finish}</strong>
                       </Typography>

@@ -83,6 +83,8 @@ export default function AppointmentSummary() {
   }
   useEffect(() => {
     setListName(selectedService.name)
+    console.log("user")
+    console.log(user)
   }, [])
 
   useEffect(() => {

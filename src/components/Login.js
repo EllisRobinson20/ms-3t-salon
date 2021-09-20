@@ -15,9 +15,9 @@ export default function Login() {
   const closeLogin = e => {
     if (e) {
       e.preventDefault()
-    } 
-      setShowLogin(false)
-      navigate('/')
+    } navigate("/salon/");
+      //setShowLogin(false)
+      
     
   }
   const clearFields = () => {
@@ -33,6 +33,7 @@ export default function Login() {
 
   const { setUser } = useContext(AuthContext)
   const { setShowLogin } = useContext(AuthContext)
+  const { setLoginAttempt } = useContext(AuthContext)
 
   const [showSignUp, setShowSignUp] = useState(false)
 
@@ -137,6 +138,7 @@ export default function Login() {
                 displayName: data.displayName,
               })
               setUser(cred)
+              setLoginAttempt(true)
               clearFields()
               closeLogin()
               

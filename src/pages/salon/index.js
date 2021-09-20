@@ -1,182 +1,218 @@
-import { graphql, Link} from 'gatsby'
-import React, {useContext} from 'react'
+import { graphql, Link } from 'gatsby'
+import React, { useContext } from 'react'
 import Layout from '../../components/Layout'
 import { NavigationContext } from '../../context/NavigationContext'
 import { AuthContext } from '../../context/AuthContext'
 import { BookingContext } from '../../context/BookingContext'
-import { makeStyles, useTheme, ThemeProvider, createTheme} from '@material-ui/core/styles';
-import {useMediaQuery} from '@material-ui/core';
+import {
+  makeStyles,
+  useTheme,
+  ThemeProvider,
+  createTheme,
+} from '@material-ui/core/styles'
+import { useMediaQuery } from '@material-ui/core'
 import ServicesList from '../../components/subcomponents/ServicesList'
 
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card'
+import CardActions from '@material-ui/core/CardActions'
+import CardContent from '@material-ui/core/CardContent'
+import CardMedia from '@material-ui/core/CardMedia'
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
 
-import Grid from '@material-ui/core/Grid';
+import Grid from '@material-ui/core/Grid'
 
 import clsx from 'clsx'
 
-import { red, grey } from '@material-ui/core/colors'
-import { IconButton } from '@material-ui/core';
+import { grey } from '@material-ui/core/colors'
+import { IconButton } from '@material-ui/core'
 
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 
+const buttonTheme = createTheme({
+  palette: { primary: { main: '#d52349' }, secondary: grey },
+})
 
-const buttonTheme = createTheme({ palette: { primary: {main:'#d52349',}, secondary: grey } })
+export default function Services({ location, data }) {
+  const { setPageState } = useContext(NavigationContext)
+  const { lastPage } = useContext(NavigationContext)
+  const { deviceIsMobile } = useContext(AuthContext)
+  setPageState(location.pathname)
 
+  const useStyles = makeStyles(theme => ({
+    root: {
+      marginTop: '2em',
+    },
+    container40: {
+      width: '40vw',
+    },
+    container60: {
+      width: '60vw',
+    },
+    container90: {
+      width: '90vw',
+    },
+    detailsCard: {
+      display: 'inline-block',
+      padding: '2em',
+      contentAlign: 'center',
+      marginTop: '4em',
+    },
+    consultationLabel: {
+      marginBottom: 'em',
+    },
+    c: {
+      display: 'block',
+      margin: '0 auto',
+    },
+    wrapper: {
+      padding: '0 2em',
+    },
+    stickyButton: {
+      width: '80vw',
+      position: 'fixed',
+      top: '87vh',
+      left: '10%',
+    },
+    buttonHidden: {
+      display: 'none',
+    },
+  }))
 
-
-export default function Services({location, data}) {
-    const {setPageState} = useContext(NavigationContext);
-    const {lastPage} = useContext(NavigationContext);
-    const {deviceIsMobile} =useContext(AuthContext)
-    setPageState(location.pathname);
-    
-
-    const useStyles = makeStyles((theme) => ({
-        root: {
-            marginTop: '2em'
-        },
-        container40: {
-            width: '40vw'
-        },
-        container60: {
-            width: '60vw'
-        },
-        container90: {
-            width: '90vw'
-        },
-        detailsCard: {
-            display: 'inline-block',
-            padding: '2em',
-            contentAlign: 'center',
-            marginTop: '4em'
-        },
-        consultationLabel: {
-            marginBottom: 'em'
-        },
-        c: {
-            display: 'block',
-            margin: '0 auto'
-        },
-        wrapper: {
-          padding: '0 2em'
-        },
-        stickyButton: {
-          width: '80vw',
-          position: 'fixed',
-          top: '87vh',
-          left: '10%',
-        },
-        buttonHidden: {
-          display: 'none'
-        }
-      }));
-  
   //setprops in here for which service is selected
-    const {setSelectedService} = useContext(BookingContext);
-    const {serviceListRef} = useContext(BookingContext);
-    const services = data.allService.edges
-    const theme = useTheme();
-    const classes = useStyles();
-    const matchesMd = useMediaQuery(theme.breakpoints.down('md'));
-    const matchesSm = useMediaQuery(theme.breakpoints.down('sm'));
-    return (
-        <Layout>
-            <Grid container direction="row-reverse" className={classes.wrapper} justifyContent="center">
-                
-                <Grid item xs={12} md={10} lg={6} xl={4}>
-                    {services.map(service => (
-                        service.node.id === serviceListRef ?
-                        <>
-                            <Card elevation={3} className={clsx(classes.detailsCard)}>
-                                <CardContent>
-                                <Typography gutterBottom variant="h4" component="div">
-                                {service.node.name}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                {service.node.description}
-                                </Typography>
-                                <Typography gutterBottom variant="h6" component="div">
-                                Duration: {service.node.durationMinutes/60} hour
-                                </Typography>
-                                <Typography gutterBottom variant="h6" component="div">
-                                {service.node.consultationOnly ? 
-                                <Typography gutterBottom variant="h6" component="div">
-                                Consultation only
-                                </Typography>
-                                :
-                                `Price: £${service.node.pricePence/100}`
-                                }
-                                </Typography>
-                                </CardContent>
-                                {service.node.consultationOnly ?
-                                <Typography variant="body" color="text.secondary" className={classes.consultationLabel}>
-                                Call to book a consultation
-                                </Typography>
-                                :
-                                <CardActions className={classes.c}>
-                                  <ThemeProvider theme={buttonTheme}>
-                                  <Link to="./booking">
-                                    <Button size="large"
-                                            color="primary"
-                                            variant="contained" 
-                                            onClick={() => {setSelectedService({ id: service.node.id, name: service.node.name})} }>
-                                        Book Now
-                                    </Button>
-                                  </Link>
-                                </ThemeProvider>
-                                </CardActions>
-                                }
-                            </Card>
-                            <ThemeProvider theme={buttonTheme}>
-                            <Link to="./booking">
-                            <Button size="large"
-                                  color="primary"
-                                  variant="contained" 
-                                  className={clsx(serviceListRef && matchesMd && !service.node.consultationOnly ? classes.stickyButton: classes.buttonHidden) }
-                                  onClick={() => {setSelectedService(service.node.id)} }
-                                  >
-                              Book Now
-                            </Button>
-                            </Link>
-                            <a href="tel:07517140732">
-                            <Button size="large"
-                                  color="primary"
-                                  variant="contained" 
-                                  className={clsx(serviceListRef && matchesMd && service.node.consultationOnly ? classes.stickyButton: classes.buttonHidden) } 
-                                  >
-                              Call for Consultation
-                            </Button>
-                            </a>
-                            </ThemeProvider>
-                            </>
-                        : 
-                        ''
-                    ))}
-                </Grid>
-                <Grid item container xs={12} md={10} lg={6} xl={8}>
-                  <Link to={lastPage}>
-                    <IconButton href={lastPage} color="textSecondary" aria-label="upload picture" component="span">
-                    <ArrowBackIcon/>
-                  </IconButton>
+  const { setSelectedService } = useContext(BookingContext)
+  const { serviceListRef } = useContext(BookingContext)
+  const services = data.allService.edges
+  const profilePicture = data.allCloudinaryMedia.edges[2].node.secure_url
+  const theme = useTheme()
+  const classes = useStyles()
+  const matchesMd = useMediaQuery(theme.breakpoints.down('md'))
+  const matchesSm = useMediaQuery(theme.breakpoints.down('sm'))
+  return (
+    <Layout>
+      <Grid
+        container
+        direction="row-reverse"
+        className={classes.wrapper}
+        justifyContent="center"
+      >
+        <Grid item xs={12} md={10} lg={6} xl={4}>
+          {services.map(service =>
+            service.node.id === serviceListRef ? (
+              <>
+                <Card elevation={3} className={clsx(classes.detailsCard)}>
+                  <CardContent>
+                    <img src={profilePicture} alt="Stylists profile" style={{borderRadius: '20px'}}></img>
+                    <Typography gutterBottom variant="h4" component="div">
+                      {service.node.name}
+                    </Typography>
+                    <Typography gutterBottom variant="h6" component="div">
+                      Duration: {service.node.durationMinutes / 60} hour
+                    </Typography>
+                    <Typography gutterBottom variant="h6" component="div">
+                      {service.node.consultationOnly ? (
+                        <Typography gutterBottom variant="h6" component="div">
+                          Consultation only
+                        </Typography>
+                      ) : (
+                        `Price: £${service.node.pricePence / 100}`
+                      )}
+                    </Typography>
+                  </CardContent>
+                  {service.node.consultationOnly ? (
+                    <Typography
+                      variant="body"
+                      color="text.secondary"
+                      className={classes.consultationLabel}
+                    >
+                      Call to book a consultation
+                    </Typography>
+                  ) : (
+                    <CardActions className={classes.c}>
+                      <ThemeProvider theme={buttonTheme}>
+                        <Link to="./booking">
+                          <Button
+                            size="large"
+                            color="primary"
+                            variant="contained"
+                            onClick={() => {
+                              setSelectedService({
+                                id: service.node.id,
+                                name: service.node.name,
+                              })
+                            }}
+                          >
+                            Book Now
+                          </Button>
+                        </Link>
+                      </ThemeProvider>
+                    </CardActions>
+                  )}
+                </Card>
+                <ThemeProvider theme={buttonTheme}>
+                  <Link to="./booking">
+                    <Button
+                      size="large"
+                      color="primary"
+                      variant="contained"
+                      className={clsx(
+                        serviceListRef &&
+                          matchesMd &&
+                          !service.node.consultationOnly
+                          ? classes.stickyButton
+                          : classes.buttonHidden
+                      )}
+                      onClick={() => {
+                        setSelectedService(service.node.id)
+                      }}
+                    >
+                      Book Now
+                    </Button>
                   </Link>
-                  <Typography variant="h4">
-                    Select A Service
-                  </Typography>
-                    <ServicesList/>
-                </Grid>
-                <Grid item xs={12}></Grid>
-            </Grid>
-            
-        </Layout>
-    )
+                  <a href="tel:07517140732">
+                    <Button
+                      size="large"
+                      color="primary"
+                      variant="contained"
+                      className={clsx(
+                        serviceListRef &&
+                          matchesMd &&
+                          service.node.consultationOnly
+                          ? classes.stickyButton
+                          : classes.buttonHidden
+                      )}
+                    >
+                      Call for Consultation
+                    </Button>
+                  </a>
+                </ThemeProvider>
+              </>
+            ) : (
+              ''
+            )
+          )}
+        </Grid>
+        <Grid item container xs={12} md={10} lg={6} xl={8}>
+          <Link to={lastPage}>
+            <IconButton
+              href={lastPage}
+              color="textSecondary"
+              aria-label="upload picture"
+              component="span"
+            >
+              <ArrowBackIcon />
+            </IconButton>
+          </Link>
+          <Typography variant="h4">Select A Service</Typography>
+          <ServicesList />
+        </Grid>
+        <Grid item xs={12}></Grid>
+      </Grid>
+    </Layout>
+  )
 }
 export const query = graphql`
-query ListServicesPageQuery {
+  query ListServicesPageQuery {
     allService {
       edges {
         node {
@@ -189,6 +225,17 @@ query ListServicesPageQuery {
           upperPriceLimit
           variablePrice
           consultationOnly
+        }
+      }
+    }
+    allCloudinaryMedia(
+      sort: { fields: created_at, order: DESC }
+      filter: { secure_url: { regex: "/salon-theme-header/" } }
+    ) {
+      edges {
+        node {
+          id
+          secure_url
         }
       }
     }
