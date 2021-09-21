@@ -1,5 +1,7 @@
 import { graphql, Link } from 'gatsby'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import firebase from 'gatsby-plugin-firebase'
+import 'firebase/firestore'
 import Layout from '../../components/Layout'
 import { NavigationContext } from '../../context/NavigationContext'
 import { AuthContext } from '../../context/AuthContext'
@@ -34,10 +36,6 @@ const buttonTheme = createTheme({
 })
 
 export default function Services({ location, data }) {
-  const { setPageState } = useContext(NavigationContext)
-  const { lastPage } = useContext(NavigationContext)
-  const { deviceIsMobile } = useContext(AuthContext)
-  setPageState(location.pathname)
 
   const useStyles = makeStyles(theme => ({
     root: {
@@ -78,16 +76,103 @@ export default function Services({ location, data }) {
       display: 'none',
     },
   }))
+  // fetch in the members data dynamically. match the members name by the id of user object
+  
+  // get the service data by graphql
+    // service data already in the graphql page query
+  // run the following conditions :
+    // user consulted - if yes get details from here NOTE: will need to match the selected service to change only the price for this service 
+    // - if not get details from db
+    // if consultation only or price varible or duration variable - consultation first
 
-  //setprops in here for which service is selected
+    // THe data is returning undefined. this could be due to the db not all having the same values. try to put the bools into all documents
+  const [viewModel, setViewModel] = useState({
+    duration: 0,
+    price: 0,
+    buttonLabel: "",
+    message: "",
+  })
+  
+  
+  const { setPageState } = useContext(NavigationContext)
+  const { lastPage } = useContext(NavigationContext)
+  const { deviceIsMobile } = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
+  setPageState(location.pathname)
+  const {memberInfo} = useContext(AuthContext)
   const { setSelectedService } = useContext(BookingContext)
   const { serviceListRef } = useContext(BookingContext)
+
   const services = data.allService.edges
   const profilePicture = data.allCloudinaryMedia.edges[2].node.secure_url
   const theme = useTheme()
   const classes = useStyles()
   const matchesMd = useMediaQuery(theme.breakpoints.down('md'))
   const matchesSm = useMediaQuery(theme.breakpoints.down('sm'))
+  const updateView = (serviceDetails) => {
+    console.log("updateView called")
+    console.log(serviceDetails)
+    if (memberInfo.userConsulted && memberInfo.defaultService === serviceDetails.node.id) {
+      // using member info
+      console.log("condition 1")
+      setViewModel({...viewModel, 
+        duration: `${memberInfo.durationService/60} hrs`,
+        price: `£${memberInfo.costServicePence/100}`,
+        buttonLabel: "Book Now",
+        message: "",
+      })
+    } else
+    if (!memberInfo.userConsulted) {
+
+      if (!serviceDetails.node.consultationOnly && serviceDetails.node.variablePrice && !serviceDetails.node.variableDuration) {
+        console.log("condition 2")
+        setViewModel({...viewModel, 
+          duration: `${serviceDetails.node.durationMinutes/60} hrs`,
+          price: `From £${serviceDetails.node.pricePence/100}`,
+          buttonLabel: "Consultation only",
+          message: "Call us to get a consultation",
+        })
+      } else
+      if (!serviceDetails.node.consultationOnly && !serviceDetails.node.variablePrice && serviceDetails.node.variableDuration) {
+        console.log("condition 3")
+        setViewModel({...viewModel, 
+          duration: `From ${serviceDetails.node.durationMinutes/60} hrs`,
+          price: `£${serviceDetails.node.pricePence/100}`,
+          buttonLabel: "Consultation only",
+          message: "Call us to get a consultation",
+        })
+       
+      } else
+      if (!serviceDetails.node.consultationOnly && !serviceDetails.node.variablePrice && !serviceDetails.node.variableDuration) {
+        console.log("condition 4")
+        setViewModel({...viewModel, 
+          duration: `${serviceDetails.node.durationMinutes/60} hrs`,
+          price: `£${serviceDetails.node.pricePence/100}`,
+          buttonLabel: "Book now",
+          message: "",
+        })
+      } 
+      else
+      if (serviceDetails.node.consultationOnly && serviceDetails.node.variableDuration) {
+        console.log("condition 5")
+        setViewModel({...viewModel, 
+          duration: `From ${serviceDetails.node.durationMinutes/60} hrs`,
+          price: "",
+          buttonLabel: "Consultation only",
+          message: "Call us to get a consultation",
+        })
+      } else
+      if (serviceDetails.node.variablePrice && serviceDetails.node.variableDuration) {
+        console.log("condition 6")
+        setViewModel({...viewModel, 
+          duration: `From ${serviceDetails.node.durationMinutes/60} hrs`,
+          price: `From £${serviceDetails.node.pricePence/100}`,
+          buttonLabel: "Consultation only",
+          message: "Call us to get a consultation",
+        })
+      } 
+    }
+  }
   return (
     <Layout>
       <Grid
@@ -100,22 +185,22 @@ export default function Services({ location, data }) {
           {services.map(service =>
             service.node.id === serviceListRef ? (
               <>
-                <Card elevation={3} className={clsx(classes.detailsCard)}>
+                <Card on elevation={3} className={clsx(classes.detailsCard)}>
                   <CardContent>
                     <img src={profilePicture} alt="Stylists profile" style={{borderRadius: '20px'}}></img>
                     <Typography gutterBottom variant="h4" component="div">
                       {service.node.name}
                     </Typography>
                     <Typography gutterBottom variant="h6" component="div">
-                      Duration: {service.node.durationMinutes / 60} hour
+                      Duration: {viewModel.duration} {/* {service.node.durationMinutes / 60} hour */}
                     </Typography>
                     <Typography gutterBottom variant="h6" component="div">
                       {service.node.consultationOnly ? (
                         <Typography gutterBottom variant="h6" component="div">
-                          Consultation only
+                          {viewModel.buttonLabel} {/* Consultation only */}
                         </Typography>
                       ) : (
-                        `Price: £${service.node.pricePence / 100}`
+                        `Price: ${viewModel.price}` /* `Price: £${service.node.pricePence / 100}` */
                       )}
                     </Typography>
                   </CardContent>
@@ -125,7 +210,7 @@ export default function Services({ location, data }) {
                       color="text.secondary"
                       className={classes.consultationLabel}
                     >
-                      Call to book a consultation
+                      {viewModel.message} {/* Call to book a consultation */}
                     </Typography>
                   ) : (
                     <CardActions className={classes.c}>
@@ -142,7 +227,7 @@ export default function Services({ location, data }) {
                               })
                             }}
                           >
-                            Book Now
+                            {viewModel.buttonLabel} {/* Book Now */}
                           </Button>
                         </Link>
                       </ThemeProvider>
@@ -166,7 +251,7 @@ export default function Services({ location, data }) {
                         setSelectedService(service.node.id)
                       }}
                     >
-                      Book Now
+                      {viewModel.buttonLabel} {/* Book Now */}
                     </Button>
                   </Link>
                   <a href="tel:07517140732">
@@ -182,7 +267,7 @@ export default function Services({ location, data }) {
                           : classes.buttonHidden
                       )}
                     >
-                      Call for Consultation
+                      {viewModel.buttonLabel}{/* Call for Consultation */}
                     </Button>
                   </a>
                 </ThemeProvider>
@@ -204,7 +289,7 @@ export default function Services({ location, data }) {
             </IconButton>
           </Link>
           <Typography variant="h4">Select A Service</Typography>
-          <ServicesList />
+          <ServicesList action={updateView}/>
         </Grid>
         <Grid item xs={12}></Grid>
       </Grid>
@@ -225,6 +310,7 @@ export const query = graphql`
           upperPriceLimit
           variablePrice
           consultationOnly
+          variableDuration
         }
       }
     }

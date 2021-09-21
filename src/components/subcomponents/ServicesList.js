@@ -19,14 +19,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SelectedListItem() {
+export default function SelectedListItem(props) {
     const data = useStaticQuery(graphql`
     query ServiceNameQuery {
         allService {
           edges {
             node {
-              name
               id
+              durationMinutes
+              pricePence
+              bookingCount
+              description
+              name
+              upperPriceLimit
+              variablePrice
+              consultationOnly
+              variableDuration
             }
           }
         }
@@ -42,6 +50,12 @@ export default function SelectedListItem() {
   const handleListItemClick = (event, index, serviceId) => {
     setSelectedIndex(index);
     setServiceListRef(serviceId);
+    services.forEach((service) => {
+      if (service.node.id === serviceId) {
+        props.action(service)
+      }
+    })
+    
   };
 
   return (

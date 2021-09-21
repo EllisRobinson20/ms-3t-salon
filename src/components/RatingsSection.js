@@ -45,11 +45,11 @@ const getRatingsAverage = () => {
     if (data) {
         data.allReview.edges.forEach(dbEntry => {
             rating += dbEntry.node.rating
-            console.log("total: "+rating)
+            /* console.log("total: "+rating) */
             
         });
         rating = rating/data.allReview.edges.length
-        console.log("total2: "+rating)
+        /* console.log("total2: "+rating) */
     }
     return rating;
 }

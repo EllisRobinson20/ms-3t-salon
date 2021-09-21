@@ -45,13 +45,13 @@ export default function AppointmentSummary() {
   const listItems = []
   // Functions
   const bookProvisionalIfAvail = () => {
-    console.log(user)
+    /* console.log(user) */
     // ! Must Check Auth First
     if (user) {
       const bookingAttempt = firebase
         .functions()
         .httpsCallable('bookProvisionalIfAvail')
-      console.log('booking attempt fired')
+      /* console.log('booking attempt fired') */
       bookingAttempt({
         name: user.displayName,
         email: user.email,
@@ -68,7 +68,7 @@ export default function AppointmentSummary() {
   const returnResult = result => {
     if (result) {
       alert('Your booking is successful')
-      console.log(result)
+      /* console.log(result) */
     } else {
       alert(
         'Sorry your booking time has already been taken ' +
@@ -83,14 +83,14 @@ export default function AppointmentSummary() {
   }
   useEffect(() => {
     setListName(selectedService.name)
-    console.log("user")
-    console.log(user)
+    /* console.log("user")
+    console.log(user) */
   }, [])
 
   useEffect(() => {
     setSlots([])
     setSelectedSlot('')
-    console.log('selected service is' + selectedService.id)
+    /* console.log('selected service is' + selectedService.id) */
     data.allService.nodes.forEach(service => {
       if (service.id === selectedService.id) {
         listItems.push(
@@ -142,10 +142,10 @@ export default function AppointmentSummary() {
     const m = d.getMinutes()
     const s = Math.floor(selectedSlot.id / 60)
     const sm = (selectedSlot.id / 60 - s) * 60
-    console.log(h + ' : ' + s)
-    console.log('sm ' + sm)
+    /* console.log(h + ' : ' + s)
+    console.log('sm ' + sm) */
     if (h !== s && m !== sm) {
-      console.log('sm is not true')
+      /* console.log('sm is not true') */
       setSelectedSlot('')
     }
   }, [selectedDateGlobal])

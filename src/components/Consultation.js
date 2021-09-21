@@ -1,13 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react'
-import { graphql, useStaticQuery } from 'gatsby'
 import { makeStyles } from '@material-ui/core/styles'
 import firebase from 'gatsby-plugin-firebase'
 import 'firebase/firestore'
-
 import { Card, Grid, Typography } from '@material-ui/core'
-
-import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
-
+import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import NameSearch from '../components/subcomponents/NameSearch'
 import MemberDetails from './subcomponents/MemberDetails'
 import { AdminContext } from '../context/AdminContext'
@@ -31,16 +27,17 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function Consultation() {
+  
   const [members, setMembers] = useState([])
   useEffect(() => {
-    const ref = firebase.firestore().collection('members')
-    const observer = ref.onSnapshot(results => {
-      results.docs.forEach(doc => {
-        console.log("snapshot listener called")
-        console.log(members)
-        setMembers(members => [...members, [doc.data(), doc.id]])
+      const ref = firebase.firestore().collection('members')
+      const observer = ref.onSnapshot(results => {
+        results.docs.forEach(doc => {
+          /* console.log("snapshot listener called")
+          console.log(members) */
+          setMembers(members => [...members, [doc.data(), doc.id]])
+        })
       })
-    })
   }, [])
 
  /*  const data = useStaticQuery(graphql`

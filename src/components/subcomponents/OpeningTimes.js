@@ -59,14 +59,14 @@ export default function OpeningTimes() {
   const getTime = day => {
     // get the node which has matching day
     const currentDay = getDay(day)
-    console.log('currentDay')
-    console.log(currentDay)
+    /* console.log('currentDay')
+    console.log(currentDay) */
     // subtract the numbers, if > 0 return "startTime.formated - endTime.formatted
     const diff = currentDay.closingTimeMinutes - currentDay.openingTimeMinutes
     // if not retun closed
     // if day == sunday return closed
-    console.log("diff test")
-    console.log(diff >= 0)
+    /* console.log("diff test")
+    console.log(diff >= 0) */
     return diff >= 0 ? diff === 0 ? "Closed  " :
      `${getLabel(currentDay.openingTimeMinutes)} - ${getLabel(currentDay.closingTimeMinutes)}`
 : currentDay === "Sunday" ? "Closed   " : "Closed   "

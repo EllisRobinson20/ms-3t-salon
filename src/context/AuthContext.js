@@ -1,6 +1,8 @@
 import React, {createContext, useState, useEffect} from 'react'
 import {graphql , useStaticQuery} from 'gatsby'
 import firebase from 'gatsby-plugin-firebase'
+import { async } from '@firebase/util'
+import { get } from 'lodash'
 
 export  const AuthContext = createContext({})
 
@@ -30,6 +32,7 @@ const AuthContextProvider = ({ children }) => {
     const [deviceIsMobile, setDeviceIsMobile] = useState()
     const [profile, setProfile] = useState({})
     const [admin, setAdmin] = useState(false)
+    const [memberInfo, setMemberInfo] = useState()
 
     const getMemberObject = () => {
         const member = data.allMembers.edges.map((edge) => {
@@ -51,33 +54,37 @@ const AuthContextProvider = ({ children }) => {
             }
         })
     }
-
     useEffect(() => {
         firebase.auth().onAuthStateChanged(user => {
             setUser(user)
-            console.log("chaned auth to -> " )
+            console.log("changed auth to -> " )
             console.log(user)
             if (!user) {setProfile({}) 
         console.log("user out")
         setAdmin(false)
+        setMemberInfo({})
     }
             else {
                 // get member object is for setting additional properties though there is an less erroneous way to do this
                 //getMemberObject()
                 user.getIdTokenResult().then(idTokenResult => {
                     setAdmin(idTokenResult.claims.admin ? true : false)
-                  })
-
+                  }).then(() => {
+                    return firebase.firestore().collection('members').doc(user.uid).get()
+                  }).then((ref) => {
+                        return ref.data()
+                  }).then((userProfile) => {
+                    setMemberInfo(userProfile)
+                  })       
             }
-            if (showLogin) {setShowLogin(false)}
-            
+            if (showLogin) {setShowLogin(false)} 
         })
     }, [])
     useEffect(() => {
         if (user) { 
             firebase.auth().onAuthStateChanged(user => {
                 setUser(user)
-                console.log("chaned auth to -> " )
+                console.log("changed auth to -> " )
                 console.log(user)
                 if (!user) {setProfile({}) 
             console.log("user out")
@@ -103,6 +110,7 @@ const AuthContextProvider = ({ children }) => {
             deviceIsMobile, setDeviceIsMobile,
             profile, setProfile,
             admin, setAdmin,
+            memberInfo, setMemberInfo,
             }}>
             {children}
         </AuthContext.Provider>

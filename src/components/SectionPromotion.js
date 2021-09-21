@@ -39,7 +39,7 @@ export default function SectionPromotion() {
             <Grid container spacing={4} style={{marginBottom: "2em"}}>
                 {count().map((item, index) => (
                     <Grid item sm={12/maxItems}>
-                        {console.log(index)}
+                        {/* {console.log(index)} */}
                         <PromotionItem index={index} data={data} count={count()}/>
                     </Grid>
                 ))}

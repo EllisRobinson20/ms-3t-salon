@@ -12,7 +12,7 @@ export default function CreateAdmin() {
     const addAdminRole = firebase.functions().httpsCallable('addAdminRole');
     if (isBrowser) {
       addAdminRole(formDetailEmail).then(result => {
-        console.log(result);
+        /* console.log(result); */
       });
     };
   };

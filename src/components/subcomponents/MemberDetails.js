@@ -53,15 +53,15 @@ export default function MemberDetails({ data }) {
           [key]: replaceIfAltered(dialogValue[key], userObject[0][key]),
         }
       })
-      console.log('res')
-      console.log(memberData)
+      /* console.log('res')
+      console.log(memberData) */
       resolve(memberData)
     })
     populateData
       .then(data => {
-        console.log('data')
+        /* console.log('data')
         console.log(data)
-        console.log(userObject[0].id)
+        console.log(userObject[0].id) */
         firebase
           .firestore()
           .collection('members')
@@ -92,7 +92,7 @@ export default function MemberDetails({ data }) {
   }
 
   const replaceIfAltered = (newValue, oldValue) => {
-    console.log('replace function')
+    /* console.log('replace function') */
     const checkNew = checkFields(newValue, oldValue)
     const checkOld = checkField(oldValue)
     return checkNew
@@ -103,18 +103,16 @@ export default function MemberDetails({ data }) {
   }
   const checkFields = (newValue, oldValue) => {
     const equal = _.isEqual(oldValue, newValue)
-    console.log('check new')
-    console.log(
-      !equal /* && oldValue === undefined */ && newValue !== null && !!newValue
-    )
+    //console.log('check new')
+    //console.log(!equal /* && oldValue === undefined */ && newValue !== null && !!newValue)
     return (
       !equal /* && oldValue === undefined */ && newValue !== null && !!newValue
     )
   }
   const checkField = (newValue, oldValue) => {
     const equal = _.isEqual(oldValue, newValue)
-    console.log('check old')
-    console.log(oldValue !== null && !!oldValue)
+    //console.log('check old')
+    //console.log(oldValue !== null && !!oldValue)
     return (
       !equal &&
       oldValue !== null &&

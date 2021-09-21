@@ -81,7 +81,8 @@ module.exports = {
                   name: doc.name,
                   pricePence: doc.pricePence,
                   upperPriceLimit: doc.upperPriceLimit,
-                  variablePrice: doc.variablePrice
+                  variablePrice: doc.variablePrice,
+                  variableDuration: doc.variableDuration,
                 })
               },
             {
