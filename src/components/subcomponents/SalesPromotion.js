@@ -9,6 +9,11 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { GatsbyImage } from "gatsby-plugin-image";
+import {ThemeProvider, createTheme } from '@material-ui/core/styles';
+
+const buttonTheme = createTheme({
+  palette: {primary: { main: '#d52349' }}
+})
 
 const useStyles = makeStyles({
   root: {
@@ -40,9 +45,11 @@ export default function SalesPromotion({data}) {
           </Typography>
         </CardContent>
       <CardActions>
-        <Button href={`/shop/${data.handle}`} size="small" color="secondary" variant="contained">
+        <ThemeProvider theme={buttonTheme}>
+        <Button href={`/shop/${data.handle}`} size="small" color="primary" variant="contained">
           Buy
         </Button>
+        </ThemeProvider>
       </CardActions>
     </>
   );

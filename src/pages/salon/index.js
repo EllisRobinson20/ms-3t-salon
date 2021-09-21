@@ -1,6 +1,5 @@
 import { graphql, Link } from 'gatsby'
-import React, { useContext, useEffect, useState } from 'react'
-import firebase from 'gatsby-plugin-firebase'
+import React, { useContext, useState } from 'react'
 import 'firebase/firestore'
 import Layout from '../../components/Layout'
 import { NavigationContext } from '../../context/NavigationContext'
@@ -18,17 +17,12 @@ import ServicesList from '../../components/subcomponents/ServicesList'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-
 import Grid from '@material-ui/core/Grid'
-
 import clsx from 'clsx'
-
 import { grey } from '@material-ui/core/colors'
 import { IconButton } from '@material-ui/core'
-
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 
 const buttonTheme = createTheme({
@@ -250,7 +244,6 @@ export default function Services({ location, data }) {
                       }
                       </ThemeProvider>
                     </CardActions>
-                  
                 </Card>
                 <ThemeProvider theme={buttonTheme}>
                   <Link to="./booking">
@@ -266,7 +259,10 @@ export default function Services({ location, data }) {
                           : classes.buttonHidden
                       )}
                       onClick={() => {
-                        setSelectedService(service.node.id)
+                        setSelectedService({
+                          id: service.node.id,
+                          name: service.node.name,
+                        })
                       }}
                     >
                       {viewModel.buttonLabel} {/* Book Now */}

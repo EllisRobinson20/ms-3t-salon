@@ -1,8 +1,10 @@
 import { Grid } from '@material-ui/core'
 import { graphql, useStaticQuery } from 'gatsby'
+
 import React from 'react'
 import { useState } from 'react'
 import PromotionItem from './subcomponents/PromotionItem'
+
 
 export default function SectionPromotion() {
     const data = useStaticQuery(graphql`
@@ -22,7 +24,7 @@ export default function SectionPromotion() {
         }
       }
     `)
-    const [maxItems, setMaxItems] = useState(4)
+    const [maxItems, setMaxItems] = useState(2)
     const colSpan = () => {
         return 12/maxItems
     }
@@ -36,7 +38,7 @@ export default function SectionPromotion() {
     }
     return (
         <div>
-            <Grid container spacing={4} style={{marginBottom: "2em"}}>
+            <Grid container spacing={4} style={{marginBottom: "2em", padding: "2em"}}>
                 {count().map((item, index) => (
                     <Grid item sm={12/maxItems}>
                         {/* {console.log(index)} */}

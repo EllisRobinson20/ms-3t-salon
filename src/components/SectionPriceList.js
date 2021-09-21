@@ -1,14 +1,15 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {graphql, useStaticQuery} from 'gatsby'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {Divider, useMediaQuery} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Radio from '@material-ui/core/Radio';
 import Paper from '@material-ui/core/Paper';
 import { Button, Typography } from '@material-ui/core';
+import { BookingContext } from '../context/BookingContext';
+import { AuthContext } from '../context/AuthContext';
+import { navigate } from 'gatsby-link';
+
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +35,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SpacingGrid() {
+  const {setSelectedService} = useContext(BookingContext);
+  const { deviceIsMobile } = useContext(AuthContext)
   const [spacing, setSpacing] = React.useState(2);
   const classes = useStyles();
   const theme = useTheme();
@@ -83,10 +86,18 @@ export default function SpacingGrid() {
                       :
                       null }
                   </Typography>
-                  {value.node.consultationOnly ? 
-                  <Button className={classes.button} variant="contained" color="blue">Consultation</Button>
+                  {value.node.consultationOnly || value.node.variablePrice ? 
+                  <Button href={deviceIsMobile ? "tel:07517140732" : "#contact"} style={{color:"white"}} className={classes.button} variant="contained" color="blue" onClick={() =>{
+                    
+                  }}>Consultation</Button>
                   :
-                  <Button className={classes.button} variant="contained" color="blue">Book Now</Button>
+                  <Button className={classes.button} variant="contained" color="blue" onClick={()=>{
+                    setSelectedService({
+                      id: value.node.id,
+                      name: value.node.name,
+                    })
+                    navigate("/salon/booking")
+                  }}>Book Now</Button>
                 }
                   
                   

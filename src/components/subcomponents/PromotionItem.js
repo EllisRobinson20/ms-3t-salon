@@ -3,6 +3,7 @@ import React from 'react'
 import SalesPromotion from '../subcomponents/SalesPromotion'
 import BlogPromotion from '../subcomponents/BlogPromotion'
 
+
 export default function PromotionItem({index, data, count}) {
     
     return (
