@@ -120,6 +120,7 @@ export default function Services({ location, data }) {
         price: `£${memberInfo.costServicePence/100}`,
         buttonLabel: "Book Now",
         message: "",
+        consultation: false,
       })
     } else
     if (!memberInfo.userConsulted) {
@@ -129,8 +130,9 @@ export default function Services({ location, data }) {
         setViewModel({...viewModel, 
           duration: `${serviceDetails.node.durationMinutes/60} hrs`,
           price: `From £${serviceDetails.node.pricePence/100}`,
-          buttonLabel: "Consultation only",
+          buttonLabel: "Call Now",
           message: "Call us to get a consultation",
+          consultation: true,
         })
       } else
       if (!serviceDetails.node.consultationOnly && !serviceDetails.node.variablePrice && serviceDetails.node.variableDuration) {
@@ -138,8 +140,9 @@ export default function Services({ location, data }) {
         setViewModel({...viewModel, 
           duration: `From ${serviceDetails.node.durationMinutes/60} hrs`,
           price: `£${serviceDetails.node.pricePence/100}`,
-          buttonLabel: "Consultation only",
+          buttonLabel: "Call Now",
           message: "Call us to get a consultation",
+          consultation: true,
         })
        
       } else
@@ -150,6 +153,7 @@ export default function Services({ location, data }) {
           price: `£${serviceDetails.node.pricePence/100}`,
           buttonLabel: "Book now",
           message: "",
+          consultation: false,
         })
       } 
       else
@@ -158,8 +162,9 @@ export default function Services({ location, data }) {
         setViewModel({...viewModel, 
           duration: `From ${serviceDetails.node.durationMinutes/60} hrs`,
           price: "",
-          buttonLabel: "Consultation only",
+          buttonLabel: "Call Now",
           message: "Call us to get a consultation",
+          consultation: true,
         })
       } else
       if (serviceDetails.node.variablePrice && serviceDetails.node.variableDuration) {
@@ -167,8 +172,9 @@ export default function Services({ location, data }) {
         setViewModel({...viewModel, 
           duration: `From ${serviceDetails.node.durationMinutes/60} hrs`,
           price: `From £${serviceDetails.node.pricePence/100}`,
-          buttonLabel: "Consultation only",
+          buttonLabel: "Call Now",
           message: "Call us to get a consultation",
+          consultation: true,
         })
       } 
     }
@@ -204,7 +210,7 @@ export default function Services({ location, data }) {
                       )}
                     </Typography>
                   </CardContent>
-                  {service.node.consultationOnly ? (
+                  
                     <Typography
                       variant="body"
                       color="text.secondary"
@@ -212,9 +218,20 @@ export default function Services({ location, data }) {
                     >
                       {viewModel.message} {/* Call to book a consultation */}
                     </Typography>
-                  ) : (
+                  
                     <CardActions className={classes.c}>
                       <ThemeProvider theme={buttonTheme}>
+                      {viewModel.consultation ? 
+                      <a href={deviceIsMobile ? "tel:07517140732" : "#contact"}>
+                      <Button
+                        size="large"
+                        color="primary"
+                        variant="contained" 
+                      >
+                        {viewModel.buttonLabel}{/* Call for Consultation */}
+                      </Button>
+                    </a> 
+                      :
                         <Link to="./booking">
                           <Button
                             size="large"
@@ -230,9 +247,10 @@ export default function Services({ location, data }) {
                             {viewModel.buttonLabel} {/* Book Now */}
                           </Button>
                         </Link>
+                      }
                       </ThemeProvider>
                     </CardActions>
-                  )}
+                  
                 </Card>
                 <ThemeProvider theme={buttonTheme}>
                   <Link to="./booking">
@@ -243,7 +261,7 @@ export default function Services({ location, data }) {
                       className={clsx(
                         serviceListRef &&
                           matchesMd &&
-                          !service.node.consultationOnly
+                          !viewModel.consultation
                           ? classes.stickyButton
                           : classes.buttonHidden
                       )}
@@ -261,8 +279,8 @@ export default function Services({ location, data }) {
                       variant="contained"
                       className={clsx(
                         serviceListRef &&
-                          matchesMd &&
-                          service.node.consultationOnly
+                          deviceIsMobile &&
+                          viewModel.consultation
                           ? classes.stickyButton
                           : classes.buttonHidden
                       )}
