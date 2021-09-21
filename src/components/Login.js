@@ -15,8 +15,8 @@ export default function Login() {
   const closeLogin = e => {
     if (e) {
       e.preventDefault()
-    } navigate("/salon/");
-      //setShowLogin(false)
+    }
+      setShowLogin(false)
       
     
   }
@@ -29,6 +29,9 @@ export default function Login() {
     password: '',
     displayName: '',
     error: null,
+    nameError: null,
+    emailError: null,
+    passwordError: null,
   })
 
   const { setUser } = useContext(AuthContext)
@@ -49,10 +52,23 @@ export default function Login() {
         const result = await firebase
           .auth()
           .signInWithEmailAndPassword(data.email, data.password)
-        setUser(result)
-        setShowLogin(false)
+          .then((cred) => {
+            if (cred) {
+              console.log("there are user credentials")
+              setUser(result)
+              setShowLogin(false)
+            }
+          })
       } catch (err) {
-        setData({ ...data, error: err.message })
+        switch (err.code) {
+          case "auth/invalid-email":
+          case "auth/user-disabled":
+          case "auth/user-not-found":
+            setData({ ...data, emailError: err.message})
+            break;
+          case "auth/wrong-password":
+            setData({ ...data, passwordError: err.message})
+        }
       }
     }
     return (
@@ -65,7 +81,7 @@ export default function Login() {
           </Grid>
         <Grid item xs={10}>
           <Typography variant="body2">Not yet a member?</Typography>
-        <Link to={''} onClickCapture={toggleView}>
+        <Link style={{color: '#d52349'}} to={''} onClickCapture={toggleView}>
            Go to register ...
         </Link>
           </Grid>
@@ -82,7 +98,12 @@ export default function Login() {
               name="email"
               value={data.email}
               onChange={handleChange}
+              onFocus={()=>{
+                setData({ ...data, emailError: "",error: ""})
+              }}
             />
+            {data.error ? <p>{data.error}</p> : null}
+            {data.emailError ? <p>{data.emailError}</p> : null}
             <br />
             <br />
           </div>
@@ -94,11 +115,14 @@ export default function Login() {
               name="password"
               value={data.password}
               onChange={handleChange}
+              onFocus={()=>{
+                setData({ ...data, passwordError: "",error: ""})
+              }}
             />
+            {data.passwordError ? <p>{data.passwordError}</p> : null}
             <br />
             <br />
           </div>
-          {data.error ? <p>{data.error}</p> : null}
           <input type="submit" value="Login" />
         </form>
       </div>
@@ -106,7 +130,8 @@ export default function Login() {
   }
   const renderSignUp = () => {
     const handleChange = e => {
-      setData({ ...data, [e.target.name]: e.target.value })
+      setData({ ...data, [e.target.name]: e.target.value,
+      })
     }
 
     const handleSubmit = e => {
@@ -116,7 +141,17 @@ export default function Login() {
         try {
           const result = firebase
             .auth()
-            .createUserWithEmailAndPassword(data.email, data.password)
+            .createUserWithEmailAndPassword(data.email, data.password).catch((err) => {
+              switch (err.code) {
+                case "auth/invalid-email":
+                case "auth/email-already-in-use":
+                  setData({ ...data, emailError: err.message})
+                  break;
+                case "auth/weak-password":
+                  setData({ ...data, passwordError: err.message})
+              }
+              //setData({ ...data, error: err.message})
+            })
             
             result.then(cred => {
                firebase.firestore()
@@ -134,21 +169,20 @@ export default function Login() {
               console.log(err)
             })
             .then((cred) => {
-              cred.user.updateProfile({
-                displayName: data.displayName,
-              })
-              setUser(cred)
-              setLoginAttempt(true)
-              clearFields()
-              closeLogin()
-              
+              if (cred) {
+                cred.user.updateProfile({
+                  displayName: data.displayName,
+                })
+                setUser(cred)
+                setLoginAttempt(true)
+                clearFields()
+                closeLogin()
+              } 
             }).catch(err => {
               setData({ ...data, error: err.message})
             })
-          
-          
         } catch (err) {
-          setData({ ...data, error: err.message })
+          setData({ ...data, error: err.code })
         }
       } else {
         setData({ ...data, error: 'Please ensure you have filled all fields correctly' })
@@ -165,16 +199,13 @@ export default function Login() {
           </Grid>
         <Grid item xs={10}>
           <Typography variant="body2">Already a member?</Typography>
-          <Link to={''} onClickCapture={toggleView}>
+          <Link style={{color: '#d52349', marginBottom: '2em'}} to={''} onClickCapture={toggleView}>
            Go to login ...
         </Link>
           </Grid>
           <Grid item xs={1}>
-        
           </Grid>
         </Grid>
-        
-        
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="email">Name</label>
@@ -184,7 +215,12 @@ export default function Login() {
               name="displayName"
               value={data.displayName}
               onChange={handleChange}
+              onFocus={()=>{
+                setData({ ...data, error: ""})
+              }}
             />
+            {data.error ? <p>{data.error}</p> : null}
+            {data.nameError ? <p>{data.nameError}</p> : null}
             <br />
             <br />
           </div>
@@ -192,11 +228,15 @@ export default function Login() {
             <label htmlFor="email">Email</label>
             <br />
             <input
-              type="text"
+              type="email"
               name="email"
               value={data.email}
               onChange={handleChange}
+              onFocus={()=>{
+                setData({ ...data, emailError: "",error: ""})
+              }}
             />
+            {data.emailError ? <p>{data.emailError}</p> : null}
             <br />
             <br />
           </div>
@@ -208,11 +248,14 @@ export default function Login() {
               name="password"
               value={data.password}
               onChange={handleChange}
+              onFocus={()=>{
+                setData({ ...data, passwordError: "",error: ""})
+              }}
             />
+            {data.passwordError ? <p>{data.passwordError}</p> : null}
             <br />
             <br />
           </div>
-          {data.error ? <p>{data.error}</p> : null}
           <input type="submit" style={{ color: 'red' }} value="Register" />
         </form>
       </div>

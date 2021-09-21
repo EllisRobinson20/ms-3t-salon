@@ -5,10 +5,9 @@
     width: 100%;
     height: 100vh;
     text-align: center;
-    padding: 35vh 0;
+    padding: 2em;
     z-index: 1;
-    padding: 4em;
-    margin: auto;
+    margin: 0 auto;
 }
 .background form {
     margin: auto;
