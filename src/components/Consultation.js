@@ -3,13 +3,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import firebase from 'gatsby-plugin-firebase'
 import 'firebase/firestore'
 import { Card, Grid, Typography } from '@material-ui/core'
-import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import NameSearch from '../components/subcomponents/NameSearch'
 import MemberDetails from './subcomponents/MemberDetails'
 import { AdminContext } from '../context/AdminContext'
 
-
-const filter = createFilterOptions();
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -40,31 +37,13 @@ export default function Consultation() {
       })
   }, [])
 
- /*  const data = useStaticQuery(graphql`
-    query AdminConsultationComponentQuery {
-      allMembers {
-        edges {
-          node {
-            name
-            email
-            telephone
-            costServicePence
-            defaultService
-            userConsulted
-            durationService
-          }
-        }
-      }
-    }
-  `) */
-
   const classes = useStyles()
 
-  const [value, setValue] = React.useState(null);
+ //const [value, setValue] = React.useState(null);
 
   const {userObject} = useContext(AdminContext)
 
-  const handleClose = () => {
+ /*  const handleClose = () => {
     setDialogValue({
       name: '',
       email: '',
@@ -72,18 +51,8 @@ export default function Consultation() {
       defaultService: '',
       durationService: 0,
     });
-
-    
+ 
   };
-
-  const [dialogValue, setDialogValue] = React.useState({
-    name: null,
-    email: '',
-    telephone: '',
-    defaultService: '',
-    durationService: 0,
-  });
-
   const handleSubmit = (event) => {
     event.preventDefault();
     setValue({
@@ -95,7 +64,17 @@ export default function Consultation() {
     });
 
     handleClose();
-  };
+  }; */
+
+  const [dialogValue, setDialogValue] = React.useState({
+    name: null,
+    email: '',
+    telephone: '',
+    defaultService: '',
+    durationService: 0,
+  });
+
+
   useEffect(() => {
     setDialogValue({
       name: null,

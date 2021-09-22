@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
+import {graphql, useStaticQuery} from 'gatsby'
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography } from '@material-ui/core'
 import TextField from '@material-ui/core/TextField'
@@ -9,8 +10,10 @@ import _ from 'lodash'
 import firebase from 'gatsby-plugin-firebase'
 import 'firebase/firestore'
 import 'lodash'
-
-const filter = createFilterOptions()
+import { FormControl } from '@material-ui/core'
+import { InputLabel } from '@material-ui/core'
+import { Select } from '@material-ui/core'
+import { MenuItem } from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -35,6 +38,29 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function MemberDetails({ data }) {
+  const graphQLData = useStaticQuery(graphql`
+  query AdminServiceQuery {
+    allService {
+      edges {
+        node {
+          name
+          id
+        }
+      }
+    }
+  }
+  `)
+  // arrays used to populate form fields
+  const numPrice = []
+  for (let i = 0; i <= 1000; i ++) {
+    numPrice.push(i)
+  }
+  const numTime = []
+  for (let i = 0; i <= 16; i++) {
+    numTime.push(i)
+  }
+
+  
   const classes = useStyles()
   const [result, setResult] = React.useState(null)
   const { userObject } = useContext(AdminContext)
@@ -59,33 +85,29 @@ export default function MemberDetails({ data }) {
     })
     populateData
       .then(data => {
-        /* console.log('data')
-        console.log(data)
-        console.log(userObject[0].id) */
+        if (/(?:(\(?(?:0(?:0|11)\)?[\s-]?\(?|\+?)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|\(?0)((?:\d{5}\)?[\.\s-]?\d{4,5})|(?:\d{4}\)?[\.\s-]?(?:\d{3}[\.\s-]?\d{3}))|(?:\d{4}\)?[\.\s-]?(?:\d{5}))|(?:\d{3}\)?[\.\s-]?\d{3}[\.\s-]?\d{3,4})|(?:\d{2}\)?[\.\s-]?\d{4}[\.\s-]?\d{4}))(?:[\s-]?((?:x|ext[\.\s]*|\#)\d{3,4})?)/.test(data.telephone))
+        {
+        console.log("matching regex")
+
         firebase
-          .firestore()
-          .collection('members')
-          .doc(userObject[0].id)
-          .update({
-            telephone: data.telephone,
-            costServicePence: parseInt(data.costServicePence) * 100,
-            defaultService: data.defaultService,
-            userConsulted: true,
-            durationService: parseInt(parseFloat(data.durationService) * 60),
-          })
+        .firestore()
+        .collection('members')
+        .doc(userObject[0].id)
+        .update({
+          telephone: data.telephone,
+          costServicePence: parseInt(data.costServicePence * 100.0),
+          defaultService: data.defaultService,
+          userConsulted: true,
+          durationService: parseInt(parseFloat(data.durationService) * 60.0),
+        })
+        onResult(false, 'Successfully updated client information', '')
+        } else {
+          onResult(true, 'Oops!... Something went wrong', 'check the phone number is valid')
+        }
       })
       .catch(err => {
         console.log(err)
-      })
-      .then(err => {
-        if (err) {
-          onResult(true, 'Oops!... Something went wrong', 'please try again')
-        } else {
-          console.log('successfully updated to database')
-          onResult(false, 'Successfully updated user', '')
-        }
-
-        handleClose()
+        onResult(true, 'Oops!... Something went wrong', 'please try again')
       })
 
     // if dialog values are not empty nor equal to useObject
@@ -173,12 +195,12 @@ export default function MemberDetails({ data }) {
   }, [userObject])
 
   return (
-    <Grid container>
+    <Grid container >
       <Grid item xs={12}>
-        <Typography variant="h4" color={'secondary'}>
+        <Typography variant="h4" >
           {result ? result.message : ''}
         </Typography>
-        <Typography variant="h6" color={'secondary'}>
+        <Typography variant="h6" >
           {result ? result.subMessage : ''}
         </Typography>
       </Grid>
@@ -263,7 +285,40 @@ export default function MemberDetails({ data }) {
         />
       </Grid>
       <Grid item xs={6}>
-        <TextField
+      <FormControl variant="standard" style={{width: '22%'}}>
+        <InputLabel id="simple-select-label">Choose Service</InputLabel>
+        <Select
+          labelId="simple-select-label"
+          id="simple-select"
+          label="Selected Service"
+          value={
+            typeof dialogValue.defaultService === 'string'
+              ? dialogValue.defaultService
+              : userObject
+              ? data
+                  .map(edge =>
+                    edge.email === userObject[0].email
+                      ? edge.defaultService
+                      : ''
+                  )
+                  .filter(value =>
+                    value ? Object.keys(value).length !== 0 : null
+                  )
+              : ''
+          }
+          onChange={event =>
+            setDialogValue({
+              ...dialogValue,
+              defaultService: event.target.value,
+            })
+          }
+        >
+          {graphQLData.allService.edges.map((service) => (
+             <MenuItem value={service.node.id}>{service.node.name}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+        {/* <TextField
           margin="dense"
           id="serviceName"
           value={
@@ -290,10 +345,33 @@ export default function MemberDetails({ data }) {
           label="Selected Service"
           type="text"
           name="service"
-        />
+        /> */}
       </Grid>
       <Grid item xs={6}>
-        <TextField
+      <FormControl variant="standard" style={{width: '22%'}}>
+        <InputLabel id="duration-select">Add Duration (hours)</InputLabel>
+        <Select
+          labelId="duration-select"
+          id="durationService"
+          label="Duration"
+          value={
+            
+              dialogValue.durationService
+              
+          }
+          onChange={event =>
+            setDialogValue({
+              ...dialogValue,
+              durationService: event.target.value,
+            })
+          }
+        >
+          {numTime.map((timeFrame) => (
+             <MenuItem value={timeFrame/2}>{timeFrame/2}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+        {/* <TextField
           margin="dense"
           id="durationService"
           value={
@@ -318,7 +396,7 @@ export default function MemberDetails({ data }) {
           label="Duration"
           type="text"
           name="duration"
-        />
+        /> */}
       </Grid>
 
       <Grid item xs={6} container>
@@ -328,7 +406,29 @@ export default function MemberDetails({ data }) {
           </Typography>
         </Grid>
         <Grid item xs={10}>
-          <TextField
+        <FormControl variant="standard" style={{width: '22%'}}>
+        <InputLabel id="price-select">Price (£)</InputLabel>
+        <Select
+          labelId="price-select"
+          id="price"
+          label="Price (£)"
+          value={
+            dialogValue.costServicePence
+              
+          }
+          onChange={event =>
+            setDialogValue({
+              ...dialogValue,
+              costServicePence: event.target.value,
+            })
+          }
+        >
+          {numPrice.map((timeFrame) => (
+             <MenuItem value={timeFrame/2}>{timeFrame/2}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+          {/* <TextField
             margin="dense"
             id="costServicePence"
             value={
@@ -353,14 +453,14 @@ export default function MemberDetails({ data }) {
             label="Price"
             type="text"
             name="duration"
-          />
+          /> */}
         </Grid>
       </Grid>
 
       <Grid item xs={2}></Grid>
       <Grid item xs={2}>
         <Button
-          style={{ marginTop: '1em', width: '80%' }}
+          style={{ marginBottom: '2em', marginTop: '1em', width: '80%' }}
           size="large"
           variant="contained"
           color="primary"
