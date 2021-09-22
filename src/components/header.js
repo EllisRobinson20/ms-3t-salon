@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types'
 import React, {useContext} from 'react'
-
 import { Link } from 'gatsby'
-
 import clsx from 'clsx'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
@@ -21,7 +19,9 @@ import ListItemText from '@material-ui/core/ListItemText'
 import HomeIcon from '@material-ui/icons/Home'
 import Storefront from '@material-ui/icons/Storefront';
 import InfoIcon from '@material-ui/icons/Info';
-import BookIcon from '@material-ui/icons/Book';
+import { Event } from '@material-ui/icons'
+import { Face } from '@material-ui/icons'
+import { AuthContext } from '../context/AuthContext';
 
 
 import Nav from '../components/Nav'
@@ -109,6 +109,7 @@ const Header = ({ siteTitle }) => {
 
   
   const {showProfile, setShowProfile} = useContext(ProfileContext);
+  const {admin} = useContext(AuthContext);
   function handleProfileModal() {
     setShowProfile(!showProfile)
   }
@@ -223,14 +224,36 @@ const Header = ({ siteTitle }) => {
               <ListItemText>About</ListItemText>
             </ListItem>
           </Link>
-          <Link to="/blog">
+          {/* <Link to="/blog">
             <ListItem button>
               <ListItemIcon>
                 <BookIcon />
               </ListItemIcon>
               <ListItemText>Blog</ListItemText>
             </ListItem>
-          </Link>
+          </Link> */}
+          {admin ? 
+          <>
+          <Link to="/admin">
+          <ListItem button>
+            <ListItemIcon>
+            <Event  className={classes.menuIcon}/>
+            </ListItemIcon>
+            <ListItemText>Diary</ListItemText>
+          </ListItem>
+        </Link>
+        <Link to="/admin/consultation">
+          <ListItem button>
+            <ListItemIcon>
+              <Face />
+            </ListItemIcon>
+            <ListItemText>Consultation</ListItemText>
+          </ListItem>
+        </Link>
+        </>
+        :
+        <></>
+        }
         </List>
       </Drawer>
     <Profile/>

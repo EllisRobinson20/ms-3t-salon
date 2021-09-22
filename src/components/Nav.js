@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react'
+import React, {useContext} from 'react'
 import { Link } from 'gatsby'
 import * as styles from '../styles/header.module.css'
 import { NavigationContext } from "../context/NavigationContext";
@@ -8,7 +8,6 @@ const isBrowser = typeof window !== "undefined"
 
 export default function Nav() {
     const {thisPage} = useContext(NavigationContext);
-    const {user} = useContext(AuthContext);
     const {admin} = useContext(AuthContext);
     
 
