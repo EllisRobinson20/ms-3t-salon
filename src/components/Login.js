@@ -5,7 +5,8 @@ import { AuthContext } from '../context/AuthContext'
 import { Link, navigate } from '@reach/router'
 import * as styles from '../styles/login.module.css'
 import CloseIcon from '@material-ui/icons/Close';
-import { Grid, Typography } from '@material-ui/core'
+import { Grid, Paper, Typography, useMediaQuery } from '@material-ui/core'
+import { useTheme } from '@material-ui/core/styles'
 
 export default function Login() {
   const toggleView = e => {
@@ -33,7 +34,10 @@ export default function Login() {
     emailError: null,
     passwordError: null,
   })
-
+  const theme = useTheme()
+  const matchesSm = useMediaQuery(theme.breakpoints.down('xs'))
+  const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'))
+  const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
   const { setUser } = useContext(AuthContext)
   const { setShowLogin } = useContext(AuthContext)
   const { setLoginAttempt } = useContext(AuthContext)
@@ -72,6 +76,7 @@ export default function Login() {
       }
     }
     return (
+      <Paper elevation={3} style={{margin: 'auto', width: matchesLg? '45vw' : matchesMd ? '65vw' : "95vw"}}>
       <div className={styles.background}>
         <Grid container>
         <Grid item xs={1}>
@@ -126,6 +131,7 @@ export default function Login() {
           <input type="submit" value="Login" />
         </form>
       </div>
+      </Paper>
     )
   }
   const renderSignUp = () => {
@@ -141,19 +147,8 @@ export default function Login() {
         try {
           const result = firebase
             .auth()
-            .createUserWithEmailAndPassword(data.email, data.password).catch((err) => {
-              switch (err.code) {
-                case "auth/invalid-email":
-                case "auth/email-already-in-use":
-                  setData({ ...data, emailError: err.message})
-                  break;
-                case "auth/weak-password":
-                  setData({ ...data, passwordError: err.message})
-              }
-              //setData({ ...data, error: err.message})
-            })
-            
-            result.then(cred => {
+            .createUserWithEmailAndPassword(data.email, data.password)
+            .then(cred => {
                firebase.firestore()
                 .collection('members')
                 .doc(cred.user.uid)
@@ -164,10 +159,7 @@ export default function Login() {
                   userConsulted: false,
                 })
                 return cred
-            })
-            .catch(err => {
-              console.log(err)
-            })
+            }).catch((err) => {console.log(err)})
             .then((cred) => {
               if (cred) {
                 cred.user.updateProfile({
@@ -178,11 +170,16 @@ export default function Login() {
                 clearFields()
                 closeLogin()
               } 
-            }).catch(err => {
-              setData({ ...data, error: err.message})
             })
         } catch (err) {
-          setData({ ...data, error: err.code })
+          switch (err.code) {
+            case "auth/invalid-email":
+            case "auth/email-already-in-use":
+              setData({ ...data, emailError: err.message})
+              break;
+            case "auth/weak-password":
+              setData({ ...data, passwordError: err.message})
+          }
         }
       } else {
         setData({ ...data, error: 'Please ensure you have filled all fields correctly' })
@@ -190,6 +187,7 @@ export default function Login() {
     }
 
     return (
+      <Paper elevation={3} style={{margin: 'auto', width: matchesLg? '45vw' : matchesMd ? '65vw' : "95vw"}}>
       <div id={"login"} className={styles.background}>
         <Grid container>
         <Grid item xs={1}>
@@ -259,6 +257,7 @@ export default function Login() {
           <input type="submit" style={{ color: 'red' }} value="Register" />
         </form>
       </div>
+      </Paper>
     )
   }
 
