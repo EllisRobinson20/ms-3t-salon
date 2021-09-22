@@ -5,7 +5,7 @@ import { Link, graphql, useStaticQuery } from 'gatsby'
 import * as styles from '../styles/appointmentSummary.module.css'
 import format from 'date-fns/format'
 import firebase from 'firebase'
-import { navigate } from 'gatsby-link'
+import LoadingBackdrop from './subcomponents/LoadingBackdrop'
 
 export default function AppointmentSummary() {
   // Data
@@ -42,9 +42,11 @@ export default function AppointmentSummary() {
   const [buttonIsEnabled, setButtonIsEnabled] = useState(false)
   const [listName, setListName] = useState('')
   const [dropdownList, setDropdownList] = useState()
+  const [loading, setLoading] = useState(false)
   const listItems = []
   // Functions
   const bookProvisionalIfAvail = () => {
+    setLoading(true)
     /* console.log(user) */
     // ! Must Check Auth First
     if (user) {
@@ -59,17 +61,24 @@ export default function AppointmentSummary() {
         bookingDate: selectedDateGlobal,
         bookingTime: selectedSlot.id,
         durationService: durationSelectedService(),
-      }).then(result => console.log(returnResult(result.data)))
+      }).then(result => returnResult(result.data),
+      )
     } else {
       setShowLogin(true);
       // need to keep the details of the booking if they login or sign up
     }
+    
   }
   const returnResult = result => {
+    setLoading(false)
     if (result) {
+      console.log(result)
+      console.log("result")
       alert('Your booking is successful')
       /* console.log(result) */
     } else {
+      console.log(result)
+      console.log("result")
       alert(
         'Sorry your booking time has already been taken ' +
           'please try another time slot'
@@ -151,6 +160,8 @@ export default function AppointmentSummary() {
   }, [selectedDateGlobal])
 
   return (
+    <>
+    <LoadingBackdrop loading={loading}/>
     <div className={styles.card}>
       {!selectedService.id ? (
         dropdownList
@@ -172,13 +183,15 @@ export default function AppointmentSummary() {
       <p>{format(selectedDateGlobal, 'EEEE do MMMM')}</p>
       <Link
         className={`${buttonIsEnabled ? styles.btn : styles.btnDisabled}`}
-        to={'.'}
-        onClick={() => {
+        to={'#'}
+        onClick={(e) => {
           bookProvisionalIfAvail()
+          e.preventDefault()
         }}
       >
         {buttonIsEnabled ? 'Book Now' : 'Select Date and Time to Book'}
       </Link>
     </div>
+    </>
   )
 }

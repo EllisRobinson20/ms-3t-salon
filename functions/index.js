@@ -435,7 +435,7 @@ exports.bookProvisionalIfAvail = functions.https.onCall((data, context) => {
               .then((documentReference) => {
                 console.
                     log(`Added document with name: ${documentReference.id}`);
-                return documentReference;
+                return documentReference.id;
               }).catch((error) => {
                 console.log(error);
               });
