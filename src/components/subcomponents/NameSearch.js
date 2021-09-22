@@ -12,6 +12,10 @@ import Autocomplete, {
 } from '@material-ui/lab/Autocomplete'
 import { AdminContext } from '../../context/AdminContext'
 import { Grid, Typography } from '@material-ui/core'
+import { useTheme} from '@material-ui/core/styles'
+import { useMediaQuery } from '@material-ui/core'
+
+  
 
 const filter = createFilterOptions()
 
@@ -22,6 +26,10 @@ export default function FreeSoloCreateOptionDialog({ data }) {
   const [open, toggleOpen] = React.useState(false)
   const {setUserObject} = useContext(AdminContext)
 
+  const theme = useTheme()
+const matchesSm = useMediaQuery(theme.breakpoints.down('xs'))
+const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'))
+const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
 
   const handleClose = () => {
     setDialogValue({
@@ -64,7 +72,7 @@ export default function FreeSoloCreateOptionDialog({ data }) {
   })
 
   return (
-    <React.Fragment>
+    <React.Fragment >
       <Autocomplete
         value={value}
         onChange={(event, newValue) => {
@@ -131,7 +139,7 @@ export default function FreeSoloCreateOptionDialog({ data }) {
         renderOption={option =>
           `${option.name} ${option.email ? `(${option.email})` : ''}  `
         }
-        style={{ width: 300 }}
+        style={{ width: matchesLg || matchesMd ? 300 : 250}}
         freeSolo
         renderInput={params => (
           <TextField {...params} label="Member name" variant="outlined" />

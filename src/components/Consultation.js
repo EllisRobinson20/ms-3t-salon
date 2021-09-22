@@ -6,6 +6,8 @@ import { Card, Grid, Typography } from '@material-ui/core'
 import NameSearch from '../components/subcomponents/NameSearch'
 import MemberDetails from './subcomponents/MemberDetails'
 import { AdminContext } from '../context/AdminContext'
+import { useTheme} from '@material-ui/core/styles'
+import { useMediaQuery } from '@material-ui/core'
 
 
 const useStyles = makeStyles(theme => ({
@@ -20,7 +22,8 @@ const useStyles = makeStyles(theme => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
-  container: { margin: '0 auto 2em',maxWidth: '65vw', display: 'block', padding: "12px 12px 12px 142px", overflow: "hidden", borderRadius: "4px" }
+  containerSm: { margin: '0 auto 2em', maxWidth: '65vw', display: 'block', padding: '0', border: 'none' },
+  containerLg: { margin: '0 auto 2em',maxWidth: '65vw', display: 'block', padding: "12px 12px 12px 142px", overflow: "hidden", borderRadius: "4px" }
 }))
 
 export default function Consultation() {
@@ -38,7 +41,10 @@ export default function Consultation() {
   }, [])
 
   const classes = useStyles()
-
+  const theme = useTheme()
+  const matchesSm = useMediaQuery(theme.breakpoints.down('xs'))
+  const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'))
+  const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
  //const [value, setValue] = React.useState(null);
 
   const {userObject} = useContext(AdminContext)
@@ -88,8 +94,8 @@ export default function Consultation() {
 
   return (
     <div>
-      <Card className={classes.container} variant="outlined">
-        <Grid container>
+      <Card className={matchesLg ? classes.containerLg : classes.containerSm} variant="outlined">
+        <Grid container >
           <Grid item xs={3}>
           <NameSearch data={members}/>
           </Grid>

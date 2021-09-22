@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 import {graphql, useStaticQuery} from 'gatsby'
-import { makeStyles } from '@material-ui/core/styles'
+import { useTheme } from '@material-ui/core/styles'
+import { useMediaQuery } from '@material-ui/core'
 import { Grid, Typography } from '@material-ui/core'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import { createFilterOptions } from '@material-ui/lab/Autocomplete'
 import { AdminContext } from '../../context/AdminContext'
 import _ from 'lodash'
 import firebase from 'gatsby-plugin-firebase'
@@ -15,27 +15,7 @@ import { InputLabel } from '@material-ui/core'
 import { Select } from '@material-ui/core'
 import { MenuItem } from '@material-ui/core'
 
-const useStyles = makeStyles(theme => ({
-  form: {
-    margin: '0 auto',
-    maxWidth: '45vw',
-  },
-  formControl: {
-    width: '100%',
-    minWidth: 200,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-  container: {
-    margin: '0 auto 2em',
-    maxWidth: '65vw',
-    display: 'block',
-    padding: '12px 12px 12px 142px',
-    overflow: 'hidden',
-    borderRadius: '4px',
-  },
-}))
+
 
 export default function MemberDetails({ data }) {
   const graphQLData = useStaticQuery(graphql`
@@ -52,16 +32,18 @@ export default function MemberDetails({ data }) {
   `)
   // arrays used to populate form fields
   const numPrice = []
-  for (let i = 0; i <= 1000; i ++) {
-    numPrice.push(i)
-  }
   const numTime = []
-  for (let i = 0; i <= 16; i++) {
-    numTime.push(i)
-  }
-
-  
-  const classes = useStyles()
+    for (let i = 20; i <= 1000; i ++) {
+      numPrice.push(i)
+    }
+    for (let i = 0; i <= 16; i++) {
+      numTime.push(i)
+    }
+ 
+  const theme = useTheme()
+  const matchesSm = useMediaQuery(theme.breakpoints.down('xs'))
+  const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'))
+  const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
   const [result, setResult] = React.useState(null)
   const { userObject } = useContext(AdminContext)
   const updateMemberDetails = () => {
@@ -195,7 +177,7 @@ export default function MemberDetails({ data }) {
   }, [userObject])
 
   return (
-    <Grid container >
+    <Grid container spacing={4}>
       <Grid item xs={12}>
         <Typography variant="h4" >
           {result ? result.message : ''}
@@ -204,7 +186,7 @@ export default function MemberDetails({ data }) {
           {result ? result.subMessage : ''}
         </Typography>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12} md={6}>
         <Typography variant="h6">
           {typeof dialogValue.name === 'string'
             ? dialogValue.name
@@ -212,26 +194,8 @@ export default function MemberDetails({ data }) {
             ? userObject[0].name
             : ''}
         </Typography>
-        {/* <TextField
-          inputRef={input => console.log(input)}
-          margin="dense"
-          id="name"
-          value={
-            typeof dialogValue.name === 'string'
-              ? dialogValue.name
-              : userObject
-              ? userObject[0].name
-              : ''
-          }
-          onChange={event =>
-            setDialogValue({ ...dialogValue, name: event.target.value })
-          }
-          label="name"
-          type="text"
-          name="name"
-        /> */}
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12} md={6}>
         <Typography variant="h6">
           {typeof dialogValue.email === 'string'
             ? dialogValue.email
@@ -239,29 +203,8 @@ export default function MemberDetails({ data }) {
             ? userObject[0].email
             : ''}
         </Typography>
-        {/* <TextField
-          //inputRef={input => console.log(input)}
-          margin="dense"
-          id="email"
-          value={
-            typeof dialogValue.email === 'string'
-              ? dialogValue.email
-              : userObject
-              ? userObject[0].email
-              : ''
-          }
-          onChange={event =>
-            setDialogValue({
-              ...dialogValue,
-              email: event.target.value,
-            })
-          }
-          label="email"
-          type="email"
-          name="email"
-        /> */}
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12} md={6}>
         <TextField
           margin="dense"
           id="tel"
@@ -281,11 +224,11 @@ export default function MemberDetails({ data }) {
           label="telephone"
           type="tel"
           name="telephone"
-          style={{ color: 'black' }}
+          style={{ color: 'black', width: matchesLg? '22%': matchesMd ? '44%': matchesSm? '60%': '' }}
         />
       </Grid>
-      <Grid item xs={6}>
-      <FormControl variant="standard" style={{width: '22%'}}>
+      <Grid item xs={12} md={6}>
+      <FormControl variant="standard" style={{width: matchesLg? '22%': matchesMd ? '44%': matchesSm? '60%': ''}}>
         <InputLabel id="simple-select-label">Choose Service</InputLabel>
         <Select
           labelId="simple-select-label"
@@ -318,46 +261,16 @@ export default function MemberDetails({ data }) {
           ))}
         </Select>
       </FormControl>
-        {/* <TextField
-          margin="dense"
-          id="serviceName"
-          value={
-            typeof dialogValue.defaultService === 'string'
-              ? dialogValue.defaultService
-              : userObject
-              ? data
-                  .map(edge =>
-                    edge.email === userObject[0].email
-                      ? edge.defaultService
-                      : ''
-                  )
-                  .filter(value =>
-                    value ? Object.keys(value).length !== 0 : null
-                  )
-              : ''
-          }
-          onChange={event =>
-            setDialogValue({
-              ...dialogValue,
-              defaultService: event.target.value,
-            })
-          }
-          label="Selected Service"
-          type="text"
-          name="service"
-        /> */}
       </Grid>
-      <Grid item xs={6}>
-      <FormControl variant="standard" style={{width: '22%'}}>
+      <Grid item xs={12} md={6}>
+      <FormControl variant="standard" style={{width: matchesLg? '22%': matchesMd ? '44%': matchesSm? '60%': ''}}>
         <InputLabel id="duration-select">Add Duration (hours)</InputLabel>
         <Select
           labelId="duration-select"
           id="durationService"
           label="Duration"
           value={
-            
               dialogValue.durationService
-              
           }
           onChange={event =>
             setDialogValue({
@@ -371,42 +284,14 @@ export default function MemberDetails({ data }) {
           ))}
         </Select>
       </FormControl>
-        {/* <TextField
-          margin="dense"
-          id="durationService"
-          value={
-            typeof dialogValue.durationService === 'string'
-              ? dialogValue.durationService
-              : userObject
-              ? data
-                  .map(edge =>
-                    edge.email === userObject[0].email
-                      ? edge.durationService
-                      : ''
-                  )
-                  .filter(value => typeof value !== 'string')
-              : ''
-          }
-          onChange={event =>
-            setDialogValue({
-              ...dialogValue,
-              durationService: event.target.value,
-            })
-          }
-          label="Duration"
-          type="text"
-          name="duration"
-        /> */}
       </Grid>
 
-      <Grid item xs={6} container>
+      <Grid item xs={12} md={6} container>
         <Grid item container justifyContent="flex-end" spacing={0} xs={1}>
-          <Typography style={{ marginTop: '1.3em' }} variant="body1">
-            £
-          </Typography>
+          
         </Grid>
         <Grid item xs={10}>
-        <FormControl variant="standard" style={{width: '22%'}}>
+        <FormControl variant="standard" style={{width: matchesLg? '22%': matchesMd ? '44%': matchesSm? '60%': ''}}>
         <InputLabel id="price-select">Price (£)</InputLabel>
         <Select
           labelId="price-select"
@@ -414,7 +299,6 @@ export default function MemberDetails({ data }) {
           label="Price (£)"
           value={
             dialogValue.costServicePence
-              
           }
           onChange={event =>
             setDialogValue({
@@ -428,39 +312,13 @@ export default function MemberDetails({ data }) {
           ))}
         </Select>
       </FormControl>
-          {/* <TextField
-            margin="dense"
-            id="costServicePence"
-            value={
-              typeof dialogValue.costServicePence === 'string'
-                ? dialogValue.costService
-                : userObject
-                ? data
-                    .map(edge =>
-                      edge.email === userObject[0].email
-                        ? edge.costServicePence / 100
-                        : ''
-                    )
-                    .filter(value => typeof value !== 'string')
-                : ''
-            }
-            onChange={event =>
-              setDialogValue({
-                ...dialogValue,
-                costServicePence: event.target.value,
-              })
-            }
-            label="Price"
-            type="text"
-            name="duration"
-          /> */}
         </Grid>
       </Grid>
 
-      <Grid item xs={2}></Grid>
-      <Grid item xs={2}>
+      <Grid item xs={1} lg={2}></Grid>
+      <Grid item xs={10} lg={2}>
         <Button
-          style={{ marginBottom: '2em', marginTop: '1em', width: '80%' }}
+          style={{marginLeft:'auto', marginBottom: '2em', marginTop: '1em', width:'80%'}}
           size="large"
           variant="contained"
           color="primary"
@@ -468,6 +326,7 @@ export default function MemberDetails({ data }) {
         >
           Next
         </Button>
+
       </Grid>
     </Grid>
   )
