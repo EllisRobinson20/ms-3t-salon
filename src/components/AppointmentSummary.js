@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext'
 import { Link, graphql, useStaticQuery } from 'gatsby'
 import * as styles from '../styles/appointmentSummary.module.css'
 import format from 'date-fns/format'
-import firebase from 'firebase'
+import firebase from 'gatsby-plugin-firebase'
 import LoadingBackdrop from './subcomponents/LoadingBackdrop'
 
 export default function AppointmentSummary() {

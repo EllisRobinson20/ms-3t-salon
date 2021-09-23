@@ -4,7 +4,7 @@ import { Link } from 'gatsby'
 import Layout from "../../components/Layout"
 import TimeSlotPicker from "../../components/TimeSlotPicker"
 import AppointmentSummary from '../../components/AppointmentSummary'
-import firebase from "firebase"
+import firebase from 'gatsby-plugin-firebase'
 import {BookingContext} from "../../context/BookingContext"
 import { NavigationContext } from "../../context/NavigationContext";
 import { Grid, IconButton, Typography } from '@material-ui/core';
@@ -29,9 +29,9 @@ const {lastPage} = useContext(NavigationContext);
 const [loading, setLoading] = useState(false);
 
 const getAvailabilityForDate = (day) => {
+if (isBrowser) {
   setLoading(true)
 const availability = firebase.functions().httpsCallable('getAvailabilityForDate');
-if (isBrowser) {
   availability({date: day, serviceName: selectedService.id })
 .then( result => {setSlots(result.data)
   setLoading(false)

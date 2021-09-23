@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { FormControl, InputLabel, Input, FormHelperText, Button } from '@material-ui/core'
-import firebase from 'firebase';
+import firebase from 'gatsby-plugin-firebase'
 
 const isBrowser = typeof window !== "undefined"
 
