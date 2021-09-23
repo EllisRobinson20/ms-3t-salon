@@ -134,17 +134,17 @@ export default function FullWidthTabs() {
         aria-label="full width tabs example"
       >
         <Tab
-          label="Edit Profile"
+          label="Profile"
           {...a11yProps(0)}
           icon={<AccountCircleIcon />}
         />
         <Tab
-          label="My Bookings"
+          label="Bookings"
           {...a11yProps(1)}
           icon={<CalendarTodayIcon />}
         />
-        <Tab label="Booking History" {...a11yProps(2)} icon={<HistoryIcon />} />
-        <Tab label="Give Rating" {...a11yProps(3)} icon={<StarHalfIcon />} />
+        {/* <Tab label="History" {...a11yProps(2)} icon={<HistoryIcon />} /> */}
+        <Tab label="Rating" {...a11yProps(3)} icon={<StarHalfIcon />} />
       </Tabs>
     )
 
