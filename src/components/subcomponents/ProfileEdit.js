@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
 export default function ProfileEdit() {
 
   const {user} = useContext(AuthContext)
-  const {profile} = useContext(AuthContext)
+  const {memberInfo} = useContext(AuthContext)
   const {setShowLogin} = useContext(AuthContext)
   
 
@@ -72,14 +72,40 @@ const authPromptMessage = "This operation is sensitive and requires recent authe
       firebase.auth().currentUser.updateProfile({
         displayName: dialogValue.name,
       }).then(() => {
-        setResponse({...response, res: "User display name has been updated"})  
+        setResponse({...response, res: "User display name has been updated"}) 
+        try {
+          firebase
+          .firestore()
+          .collection('members')
+          .doc(user.uid)
+          .update({
+            name: dialogValue.name,
+          })
+        }
+        catch (err) {
+          setResponse({...response, error: err.message})
+        }
+        
       }).catch(err => {
-        alert(err)
+        setResponse({...response, error: err.message})
       })
     } else
     if (fieldToEdit !== null && fieldToEdit === 'email') {
         firebase.auth().currentUser.updateEmail(dialogValue.email).then(() => {
           setResponse({...response, res:"Email updated successfully"})
+          try {
+            firebase
+            .firestore()
+            .collection('members')
+            .doc(user.uid)
+            .update({
+              email: dialogValue.email,
+            })
+          }
+          catch (err) {
+            setResponse({...response, error: err.message})
+          }
+          
         }).catch(err => {
           setResponse({...response, error: err.message})
           if (err.message === authPromptMessage) {
@@ -88,15 +114,35 @@ const authPromptMessage = "This operation is sensitive and requires recent authe
           }
         })
     } else
+    if (fieldToEdit !== null && fieldToEdit === 'tel') {
+      if (/(?:(\(?(?:0(?:0|11)\)?[\s-]?\(?|\+?)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|\(?0)((?:\d{5}\)?[\.\s-]?\d{4,5})|(?:\d{4}\)?[\.\s-]?(?:\d{3}[\.\s-]?\d{3}))|(?:\d{4}\)?[\.\s-]?(?:\d{5}))|(?:\d{3}\)?[\.\s-]?\d{3}[\.\s-]?\d{3,4})|(?:\d{2}\)?[\.\s-]?\d{4}[\.\s-]?\d{4}))(?:[\s-]?((?:x|ext[\.\s]*|\#)\d{3,4})?)/.test(dialogValue.telephone))
+      {
+        firebase
+        .firestore()
+        .collection('members')
+        .doc(user.uid)
+        .update({
+          telephone: dialogValue.telephone,
+        }).then(() => {
+          setResponse({...response, res:"Updated telephone details"})
+        }).catch((err) => {
+          setResponse({...response, error: err.message})
+        })
+      } else 
+      {
+        setResponse({...response, error: "Enter a valid phone number"})
+      }
+      
+  } else
     if (fieldToEdit === null) {
       alert("please enter a value to update")
     }
     setFieldToEdit(null)
   }
-
-  useEffect(() => {
-    
-  }, [fieldToEdit])
+  const removeHyphens = (string) => {
+    const alteredString = string.replace(/-/g, " ");
+    return alteredString;
+  };
 
   return (
     <div>
@@ -228,12 +274,18 @@ const authPromptMessage = "This operation is sensitive and requires recent authe
                   label="telephone"
                   type="tel"
                   name="telephone"
+                  onChange={ event =>
+                    setDialogValue({
+                      ...dialogValue,
+                      telephone: event.target.value,
+                    })
+                  } 
                 ></TextField>
               </>
               :
               <>
                 <ListItemText
-              primary={profile.telephone}
+              primary={memberInfo.telephone}
               secondary={secondary ? "telephone" : null}
             />
               </>
@@ -245,7 +297,12 @@ const authPromptMessage = "This operation is sensitive and requires recent authe
                   fieldToEdit === "tel" ?
                   <>
                   <Button variant="contained" size="small" href="#" onClick={(() => {setFieldToEdit(null)})}>cancel</Button>
-                  <Button color="primary" variant="contained" size="small" href="#" onClick={(() => {setFieldToEdit(null)})}>submit</Button>
+                  <Button color="primary" variant="contained" size="small" href="#" onClick={() => {
+                  setFieldToEdit("telephone")
+                  handleUpdate()
+                }}
+                    >
+                      submit</Button>
                   </>
                   :
                   <IconButton edge="end" aria-label="delete">
@@ -261,7 +318,7 @@ const authPromptMessage = "This operation is sensitive and requires recent authe
       </div>
     </Grid>
     <Grid item container justifyContent="center" sm={12} md={6}>
-      {profile.userConsulted ? 
+      {memberInfo.userConsulted ? 
       <div className={classes.listGroup}>
       <List dense={dense}>
         <ListItem>
@@ -270,7 +327,7 @@ const authPromptMessage = "This operation is sensitive and requires recent authe
               <Avatar>S</Avatar>
             </Tooltip>
           </ListItemAvatar>
-          <ListItemText primary={profile.defaultService} secondary={secondary ? "my service" : null} />
+          <ListItemText primary={removeHyphens(memberInfo.defaultService)} secondary={secondary ? "my service" : null} />
         </ListItem>
         <Divider />
         <ListItem>
@@ -280,7 +337,7 @@ const authPromptMessage = "This operation is sensitive and requires recent authe
             </Tooltip>
           </ListItemAvatar>
           <ListItemText
-            primary={profile.durationService}
+            primary={`${memberInfo.durationService/60} hrs`}
             secondary={secondary ? "duration" : null}
           />
         </ListItem>
@@ -292,7 +349,7 @@ const authPromptMessage = "This operation is sensitive and requires recent authe
             </Tooltip>
           </ListItemAvatar>
           <ListItemText
-            primary={profile.costServicePence}
+            primary={`£${memberInfo.costServicePence/100}`}
             secondary={secondary ? "cost" : null}
           />
         </ListItem>
