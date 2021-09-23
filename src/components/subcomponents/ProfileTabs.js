@@ -182,7 +182,7 @@ export default function FullWidthTabs() {
           </TabPanel>
         </SwipeableViews>
         <Link
-          style={{ padding: '1em' }}
+          style={{ display: user ? 'inherit' : 'none', padding: '1em' }}
           href="#"
           onClick={e => {
             logout(e)

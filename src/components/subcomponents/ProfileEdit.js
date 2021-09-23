@@ -1,5 +1,4 @@
-import React, {useContext}from 'react'
-import {graphql , useStaticQuery} from 'gatsby'
+import React, {useState, useContext, useEffect}from 'react'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -12,7 +11,8 @@ import Grid from '@material-ui/core/Grid'
 import EditIcon from '@material-ui/icons/Edit'
 import { Divider, Link, Tooltip, Typography, Button, TextField } from '@material-ui/core'
 import { AuthContext } from '../../context/AuthContext'
-import MemberDetails from './MemberDetails'
+import firebase from 'gatsby-plugin-firebase'
+import 'firebase/firestore'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -48,19 +48,64 @@ export default function ProfileEdit() {
 
   const {user} = useContext(AuthContext)
   const {profile} = useContext(AuthContext)
+  const {setShowLogin} = useContext(AuthContext)
   
 
   const classes = useStyles()
   const theme = useTheme()
-  const [value, setValue] = React.useState(0)
+  const [dialogValue, setDialogValue] = useState({
+    name: "",
+    email: "",
+    telephone: "",
+  })
+  const [response, setResponse] = useState({
+    res: null,
+    error: null,
+  })
+const authPromptMessage = "This operation is sensitive and requires recent authentication. Log in again before retrying this request."
+  const [dense, setDense] = useState(false)
+  const [secondary, setSecondary] = useState(true)
+  const [fieldToEdit, setFieldToEdit] = useState(null)
 
-  const [dense, setDense] = React.useState(false)
-  const [secondary, setSecondary] = React.useState(true)
-  const [fieldToEdit, setFieldToEdit] = React.useState(null)
+  const handleUpdate = () => {
+    if (fieldToEdit !== null && fieldToEdit === 'name') {
+      firebase.auth().currentUser.updateProfile({
+        displayName: dialogValue.name,
+      }).then(() => {
+        setResponse({...response, res: "User display name has been updated"})  
+      }).catch(err => {
+        alert(err)
+      })
+    } else
+    if (fieldToEdit !== null && fieldToEdit === 'email') {
+        firebase.auth().currentUser.updateEmail(dialogValue.email).then(() => {
+          setResponse({...response, res:"Email updated successfully"})
+        }).catch(err => {
+          setResponse({...response, error: err.message})
+          if (err.message === authPromptMessage) {
+            firebase.auth().signOut()
+              setShowLogin(true)
+          }
+        })
+    } else
+    if (fieldToEdit === null) {
+      alert("please enter a value to update")
+    }
+    setFieldToEdit(null)
+  }
+
+  useEffect(() => {
+    
+  }, [fieldToEdit])
+
   return (
     <div>
       <Grid container spacing={2}>
-<Grid container justifyContent="center" sm={12}  md={6}>
+<Grid item sm={12}  md={6}>
+<Grid item container justifyContent="center" xs={12}>
+  {response.res ? <p>{response.res}</p> : null}
+  {response.error ? <p style={{color: '#e5607c'}}>{response.error}</p> : null}
+</Grid>
       <div className={classes.listGroup}>
         <List dense={dense}>
           <ListItem>
@@ -78,6 +123,12 @@ export default function ProfileEdit() {
                   label="name"
                   type="text"
                   name="name"
+                  onChange={ event =>
+                    setDialogValue({
+                      ...dialogValue,
+                      name: event.target.value,
+                    })
+                  } 
                 ></TextField>
               </>
               :
@@ -91,11 +142,19 @@ export default function ProfileEdit() {
                   fieldToEdit === "name" ?
                   <>
                   <Button variant="contained" size="small" href="#" onClick={(() => {setFieldToEdit(null)})}>cancel</Button>
-                  <Button color="primary" variant="contained" size="small" href="#" onClick={(() => {setFieldToEdit(null)})}>submit</Button>
+                  <Button color="primary" variant="contained" size="small" href="#" 
+                  onClick={() => {
+                    setFieldToEdit("name")
+                    handleUpdate()
+                  }}
+                  >
+                    submit</Button>
                   </>
                   :
                   <IconButton edge="end" aria-label="delete">
-                  <EditIcon className={classes.editButton} onClick={(() => { setFieldToEdit("name")})} />
+                  <EditIcon className={classes.editButton} onClick={(() => { 
+                    setResponse({...response, error: null, res:null}) 
+                    setFieldToEdit("name")})} />
                   </IconButton>
                 }
              
@@ -108,10 +167,50 @@ export default function ProfileEdit() {
                 <Avatar>E</Avatar>
               </Tooltip>
             </ListItemAvatar>
-            <ListItemText
+            {
+              fieldToEdit === "email" ?
+              <TextField
+                  margin="dense"
+                  id="email"
+                  label="email"
+                  type="email"
+                  name="email"
+                  onChange={ event =>
+                    setDialogValue({
+                      ...dialogValue,
+                      email: event.target.value,
+                    })
+                  } 
+                ></TextField>
+              :
+              <ListItemText
               primary={user.email}
               secondary={secondary ? 'email' : null}
             />
+            }
+            <ListItemSecondaryAction>
+              
+              {
+                fieldToEdit === "email" ?
+                <>
+                <Button variant="contained" size="small" href="#" onClick={(() => {setFieldToEdit(null)})}>cancel</Button>
+                <Button color="primary" variant="contained" size="small" href="#" 
+                onClick={() => {
+                  setFieldToEdit("email")
+                  handleUpdate()
+                }}
+                >
+                  submit</Button>
+                </>
+                :
+                <IconButton edge="end" aria-label="delete">
+                <EditIcon className={classes.editButton} onClick={(() => { 
+                  setResponse({...response, error: null, res:null}) 
+                  setFieldToEdit("email")})} />
+                </IconButton>
+              }
+           
+          </ListItemSecondaryAction>
           </ListItem>
           <Divider />
           <ListItem>
@@ -150,7 +249,9 @@ export default function ProfileEdit() {
                   </>
                   :
                   <IconButton edge="end" aria-label="delete">
-                  <EditIcon className={classes.editButton} onClick={(() => { setFieldToEdit("tel")})} />
+                  <EditIcon className={classes.editButton} onClick={(() => { 
+                    setResponse({...response, error: null, res:null}) 
+                    setFieldToEdit("tel")})} />
                   </IconButton>
                 }
             

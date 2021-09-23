@@ -1,8 +1,6 @@
 import React, {createContext, useState, useEffect} from 'react'
 import {graphql , useStaticQuery} from 'gatsby'
 import firebase from 'gatsby-plugin-firebase'
-import { async } from '@firebase/util'
-import { get } from 'lodash'
 
 export  const AuthContext = createContext({})
 
