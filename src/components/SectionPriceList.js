@@ -51,6 +51,7 @@ export default function SpacingGrid() {
           pricePence
           id
           variablePrice
+          variableDuration
           consultationOnly
         }
       }
@@ -86,7 +87,7 @@ export default function SpacingGrid() {
                       :
                       null }
                   </Typography>
-                  {value.node.consultationOnly || value.node.variablePrice ? 
+                  {value.node.consultationOnly || value.node.variablePrice || value.node.variableDuration ? 
                   <Button href={deviceIsMobile ? "tel:07517140732" : "#contact"} style={{color:"white"}} className={classes.button} variant="contained" color="blue" onClick={() =>{
                     
                   }}>Enquire</Button>
