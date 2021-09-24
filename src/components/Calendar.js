@@ -2,7 +2,9 @@ import React, { useContext, useState } from 'react'
 import * as dateFns from "date-fns";
 import './calendar.css'
 import {BookingContext} from "../context/BookingContext";
+import {AuthContext} from "../context/AuthContext";
 import add from "date-fns/add";
+import { Typography } from '@material-ui/core';
 
 
 export default function Calendar(props) {
@@ -10,6 +12,7 @@ export default function Calendar(props) {
   const {selectedService, setSelectedService} = useContext(BookingContext);
   const {selectedDateGlobal, setNewDate} = useContext(BookingContext);
   const {setError} = useContext(BookingContext);
+  const {deviceIsMobile} = useContext(AuthContext);
  // State
   const [currentMonth, setCurrentMonth] = useState(selectedDateGlobal);
   const [selectedDate, setSelectedDate] = useState(selectedDateGlobal);
@@ -39,9 +42,9 @@ export default function Calendar(props) {
     }
 
 const renderDays = () => {
-      const dateFormat = "dddd";
+      const dateFormat = "EEE";
       const days = [];
-      let startDate = dateFns.startOfWeek(currentMonth);
+      let startDate = dateFns.startOfWeek(currentMonth, {weekStartsOn: 1});
       for (let i = 0; i < 7; i++) {
         days.push(
           <div className="col col-center" key={i}>
@@ -64,6 +67,10 @@ const renderCells = () =>{
       let days = [];
       let day = startDate;
       let formattedDate = "";
+
+      const businessClosed = (day) => {
+        return dateFns.getDay(day) === 0 || dateFns.getDay(day) === 1 ||  dateFns.getDay(day) === 2
+      }
       while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
           formattedDate = dateFns.format(day, dateFormat);
@@ -74,12 +81,15 @@ const renderCells = () =>{
               !dateFns.isSameMonth(day, monthStart)
                   ? "disabled"
                   : dateFns.isSameDay(day, selectedDate) ? "selected" : ""
-              }`}
+              }
+              ${dateFns.getDay(day) === 0 || dateFns.getDay(day) === 1 ||  dateFns.getDay(day) === 2  ? "closed" : ""}
+              `}
               key={day}
               onClick={() => onDateClick(dateFns.toDate(cloneDay))}
           >
               <span className="number">{formattedDate}</span>
-              <span className="bg">{formattedDate}</span>
+              
+               <Typography className={`bg ${businessClosed(day) ? "bgClosed" : deviceIsMobile ? "bgMobile" : "" }`} variant="body2">{!businessClosed(day) ? formattedDate : deviceIsMobile ? "C" : "Closed"}</Typography> 
           </div>
           );
           day = dateFns.addDays(day, 1);

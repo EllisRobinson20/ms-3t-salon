@@ -208,6 +208,10 @@ main {
   color: var(--text-color-light);
   pointer-events: none;
 }
+.closed {
+  border-color: var(--main-color);
+  color: var(--main-color);
+}
 
 .calendar .body .cell .bg {
   font-weight: 700;
@@ -221,6 +225,18 @@ main {
   transition: .25s ease-out;
   letter-spacing: -.07em;
 }
+.bgClosed {
+  font-size: 5em!important;
+  top: 0.1em!important;
+  right: .2em!important;
+}
+.bgClosed:hover {
+  opacity: .4!important;
+}
+.bgMobile {
+  font-size: 3em!important;
+}
+
 
 .calendar .body .cell:hover .bg, .calendar .body .selected .bg  {
   opacity: 0.05;

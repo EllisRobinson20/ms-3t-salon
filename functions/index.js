@@ -158,6 +158,9 @@ exports.getAvailabilityForDate = functions.https.onCall((data, context) => {
   console.log("dayOfWeek is : ");
   console.log(dayOfWeek);
 
+  const businessClosed = (day) => {
+    return getDay(day) === 0 || getDay(day) === 1 || getDay(day) === 2;
+  };
   const bookingHistory = firestore.collection("bookingHistory")
       .where("dateOfBooking", ">=", selectedDate)
       .where("dateOfBooking", "<", dayAfter)
@@ -172,7 +175,12 @@ exports.getAvailabilityForDate = functions.https.onCall((data, context) => {
     // if the result is empty or undefined then reject else resolve
     admin.firestore().collection("services")
         .doc(serviceName).get();
-
+  const isClosed = businessClosed(selectedDate);
+  if (isClosed) {
+    return {
+      error: "Business Closed",
+    };
+  }
 
   return Promise.all([
     bookingHistory,

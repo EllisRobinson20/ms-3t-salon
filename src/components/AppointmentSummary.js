@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { BookingContext } from '../context/BookingContext'
 import { AuthContext } from '../context/AuthContext'
-import { Link, graphql, useStaticQuery } from 'gatsby'
+import { Link, graphql, useStaticQuery, navigate } from 'gatsby'
 import * as styles from '../styles/appointmentSummary.module.css'
 import format from 'date-fns/format'
 import firebase from 'gatsby-plugin-firebase'
 import LoadingBackdrop from './subcomponents/LoadingBackdrop'
+
 
 export default function AppointmentSummary() {
   // Data
@@ -49,7 +50,7 @@ export default function AppointmentSummary() {
     setLoading(true)
     /* console.log(user) */
     // ! Must Check Auth First
-    if (user) {
+    if (user ) {
       const bookingAttempt = firebase
         .functions()
         .httpsCallable('bookProvisionalIfAvail')
@@ -175,6 +176,7 @@ export default function AppointmentSummary() {
         className={styles.changeSelection}
         onClick={() => {
           setSelectedService('')
+          navigate("/salon")
         }}
       >
         {selectedService.id ? ' Change selection' : ''}

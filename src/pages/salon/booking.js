@@ -1,6 +1,6 @@
 import Calendar from '../../components/Calendar'
 import React, { useState, useContext } from "react"
-import { Link } from 'gatsby'
+import { Link, useStaticQuery } from 'gatsby'
 import Layout from "../../components/Layout"
 import TimeSlotPicker from "../../components/TimeSlotPicker"
 import AppointmentSummary from '../../components/AppointmentSummary'
@@ -27,14 +27,16 @@ const {slots, setSlots} = useContext(BookingContext);
 const {lastPage} = useContext(NavigationContext);
 // Local state
 const [loading, setLoading] = useState(false);
+const [error, setError] = useState();
 
 const getAvailabilityForDate = (day) => {
 if (isBrowser) {
   setLoading(true)
 const availability = firebase.functions().httpsCallable('getAvailabilityForDate');
   availability({date: day, serviceName: selectedService.id })
-.then( result => {setSlots(result.data)
+.then( result => { result.data.error === "Business Closed" ? setError("Salon Closed") : setSlots(result.data)
   setLoading(false)
+  setTimeout(() => {setError("")} , 2000)
 })
 }
 
@@ -60,6 +62,7 @@ const availability = firebase.functions().httpsCallable('getAvailabilityForDate'
       </Grid>
       <Calendar action={getAvailabilityForDate}/>
       <CircularProgress style={{color: "black", marginTop: '3em',visibility: loading ? 'visible' : 'hidden'}}/>
+      <Typography variant="h4" style={{color: "#d52349", opacity: .6}}>{error? error : ""}</Typography>
       <TimeSlotPicker/>
       <AppointmentSummary/>
     </Layout>
