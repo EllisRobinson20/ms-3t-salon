@@ -76,8 +76,8 @@ export default function SpacingGrid() {
           {data.allService.edges.map((value) => (
             <Grid key={value.node.id} item xs={matchesSm ? 6 : matchesMd ? 3 : 2}>
               <Paper className={classes.paper} >
-                  <Typography variant={'h6'}>{value.node.name}</Typography>
-                  <Typography variant={'body1'}>
+                  <Typography variant={'body1'}>{value.node.name}</Typography>
+                  <Typography variant={'body2'}>
                       { value.node.variablePrice ? 
                       `from £${value.node.pricePence/100}` 
                       : 
@@ -87,17 +87,17 @@ export default function SpacingGrid() {
                       null }
                   </Typography>
                   {value.node.consultationOnly || value.node.variablePrice ? 
-                  <Button href={deviceIsMobile ? "tel:07517140732" : "#contact"} style={{color:"white"}} className={classes.button} variant="contained" color="blue" onClick={() =>{
+                  <button href={deviceIsMobile ? "tel:07517140732" : "#contact"} style={{color:"white"}} className={classes.button} variant="contained" color="blue" onClick={() =>{
                     
-                  }}>Consultation</Button>
+                  }}>Enquire</button>
                   :
-                  <Button className={classes.button} variant="contained" color="blue" onClick={()=>{
+                  <button className={classes.button} variant="contained" onClick={()=>{
                     setSelectedService({
                       id: value.node.id,
                       name: value.node.name,
                     })
                     navigate("/salon/booking")
-                  }}>Book Now</Button>
+                  }}>Book</button>
                 }
                   
                   
