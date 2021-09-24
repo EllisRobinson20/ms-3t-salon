@@ -87,17 +87,17 @@ export default function SpacingGrid() {
                       null }
                   </Typography>
                   {value.node.consultationOnly || value.node.variablePrice ? 
-                  <button href={deviceIsMobile ? "tel:07517140732" : "#contact"} style={{color:"white"}} className={classes.button} variant="contained" color="blue" onClick={() =>{
+                  <Button href={deviceIsMobile ? "tel:07517140732" : "#contact"} style={{color:"white"}} className={classes.button} variant="contained" color="blue" onClick={() =>{
                     
-                  }}>Enquire</button>
+                  }}>Enquire</Button>
                   :
-                  <button className={classes.button} variant="contained" onClick={()=>{
+                  <Button className={classes.button} variant="contained" onClick={()=>{
                     setSelectedService({
                       id: value.node.id,
                       name: value.node.name,
                     })
                     navigate("/salon/booking")
-                  }}>Book</button>
+                  }}>Book</Button>
                 }
                   
                   

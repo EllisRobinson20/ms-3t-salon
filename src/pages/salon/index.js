@@ -171,6 +171,16 @@ export default function Services({ location, data }) {
           consultation: true,
         })
       } 
+    } else
+    if (memberInfo.userConsulted && serviceDetails.node.id !== memberInfo.defaultService) {
+      console.log("condition 7")
+      setViewModel({...viewModel, 
+        duration: `From ${serviceDetails.node.durationMinutes/60} hrs`,
+        price: `From £${serviceDetails.node.pricePence/100}`,
+        buttonLabel: "Call Now",
+        message: "Call us to get a consultation",
+        consultation: true,
+      })
     }
   }
   return (
