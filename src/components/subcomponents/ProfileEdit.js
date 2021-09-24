@@ -55,6 +55,7 @@ export default function ProfileEdit() {
   const { user } = useContext(AuthContext)
   const { memberInfo } = useContext(AuthContext)
   const { setShowLogin } = useContext(AuthContext)
+  const { admin } = useContext(AuthContext)
 
   const classes = useStyles()
   const theme = useTheme()
@@ -159,7 +160,9 @@ export default function ProfileEdit() {
 
   return (
     <div>
-      <Grid container spacing={2}>
+      {
+        !admin ? 
+        <Grid container spacing={2}>
         <Grid item sm={12} container md={6}>
           <Grid item container justifyContent="center" xs={12}>
             {response.res ? <p>{response.res}</p> : null}
@@ -330,11 +333,12 @@ export default function ProfileEdit() {
                 ) : (
                   <>
                     <ListItemText
-                      primary={
+                      /* primary={
                         Object.keys(memberInfo.telephone).length === 0
                           ? ''
                           : memberInfo.telephone
-                      }
+                      } */
+                      primary={memberInfo.telephone}
                       secondary={secondary ? 'telephone' : null}
                     />
                   </>
@@ -433,6 +437,11 @@ export default function ProfileEdit() {
           )}
         </Grid>
       </Grid>
+      :
+      <>
+      </>
+      }
+      
     </div>
   )
 }

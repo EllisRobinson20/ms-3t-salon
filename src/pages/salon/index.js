@@ -91,7 +91,7 @@ export default function Services({ location, data }) {
   const { setPageState } = useContext(NavigationContext)
   const { lastPage } = useContext(NavigationContext)
   const { deviceIsMobile } = useContext(AuthContext)
-  const { user } = useContext(AuthContext)
+  const { admin } = useContext(AuthContext)
   setPageState(location.pathname)
   const {memberInfo} = useContext(AuthContext)
   const { setSelectedService } = useContext(BookingContext)
@@ -302,8 +302,16 @@ export default function Services({ location, data }) {
               <ArrowBackIcon />
             </IconButton>
           </Link>
+          
+          {!admin ? 
+          <>
           <Typography variant="h4">Select A Service</Typography>
           <ServicesList action={updateView}/>
+          </>
+          :
+          <Typography variant="h4">Bookings not allowed here for Admin!</Typography>
+          }
+          
         </Grid>
         <Grid item xs={12}></Grid>
       </Grid>

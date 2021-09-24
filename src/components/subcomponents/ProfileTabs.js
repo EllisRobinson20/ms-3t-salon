@@ -8,7 +8,7 @@ import {
   ThemeProvider,
   createTheme,
 } from '@material-ui/core/styles'
-import { useMediaQuery } from '@material-ui/core'
+import { Grid, useMediaQuery } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
@@ -86,7 +86,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default function FullWidthTabs() {
+export default function FullWidthTabs({action}) {
   const classes = useStyles()
   const theme = useTheme()
   const matchesMd = useMediaQuery(theme.breakpoints.down('md'))
@@ -179,7 +179,9 @@ export default function FullWidthTabs() {
             {user ? <ProfilePostRating /> : <LoginPrompt />}
           </TabPanel>
         </SwipeableViews>
-        <Link
+        <Grid container>
+          <Grid item xs={3}>
+          <Link
           style={{ display: user ? 'inherit' : 'none', padding: '1em' }}
           href="#"
           onClick={e => {
@@ -188,6 +190,21 @@ export default function FullWidthTabs() {
         >
           Logout
         </Link>
+          </Grid>
+          <Grid item xs={6}></Grid>
+          <Grid item xs={3}>
+          <Link
+          style={{ display: user ? 'inherit' : 'none', padding: '1em' }}
+          href="#"
+          onClick={e => {
+            action()
+          }}
+        >
+          Close
+        </Link>
+          </Grid>
+        </Grid>
+        
       </div>
     </ThemeProvider>
   )

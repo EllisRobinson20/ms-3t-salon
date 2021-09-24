@@ -55,7 +55,7 @@ export default function TransitionsModal() {
         }}
       >
         <Fade in={open}>
-            <ProfileTabs/>
+            <ProfileTabs action={handleClose}/>
         </Fade>
       </Modal>
     </div>
