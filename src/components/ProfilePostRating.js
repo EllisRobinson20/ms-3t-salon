@@ -1,4 +1,7 @@
-import React from 'react'
+import React, {useState, useContext} from 'react'
+import firebase from 'gatsby-plugin-firebase'
+import 'firebase/firestore'
+import { AuthContext } from '../context/AuthContext'
 import { makeStyles } from '@material-ui/core'
 import Rating from '@material-ui/lab/Rating'
 import {
@@ -41,17 +44,50 @@ const useStyles = makeStyles(theme => ({
 
 export default function ProfilePostRating() {
     const classes = useStyles()
-    const [rating, setRating] = React.useState(0)
+    const [rating, setRating] = useState(0)
+    const [comment, setComment] = useState()
+    const [res, setRes] = useState("Good experience? We would really appreciate your feedback")
+
+    const {user} = useContext(AuthContext)
+    const {memberInfo} = useContext(AuthContext)
+
+    const handlePostReview = () => {
+      if(comment && rating > 0) {
+        firebase.firestore().collection('reviews').add({
+          name: user.displayName,
+          comment: comment,
+          rating: rating,
+        }).then(documentReference => {
+          console.log(`Added document with name: ${documentReference.id}`);
+          setRes("Thanks for taking the time to give feedback!")
+          firebase.firestore().collection('members').doc(user.uid).update({
+            givenReview: true
+          })
+          setRating(0)
+          setComment("")
+        }).catch(err => {
+          console.log(err)
+        });
+      } else {
+        console.log("Please give a rating and comment to post")
+      }
+    }
     return (
         <div>
-            <Box
+          {memberInfo.givenReview ? 
+          <Typography>
+          You have already given a review. We appreciate the feedback you have given us.
+        </Typography>
+          :
+          <>
+          <Box
               component="fieldset"
               mb={3}
               borderColor="transparent"
               className={classes.centered}
             >
               <Typography>
-                "Good experience? We would really appreciate your feedback"
+                {res}
               </Typography>
               <Rating
                 name="simple-controlled"
@@ -65,13 +101,17 @@ export default function ProfilePostRating() {
             </Box>
             <Container className={classes.centered}>
               <TextField
-                id="outlined-multiline-flexible"
+                id="comment-input"
+                name="comment"
+                type="text"
                 label="Comments"
                 multiline
                 maxRows={4}
-                /*value={}*/
-                /*onChange={}*/
+                value={comment}
                 variant="outlined"
+                onChange={event => 
+                  setComment(event.target.value)
+                }
               />
             </Container>
             <Container className={classes.centered}>
@@ -79,10 +119,16 @@ export default function ProfilePostRating() {
                 variant="contained"
                 color="secondary"
                 className={classes.formSubmit}
+                onClick={() => {
+                  handlePostReview()
+                }}
               >
                 Send
               </Button>
             </Container>
+          </>
+        }
+            
         </div>
     )
 }

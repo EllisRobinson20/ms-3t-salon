@@ -17,7 +17,6 @@ import Box from '@material-ui/core/Box'
 
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday'
-import HistoryIcon from '@material-ui/icons/History'
 import StarHalfIcon from '@material-ui/icons/StarHalf'
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
 
@@ -29,7 +28,6 @@ import { AuthContext } from '../../context/AuthContext'
 import LoginPrompt from './LoginPrompt'
 import ProfileAdmin from './ProfileAdmin'
 import { navigate } from 'gatsby'
-import ProfileBookingsHistory from './ProfileBookingsHistory'
 import ProfileUpcomingBookings from './ProfileUpcomingBookings'
 import ProfilePostRating from '../ProfilePostRating'
 
@@ -174,10 +172,10 @@ export default function FullWidthTabs() {
           <TabPanel className={classes.tabs} value={value} index={1} dir={theme.direction}>
             {user ? <ProfileUpcomingBookings /> : <LoginPrompt />}
           </TabPanel>
-          <TabPanel className={classes.tabs} value={value} index={2} dir={theme.direction}>
+          {/* <TabPanel className={classes.tabs} value={value} index={2} dir={theme.direction}>
             {user ? <ProfileBookingsHistory /> : <LoginPrompt />}
-          </TabPanel>
-          <TabPanel className={classes.tabs} value={value} index={3} dir={theme.direction}>
+          </TabPanel> */}
+          <TabPanel className={classes.tabs} value={value} index={2} dir={theme.direction}>
             {user ? <ProfilePostRating /> : <LoginPrompt />}
           </TabPanel>
         </SwipeableViews>
