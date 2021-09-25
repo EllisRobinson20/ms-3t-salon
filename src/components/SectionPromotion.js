@@ -1,6 +1,5 @@
 import { Grid } from '@material-ui/core'
 import { graphql, useStaticQuery } from 'gatsby'
-
 import React from 'react'
 import { useState } from 'react'
 import PromotionItem from './subcomponents/PromotionItem'

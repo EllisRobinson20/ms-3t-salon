@@ -9,7 +9,7 @@ import { Typography } from '@material-ui/core';
 
 export default function Calendar(props) {
  // Context
-  const {selectedService, setSelectedService} = useContext(BookingContext);
+  const {selectedService} = useContext(BookingContext);
   const {selectedDateGlobal, setNewDate} = useContext(BookingContext);
   const {setError} = useContext(BookingContext);
   const {deviceIsMobile} = useContext(AuthContext);

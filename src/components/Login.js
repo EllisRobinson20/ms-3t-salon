@@ -2,13 +2,18 @@ import React, { useState, useContext } from 'react'
 import firebase from 'gatsby-plugin-firebase'
 import 'firebase/firestore'
 import { AuthContext } from '../context/AuthContext'
-import { Link, navigate } from '@reach/router'
+import { Link} from '@reach/router'
 import * as styles from '../styles/login.module.css'
 import CloseIcon from '@material-ui/icons/Close';
-import { Grid, Paper, Typography, useMediaQuery } from '@material-ui/core'
+import { Grid, Paper, setRef, Typography, useMediaQuery } from '@material-ui/core'
 import { useTheme } from '@material-ui/core/styles'
 
+
 export default function Login() {
+  const toggleReset = e => {
+    e.preventDefault()
+    setShowReset(!showReset)
+  }
   const toggleView = e => {
     e.preventDefault()
     setShowSignUp(!showSignUp)
@@ -17,6 +22,8 @@ export default function Login() {
     if (e) {
       e.preventDefault()
     }
+    setShowReset(false)
+    setShowSignUp(false)
       setShowLogin(false)
       
     
@@ -41,8 +48,82 @@ export default function Login() {
   const { setUser } = useContext(AuthContext)
   const { setShowLogin } = useContext(AuthContext)
   const { setLoginAttempt } = useContext(AuthContext)
+  const { setShowSignUpConfirmation } = useContext(AuthContext)
 
   const [showSignUp, setShowSignUp] = useState(false)
+  const [showReset, setShowReset] = useState(false)
+  const [openDialog, setOpenDialog] = useState(false)
+
+  
+
+  const renderResetPassword = () => {
+    const handleChange = e => {
+      setData({ ...data, [e.target.name]: e.target.value })
+    }
+
+    const handleSubmit = async e => {
+      e.preventDefault()
+      setData({ ...data, error: null })
+      try {
+        const result = await firebase
+          .auth()
+          .sendPasswordResetEmail(data.email)
+          .then((res) => {
+            if (res) {
+              console.log("results")
+              //setUser(result)
+              //setShowLogin(false)
+            }
+          })
+      } catch (err) {
+        
+            setData({ ...data, emailError: err.message})
+        
+      }
+    }
+    return (
+      <Paper elevation={3} style={{margin: 'auto', width: matchesLg? '45vw' : matchesMd ? '65vw' : "95vw"}}>
+      <div className={styles.background}>
+        <Grid container>
+        <Grid item xs={1}>
+        <Link to={''} onClickCapture={closeLogin}>
+        <CloseIcon/>
+        </Link>
+          </Grid>
+        <Grid item xs={10}>
+          <Typography variant="body2">Enter your email address</Typography>
+        <Link style={{color: '#d52349'}} to={''} onClickCapture={toggleReset}>
+        Back to login
+        </Link>
+          </Grid>
+          <Grid item xs={1}>
+        
+          </Grid>
+        </Grid>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="email">Email</label>
+            <br />
+            <input
+              type="text"
+              name="email"
+              value={data.email}
+              onChange={handleChange}
+              onFocus={()=>{
+                setData({ ...data, emailError: "",error: ""})
+              }}
+            />
+            {data.error ? <p>{data.error}</p> : null}
+            {data.emailError ? <p>{data.emailError}</p> : null}
+            <br />
+            <br />
+          </div>
+          <input type="submit" value="Login" />
+        </form>
+      </div>
+      </Paper>
+    )
+  }
 
   const renderLogin = () => {
     const handleChange = e => {
@@ -130,7 +211,14 @@ export default function Login() {
           </div>
           <input type="submit" value="Login" />
         </form>
+        <Typography variant="body2">Forgot password?</Typography>
+        <Link style={{color: '#d52349'}} to={''} onClickCapture={toggleReset}>
+           Password reset
+        </Link>
       </div>
+      
+          
+         
       </Paper>
     )
   }
@@ -159,7 +247,7 @@ export default function Login() {
                   userConsulted: false,
                 })
                 return cred
-            }).catch((err) => {console.log(err)})
+            })
             .then((cred) => {
               if (cred) {
                 cred.user.updateProfile({
@@ -168,8 +256,30 @@ export default function Login() {
                 setUser(cred)
                 setLoginAttempt(true)
                 clearFields()
-                closeLogin()
               } 
+              return cred
+            }).then((cred) => {
+              if (cred) {
+                firebase
+                .auth()
+                .currentUser.sendEmailVerification()
+              }
+              return cred
+            }).then((cred) => {
+              if (cred) {
+                setShowSignUpConfirmation(true)
+              }
+              
+            }).catch((err) => {
+              switch (err.code) {
+                case "auth/invalid-email":
+                case "auth/email-already-in-use":
+                  setData({ ...data, emailError: err.message})
+                  break;
+                case "auth/weak-password":
+                  setData({ ...data, passwordError: err.message})
+                //default: setData({ ...data, error: err.message})
+              }
             })
         } catch (err) {
           switch (err.code) {
@@ -179,6 +289,7 @@ export default function Login() {
               break;
             case "auth/weak-password":
               setData({ ...data, passwordError: err.message})
+            default: setData({ ...data, error: err.message})
           }
         }
       } else {
@@ -257,9 +368,10 @@ export default function Login() {
           <input type="submit" style={{ color: 'red' }} value="Register" />
         </form>
       </div>
+      
       </Paper>
     )
   }
 
-  return showSignUp ? renderSignUp() : renderLogin()
+  return showSignUp ? renderSignUp() : showReset ? renderResetPassword() : renderLogin()
 }

@@ -1,6 +1,6 @@
 import Calendar from '../../components/Calendar'
 import React, { useState, useContext } from "react"
-import { Link, useStaticQuery } from 'gatsby'
+import { Link } from 'gatsby'
 import Layout from "../../components/Layout"
 import TimeSlotPicker from "../../components/TimeSlotPicker"
 import AppointmentSummary from '../../components/AppointmentSummary'
@@ -41,7 +41,6 @@ const availability = firebase.functions().httpsCallable('getAvailabilityForDate'
 }
 
 };
-
   return (
     <Layout>
       <Grid container>

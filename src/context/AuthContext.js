@@ -26,6 +26,7 @@ const AuthContextProvider = ({ children }) => {
     `)
     const [user, setUser] = useState()
     const [showLogin, setShowLogin] = useState(false)
+    const [showSignUpConfirmation, setShowSignUpConfirmation] = useState(false)
     const [loginAttempt, setLoginAttempt] = useState(false)
     const [deviceIsMobile, setDeviceIsMobile] = useState()
     const [profile, setProfile] = useState({})
@@ -104,6 +105,7 @@ const AuthContextProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={{user, setUser,
             showLogin, setShowLogin,
+            showSignUpConfirmation, setShowSignUpConfirmation,
             loginAttempt, setLoginAttempt,
             deviceIsMobile, setDeviceIsMobile,
             profile, setProfile,
