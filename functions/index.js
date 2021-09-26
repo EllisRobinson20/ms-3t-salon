@@ -118,6 +118,116 @@ exports.sendEmailNotification=functions.firestore
       });
     });
 
+exports.adminCreateUser = functions.https.onCall((data, context) => {
+  /* const removeZero = (phoneNumber) => {
+    const removeFirst = phoneNumber.substring(1);
+    const fullNo = "+44" + removeFirst;
+    console.log("joining phone number", fullNo);
+    return fullNo;
+  }; */
+  const actionCodeSettings = {
+    // URL you want to redirect back to. The domain (www.example.com) for
+    // this URL must be whitelisted in the Firebase Console.
+    url: "https://www.ms3tsalon.com/",
+    // This must be true for email link sign-in.
+    handleCodeInApp: true,
+
+    // FDL custom domain.
+    // dynamicLinkDomain: "coolapp.page.link",
+  };
+  const transporter = nodemailer.createTransport({
+    host: "smtp-mail.outlook.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.NODEMAILER_EMAIL,
+      pass: process.env.NODEMAILER_PASSWORD,
+    },
+  });
+  return admin
+      .auth()
+      .createUser({
+        email: data.email,
+        emailVerified: false,
+        /* phoneNumber: removeZero(data.telephone), */
+        password: data.password,
+        displayName: data.name,
+        disabled: false,
+      })
+      .then((record) => {
+        console.log("Successfully created new user:", record);
+        firestore.collection("members")
+            .doc(record.uid)
+            .set({
+              email: data.email,
+              givenReview: false,
+              name: data.name,
+              userConsulted: false,
+              telephone: data.telephone,
+            });
+        // See the UserRecord reference doc for the contents of userRecord.
+        // console.log("Successfully created new user:", record.uid);
+        return admin
+            .auth()
+            .generateEmailVerificationLink(record.email, actionCodeSettings);
+      }).then((link) => {
+        transporter.sendMail({
+          from: "ms3tsalon@outlook.com",
+          to: `${data.email}`,
+          subject: "Email verification link",
+          text: "",
+          html: `<html>
+          <body>
+          <h2>Here is your verification link</h2>
+                  </br><p>Follow this link to activate your account</p>
+                  <div style="border:2px solid grey; 
+                  border-radius:5px; padding: 1em;">
+                  </br><p><strong>${link}</strong>,</p>
+                  </div>
+                  </br>
+                  <div style="border:2px solid grey; 
+                  </br>
+          <i style="margin-top: 2em;">Thanks for joining</i>
+          </br>
+          <h4>Latoyah</h4>
+          <h2 style="font-family: Pinyon Script;">Ms 3T Salon</h2>
+          </body>
+          </html>`,
+        });
+        return admin
+            .auth()
+            .generatePasswordResetLink(data.email, actionCodeSettings);
+      }).then((link) => {
+        transporter.sendMail({
+          from: "ms3tsalon@outlook.com",
+          to: `${data.email}`,
+          subject: "Email verification link",
+          text: "",
+          html: `<html>
+          <body>
+          <h2>Here is your password reset link</h2>
+                  </br><p>Here is a link to reset your password</p>
+                  </br>
+                  <div style="border:2px solid grey; 
+                  border-radius:5px; padding: 1em;">
+                    </br>
+                    </br><p><strong>${link}</strong>,</p>
+                    </br>  
+                  </div>
+                  </br>
+          <i style="margin-top: 2em;">Thanks for joining</i>
+          </br>
+          <h4>Latoyah</h4>
+          <h2 style="font-family: Pinyon Script;">Ms 3T Salon</h2>
+          </body>
+          </html>`,
+        });
+      })
+      .catch((error) => {
+        console.log("Error creating new user:", error);
+      });
+});
+
 exports.addAdminRole = functions.https.onCall((data, context) => {
   return admin.auth().getUserByEmail(data.email).then((user) => {
     return admin.auth().setCustomUserClaims(user.uid, {

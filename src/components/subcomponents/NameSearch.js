@@ -1,5 +1,6 @@
 /* eslint-disable no-use-before-define */
 import React, { useEffect, useContext } from 'react'
+import firebase from 'gatsby-plugin-firebase'
 import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -14,6 +15,7 @@ import { AdminContext } from '../../context/AdminContext'
 import { Grid, Typography } from '@material-ui/core'
 import { useTheme} from '@material-ui/core/styles'
 import { useMediaQuery } from '@material-ui/core'
+import { useState } from 'react'
 
   
 
@@ -25,11 +27,24 @@ export default function FreeSoloCreateOptionDialog({ data }) {
   const [value, setValue] = React.useState(null)
   const [open, toggleOpen] = React.useState(false)
   const {setUserObject} = useContext(AdminContext)
+  const {inConsultation, setInConsultation} = useContext(AdminContext)
 
   const theme = useTheme()
 const matchesSm = useMediaQuery(theme.breakpoints.down('xs'))
 const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'))
 const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
+
+const randomPassword = ()  => {
+  let chars = "0123456789~!@#$%^&*()_+}{[]|abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let pass = "";
+  let passLength = 8;
+
+  for (let i = 0; i < passLength; i++) {
+      let randPass = Math.floor(Math.random() * chars.length);
+      pass += chars.substring(randPass, randPass+1);
+  }
+  return pass
+}
 
   const handleClose = () => {
     setDialogValue({
@@ -48,15 +63,22 @@ const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
     telephone: '',
     password: '',
   })
+  const [res, setRes] = useState({
+    nameError: null,
+    emailError: null,
+    passwordError: null,
+  })
 
   const handleSubmit = event => {
     event.preventDefault()
-    setValue({
+  callAdminCreateUser()
+    /* setValue({
       name: dialogValue.name,
       email: dialogValue.email,
       telephone: dialogValue.telephone,
       password: dialogValue.password,
-    })
+    }) */
+    
 
     handleClose()
   }
@@ -70,6 +92,13 @@ const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
       })
     })
   })
+  const callAdminCreateUser = () => {
+    const adminCreateUser = firebase.functions().httpsCallable('adminCreateUser');
+  adminCreateUser({name: dialogValue.name, email: dialogValue.email, telephone: dialogValue.telephone, password: randomPassword()})
+.then( result => { console.log(result)
+  
+})
+  }
 
   return (
     <React.Fragment >
@@ -150,7 +179,6 @@ const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
         onClose={handleClose}
         aria-labelledby="form-dialog-name"
       >
-        <form onSubmit={handleSubmit}>
           <DialogTitle id="form-dialog-name">Add a new user</DialogTitle>
           <DialogContent>
             <Grid container>
@@ -166,6 +194,7 @@ const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
                   label="name"
                   type="text"
                 />
+                {res.nameError ? res.nameError : ""}
               </Grid>
               <Grid item xs={6}>
                 <TextField
@@ -182,6 +211,7 @@ const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
                   type="email"
                   
                 />
+                {res.emailError ? res.emailError : ""}
               </Grid>
               <Grid item xs={6}>
                 <TextField
@@ -200,24 +230,12 @@ const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
                 />
               </Grid>
               <Grid item xs={6}>
-                <TextField
-                  margin="dense"
-                  id="password"
-                  value={dialogValue.password}
-                  onChange={event =>
-                    setDialogValue({
-                      ...dialogValue,
-                      password: event.target.value,
-                    })
-                  }
-                  label="generic password"
-                  type="password"
-                />
+                
               </Grid>
               <Grid item xs={12}>
               <DialogContentText style={{padding: '0 auto'}}>
               <Typography style={{margin: '0 auto'}} variant="body2">
-              users should change their passwords after you have given it to them
+              users should change their passwords after accoutn creation
               </Typography>
           </DialogContentText>
               </Grid>
@@ -232,11 +250,11 @@ const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
             >
               Cancel
             </Button>
-            <Button variant="contained" type="submit" color="primary">
+            <Button variant="contained" onClick={callAdminCreateUser} color="primary">
               Add
             </Button>
           </DialogActions>
-        </form>
+        
       </Dialog>
     </React.Fragment>
   )
