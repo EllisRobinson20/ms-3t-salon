@@ -32,6 +32,7 @@ export default function Consultation() {
   useEffect(() => {
       const ref = firebase.firestore().collection('members')
       const observer = ref.onSnapshot(results => {
+        setMembers([])
         results.docs.forEach(doc => {
           /* console.log("snapshot listener called")
           console.log(members) */

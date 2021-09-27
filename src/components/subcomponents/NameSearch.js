@@ -16,6 +16,7 @@ import { Grid, Typography } from '@material-ui/core'
 import { useTheme} from '@material-ui/core/styles'
 import { useMediaQuery } from '@material-ui/core'
 import { useState } from 'react'
+import { LinearProgress } from '@material-ui/core'
 
   
 
@@ -26,6 +27,8 @@ export default function FreeSoloCreateOptionDialog({ data }) {
 
   const [value, setValue] = React.useState(null)
   const [open, toggleOpen] = React.useState(false)
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState("users should change their passwords after account creation")
   const {setUserObject} = useContext(AdminContext)
   const {inConsultation, setInConsultation} = useContext(AdminContext)
 
@@ -93,11 +96,48 @@ const randomPassword = ()  => {
     })
   })
   const callAdminCreateUser = () => {
-    const adminCreateUser = firebase.functions().httpsCallable('adminCreateUser');
-  adminCreateUser({name: dialogValue.name, email: dialogValue.email, telephone: dialogValue.telephone, password: randomPassword()})
-.then( result => { console.log(result)
-  
-})
+    if ( dialogValue.name !== '' && dialogValue.email !== '' && dialogValue.telephone !== '') {
+      if (
+        /(?:(\(?(?:0(?:0|11)\)?[\s-]?\(?|\+?)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|\(?0)((?:\d{5}\)?[\.\s-]?\d{4,5})|(?:\d{4}\)?[\.\s-]?(?:\d{3}[\.\s-]?\d{3}))|(?:\d{4}\)?[\.\s-]?(?:\d{5}))|(?:\d{3}\)?[\.\s-]?\d{3}[\.\s-]?\d{3,4})|(?:\d{2}\)?[\.\s-]?\d{4}[\.\s-]?\d{4}))(?:[\s-]?((?:x|ext[\.\s]*|\#)\d{3,4})?)/.test(
+          dialogValue.telephone) 
+        ) {
+          setLoading(true);
+        const adminCreateUser = firebase.functions().httpsCallable('adminCreateUser');
+      adminCreateUser({name: dialogValue.name, email: dialogValue.email, telephone: dialogValue.telephone, password: randomPassword()})
+    .then( response => { 
+      console.log(response)
+      // msy need to wrap ifs in another if checking response.data !== null
+      try {
+        if ('errorInfo' in response.data) {
+          setResult(response.data.errorInfo.message)
+        } 
+        else
+        if ('response' in response.data ) {
+          console.log(response.data.rejected.length)
+          console.log(response.data.accepted.length)
+          if(response.data.rejected.length === 0 && 
+            response.data.accepted.length ===1) {
+              setResult("successfully created user: "+ response.data.accepted[0])
+            }
+        }
+        else
+         {
+          setResult("This email may already exist")
+        }
+        setLoading(false);
+      } catch (err) {
+        console.log(err)
+      }
+      
+      
+    })
+      } else {
+        setResult("Telephone is invalid")
+      } 
+    } else {
+      setResult("please fill in all form fields")
+    }
+    
   }
 
   return (
@@ -230,13 +270,19 @@ const randomPassword = ()  => {
                 />
               </Grid>
               <Grid item xs={6}>
-                
+              
               </Grid>
               <Grid item xs={12}>
               <DialogContentText style={{padding: '0 auto'}}>
-              <Typography style={{margin: '0 auto'}} variant="body2">
-              users should change their passwords after accoutn creation
+                {loading ? <LinearProgress/>
+                  :
+                <Typography style={{margin: '0 auto'}} variant="body2">
+              {result}
               </Typography>
+                  }
+              
+                
+              
           </DialogContentText>
               </Grid>
             </Grid>
@@ -248,7 +294,7 @@ const randomPassword = ()  => {
               onClick={handleClose}
               color="text-secondary"
             >
-              Cancel
+              Finish
             </Button>
             <Button variant="contained" onClick={callAdminCreateUser} color="primary">
               Add

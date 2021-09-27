@@ -144,6 +144,7 @@ exports.adminCreateUser = functions.https.onCall((data, context) => {
       pass: process.env.NODEMAILER_PASSWORD,
     },
   });
+
   return admin
       .auth()
       .createUser({
@@ -156,7 +157,7 @@ exports.adminCreateUser = functions.https.onCall((data, context) => {
       })
       .then((record) => {
         console.log("Successfully created new user:", record);
-        firestore.collection("members")
+        return firestore.collection("members")
             .doc(record.uid)
             .set({
               email: data.email,
@@ -167,11 +168,32 @@ exports.adminCreateUser = functions.https.onCall((data, context) => {
             });
         // See the UserRecord reference doc for the contents of userRecord.
         // console.log("Successfully created new user:", record.uid);
-        return admin
+      }, (reason) => {
+        console.log(" printing reason");
+        console.log(reason);
+        if (reason.errorInfo.code === "auth/email-already-exists") {
+          console.log("is an email exists error");
+          throw new Error("This email already exists in the system");
+        }
+      })
+      .then((record) => {
+        const emailVerifyLink = admin
             .auth()
-            .generateEmailVerificationLink(record.email, actionCodeSettings);
-      }).then((link) => {
-        transporter.sendMail({
+            .generateEmailVerificationLink(data.email, actionCodeSettings);
+        const passwordResetLink = admin
+            .auth()
+            .generatePasswordResetLink(data.email, actionCodeSettings);
+        return Promise.all([
+          emailVerifyLink,
+          passwordResetLink,
+        ]);
+      }, (reason) => {
+        console.log(" printing 2nd reason: ", reason);
+        console.log(reason);
+        throw new Error(reason);
+      })
+      .then((links) => {
+        return transporter.sendMail({
           from: "ms3tsalon@outlook.com",
           to: `${data.email}`,
           subject: "Email verification link",
@@ -182,37 +204,15 @@ exports.adminCreateUser = functions.https.onCall((data, context) => {
                   </br><p>Follow this link to activate your account</p>
                   <div style="border:2px solid grey; 
                   border-radius:5px; padding: 1em;">
-                  </br><p><strong>${link}</strong>,</p>
+                    <p><strong>${links[0]}</strong>,</p>
                   </div>
                   </br>
-                  <div style="border:2px solid grey; 
                   </br>
-          <i style="margin-top: 2em;">Thanks for joining</i>
-          </br>
-          <h4>Latoyah</h4>
-          <h2 style="font-family: Pinyon Script;">Ms 3T Salon</h2>
-          </body>
-          </html>`,
-        });
-        return admin
-            .auth()
-            .generatePasswordResetLink(data.email, actionCodeSettings);
-      }).then((link) => {
-        transporter.sendMail({
-          from: "ms3tsalon@outlook.com",
-          to: `${data.email}`,
-          subject: "Email verification link",
-          text: "",
-          html: `<html>
-          <body>
-          <h2>Here is your password reset link</h2>
-                  </br><p>Here is a link to reset your password</p>
+                  <p>Here is a link to reset your password</p>
                   </br>
                   <div style="border:2px solid grey; 
                   border-radius:5px; padding: 1em;">
-                    </br>
-                    </br><p><strong>${link}</strong>,</p>
-                    </br>  
+                    <p><strong>${links[1]}</strong>,</p> 
                   </div>
                   </br>
           <i style="margin-top: 2em;">Thanks for joining</i>
@@ -222,9 +222,15 @@ exports.adminCreateUser = functions.https.onCall((data, context) => {
           </body>
           </html>`,
         });
+      }).then((res) => {
+        console.log("res caught");
+        console.log(res);
+        return res;
       })
       .catch((error) => {
-        console.log("Error creating new user:", error);
+        console.log("error caught");
+        console.log(error.message);
+        return error;
       });
 });
 
