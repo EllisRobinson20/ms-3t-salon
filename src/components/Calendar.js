@@ -59,7 +59,7 @@ const renderCells = () =>{
       
       const monthStart = dateFns.startOfMonth(currentMonth);
       const monthEnd = dateFns.endOfMonth(monthStart);
-      const startDate = dateFns.startOfWeek(monthStart);
+      const startDate = dateFns.startOfWeek(monthStart, {weekStartsOn: 1});
       const endDate = dateFns.endOfWeek(monthEnd);
 
       const dateFormat = "d";
