@@ -6,6 +6,8 @@ import * as styles from '../styles/appointmentSummary.module.css'
 import format from 'date-fns/format'
 import firebase from 'gatsby-plugin-firebase'
 import LoadingBackdrop from './subcomponents/LoadingBackdrop'
+import AlertDialog from './subcomponents/AlertDialog'
+import { DialogTitle, DialogContent, DialogContentText } from '@material-ui/core'
 
 
 export default function AppointmentSummary() {
@@ -33,6 +35,8 @@ export default function AppointmentSummary() {
   const { user } = useContext(AuthContext)
   const { setShowLogin } = useContext(AuthContext)
 
+  const {showSignUpConfirmation, setShowSignUpConfirmation} = useContext(AuthContext)
+  
   const { selectedService, setSelectedService } = useContext(BookingContext)
   const { selectedSlot, setSelectedSlot } = useContext(BookingContext)
   const { selectedDateGlobal, setNewDate } = useContext(BookingContext)
@@ -63,6 +67,7 @@ export default function AppointmentSummary() {
         bookingTime: selectedSlot.id,
         durationService: durationSelectedService(),
       }).then(result => returnResult(result.data),
+      setSlots([])
       )
     } else {
       setShowLogin(true);
@@ -75,7 +80,7 @@ export default function AppointmentSummary() {
     if (result) {
       console.log(result)
       console.log("result")
-      alert('Your booking is successful')
+      setShowSignUpConfirmation(true)
       /* console.log(result) */
     } else {
       console.log(result)
@@ -90,6 +95,9 @@ export default function AppointmentSummary() {
   const setListState = data => {
     setSelectedService({ id: data.id, name: data.name })
     setListName(data.name)
+  }
+  const closeAlertDialog = () => {
+    setShowSignUpConfirmation(false)
   }
   useEffect(() => {
     setListName(selectedService.name)
@@ -130,6 +138,8 @@ export default function AppointmentSummary() {
   useEffect(() => {
     if (selectedService.id) {
       setError('')
+    } else {
+      navigate("/salon/")
     }
   })
 
@@ -159,9 +169,6 @@ export default function AppointmentSummary() {
       setSelectedSlot('')
     }
   }, [selectedDateGlobal])
-  useEffect(() => {
-    console.log(selectedService)
-  })
   return (
     <>
     <LoadingBackdrop loading={loading}/>
@@ -196,6 +203,14 @@ export default function AppointmentSummary() {
         {buttonIsEnabled ? 'Book Now' : 'Select Date and Time to Book'}
       </Link>
     </div>
+    <AlertDialog openDialog={showSignUpConfirmation} action={closeAlertDialog}>
+      <DialogTitle>{"Booking successful"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Your booking has been made with us. Please check your inbox for confimation.
+          </DialogContentText>
+        </DialogContent>
+      </AlertDialog>
     </>
   )
 }

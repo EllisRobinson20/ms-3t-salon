@@ -17,6 +17,8 @@ const App = ({location}) => {
 const {setPageState} = useContext(NavigationContext);
 setPageState(location.pathname);
 
+// get the availability of the chosen date returned from function
+const {isAvailability, setAvailability} = useContext(BookingContext);
 // need a reference to the chosen service in here
 const {selectedService} = useContext(BookingContext);
 // setting the global slots array
@@ -27,14 +29,22 @@ const {lastPage} = useContext(NavigationContext);
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState();
 
+const resetIfNoAvail = (avail) => {
+  if (avail === false) {
+    setSlots([])
+  }
+}
 const getAvailabilityForDate = (day) => {
 if (isBrowser) {
   setLoading(true)
 const availability = firebase.functions().httpsCallable('getAvailabilityForDate');
   availability({date: day, serviceName: selectedService.id })
-.then( result => { result.data.error === "Business Closed" ? setError("Salon Closed") : setSlots(result.data)
+.then( result => { const isAvail = result.data.length > 0
+  result.data.error === "Business Closed" ? setError("Salon Closed") : isAvail ? setSlots(result.data) : setError("No Availability")
   setLoading(false)
-  setTimeout(() => {setError("")} , 2000)
+  resetIfNoAvail(isAvail)
+  setTimeout(() => {setError("")
+} , 2000)
 })
 }
 

@@ -50,7 +50,7 @@ const renderLayout = () => {
             <>
               <Header siteTitle={data.site.siteMetadata.title} />
               <main>{children}</main>
-              {thisPage === "/salon" && deviceIsMobile ||thisPage === "/salon/" || thisPage === "/admin/consultation" || thisPage === "/admin" ? "" : <Footer/>}
+              {thisPage === "/salon" && deviceIsMobile ||thisPage === "/salon/" && deviceIsMobile || thisPage === "/admin/consultation" || thisPage === "/admin" ? "" : <Footer/>}
             </>
             )}
             />    

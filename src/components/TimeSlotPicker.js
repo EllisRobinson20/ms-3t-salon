@@ -11,7 +11,7 @@ export default function TimeSlotPicker() {
     const {setAvailability} = useContext(BookingContext);
     const {selectedDateGlobal, setNewDate} = useContext(BookingContext);
     useEffect(() => {
-        console.log("slots was just updated");
+        console.log("slots was just updated, avaiability", slots.length > 0);
         setAvailability(slots.length > 0)
     }, [slots]); 
     
