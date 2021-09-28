@@ -183,7 +183,9 @@ export default function Services({ location, data }) {
       })
     }
   }
+  const isBrowser = typeof window !== "undefined"
   const [windowState, setWindowState] = useState(false)
+  if (isBrowser) {
     window.onscroll = function(ev) {
       if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
           setWindowState(true)
@@ -192,6 +194,8 @@ export default function Services({ location, data }) {
         setWindowState(false)
       }
   };
+  }
+    
   
   return (
     <Layout>

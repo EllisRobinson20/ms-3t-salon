@@ -23,7 +23,7 @@ import { DialogTitle } from '@material-ui/core';
 const Layout = ({ children }) => {
 const {showLogin} = useContext(AuthContext)
 const {showSignUpConfirmation, setShowSignUpConfirmation} = useContext(AuthContext)
-const {setDeviceIsMobile} = useContext(AuthContext)
+const {deviceIsMobile, setDeviceIsMobile} = useContext(AuthContext)
 const {thisPage} = useContext(NavigationContext)
 
 useEffect(() => {
@@ -50,7 +50,7 @@ const renderLayout = () => {
             <>
               <Header siteTitle={data.site.siteMetadata.title} />
               <main>{children}</main>
-              {thisPage === "/salon/" || thisPage === "/admin/consultation" || thisPage === "/admin" ? "" : <Footer/>}
+              {thisPage === "/salon" && deviceIsMobile ||thisPage === "/salon/" || thisPage === "/admin/consultation" || thisPage === "/admin" ? "" : <Footer/>}
             </>
             )}
             />    

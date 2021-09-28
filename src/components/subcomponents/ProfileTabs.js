@@ -180,7 +180,7 @@ export default function FullWidthTabs({action}) {
           </TabPanel>
         </SwipeableViews>
         <Grid container>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
           <Link
           style={{ display: user ? 'inherit' : 'none', padding: '1em' }}
           href="#"
@@ -191,7 +191,7 @@ export default function FullWidthTabs({action}) {
           Logout
         </Link>
           </Grid>
-          <Grid item xs={6}></Grid>
+          <Grid item xs={5}></Grid>
           <Grid item xs={3}>
           <Link
           style={{ display: user ? 'inherit' : 'none', padding: '1em' }}
