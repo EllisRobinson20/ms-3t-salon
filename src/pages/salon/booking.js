@@ -18,11 +18,9 @@ const {setPageState} = useContext(NavigationContext);
 setPageState(location.pathname);
 
 // need a reference to the chosen service in here
-const {selectedService, selectedDateGlobal} = useContext(BookingContext);
-//state to tell client if no avail
-const {isAvailability, setAvailability} = useContext(BookingContext);
+const {selectedService} = useContext(BookingContext);
 // setting the global slots array
-const {slots, setSlots} = useContext(BookingContext);
+const {setSlots} = useContext(BookingContext);
 // last page state for the back button
 const {lastPage} = useContext(NavigationContext);
 // Local state

@@ -172,6 +172,10 @@ const randomPassword = ()  => {
                   name: edge[0].name,
                 email: edge[0].email,
                 telephone: edge[0].telephone,
+                costServicePence: edge[0].costServicePence,
+                defaultService: edge[0].defaultService,
+                userConsulted: edge[0].userConsulted,
+                durationService: edge[0].durationService,
                 }
                 :
                 {}

@@ -159,7 +159,9 @@ export default function AppointmentSummary() {
       setSelectedSlot('')
     }
   }, [selectedDateGlobal])
-
+  useEffect(() => {
+    console.log(selectedService)
+  })
   return (
     <>
     <LoadingBackdrop loading={loading}/>

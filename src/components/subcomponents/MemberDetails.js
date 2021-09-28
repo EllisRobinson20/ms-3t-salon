@@ -56,10 +56,13 @@ export default function MemberDetails({ data }) {
         durationService: null,
       }
       Object.keys(memberData).forEach(key => {
+        console.log("doalogValue ", dialogValue[key])
+        console.log("userObject ", userObject[0][key])
         memberData = {
           ...memberData,
           [key]: replaceIfAltered(dialogValue[key], userObject[0][key]),
         }
+        console.log(memberData)
       })
       /* console.log('res')
       console.log(memberData) */
@@ -81,10 +84,13 @@ export default function MemberDetails({ data }) {
           defaultService: data.defaultService,
           userConsulted: true,
           durationService: parseInt(parseFloat(data.durationService) * 60.0),
+        }).then((result) => {
+          console.log("result", result)
         })
         onResult(false, 'Successfully updated client information', '')
         } else {
           onResult(true, 'Oops!... Something went wrong', 'check the phone number is valid')
+          console.log(data)
         }
       })
       .catch(err => {
@@ -96,9 +102,10 @@ export default function MemberDetails({ data }) {
   }
 
   const replaceIfAltered = (newValue, oldValue) => {
-    /* console.log('replace function') */
+     console.log('testing old and new', oldValue, newValue)
     const checkNew = checkFields(newValue, oldValue)
-    const checkOld = checkField(oldValue)
+    const checkOld = checkField(newValue, oldValue)
+    console.log("check variables", checkOld, checkNew)
     return checkNew
       ? newValue
       : checkOld
@@ -115,8 +122,8 @@ export default function MemberDetails({ data }) {
   }
   const checkField = (newValue, oldValue) => {
     const equal = _.isEqual(oldValue, newValue)
-    //console.log('check old')
-    //console.log(oldValue !== null && !!oldValue)
+    /* console.log('check old')
+    console.log(!!oldValue) */
     return (
       !equal &&
       oldValue !== null &&
@@ -146,9 +153,9 @@ export default function MemberDetails({ data }) {
 
   const [dialogValue, setDialogValue] = React.useState({
     name: null,
-    email: '',
-    telephone: '',
-    defaultService: '',
+    email: null,
+    telephone: null,
+    defaultService: null,
     durationService: 0,
     costService: 0,
   })
@@ -166,6 +173,8 @@ export default function MemberDetails({ data }) {
     handleClose()
   } */
   useEffect(() => {
+    console.log("object cgange")
+    console.log(userObject)
     setDialogValue({
       name: null,
       email: null,
