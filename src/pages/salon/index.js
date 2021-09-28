@@ -183,6 +183,16 @@ export default function Services({ location, data }) {
       })
     }
   }
+  const [windowState, setWindowState] = useState(false)
+    window.onscroll = function(ev) {
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+          setWindowState(true)
+      }
+      else {
+        setWindowState(false)
+      }
+  };
+  
   return (
     <Layout>
       <Grid
@@ -255,7 +265,9 @@ export default function Services({ location, data }) {
                       </ThemeProvider>
                     </CardActions>
                 </Card>
-                <ThemeProvider theme={buttonTheme}>
+                {
+                  windowState ?
+                  <ThemeProvider theme={buttonTheme}>
                   <Link to="./booking">
                     <Button
                       size="large"
@@ -295,6 +307,10 @@ export default function Services({ location, data }) {
                     </Button>
                   </a>
                 </ThemeProvider>
+                :
+                ""
+                }
+                
               </>
             ) : (
               ''
