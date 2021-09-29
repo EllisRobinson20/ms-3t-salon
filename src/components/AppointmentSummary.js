@@ -10,7 +10,7 @@ import AlertDialog from './subcomponents/AlertDialog'
 import { DialogTitle, DialogContent, DialogContentText } from '@material-ui/core'
 
 
-export default function AppointmentSummary() {
+export default function AppointmentSummary({userDetails}) {
   // Data
   const data = useStaticQuery(graphql`
     query ListServicesQuery {
@@ -33,6 +33,7 @@ export default function AppointmentSummary() {
   }
   // Context
   const { user } = useContext(AuthContext)
+  const { admin } = useContext(AuthContext)
   const { setShowLogin } = useContext(AuthContext)
 
   const {showSignUpConfirmation, setShowSignUpConfirmation} = useContext(AuthContext)
@@ -60,8 +61,8 @@ export default function AppointmentSummary() {
         .httpsCallable('bookProvisionalIfAvail')
       /* console.log('booking attempt fired') */
       bookingAttempt({
-        name: user.displayName,
-        email: user.email,
+        name: admin ? userDetails[0].name : user.displayName,
+        email: admin ? userDetails[0].email : user.email,
         service: selectedService.id,
         bookingDate: selectedDateGlobal,
         bookingTime: selectedSlot.id,
@@ -101,10 +102,14 @@ export default function AppointmentSummary() {
   }
   useEffect(() => {
     setListName(selectedService.name)
-    /* console.log("user")
-    console.log(user) */
+    /* console.log("user") */
+    
   }, [])
 
+useEffect(() => {
+  console.log("userDetails",userDetails)
+  console.log("also admin true: ",admin)
+})
   useEffect(() => {
     setSlots([])
     setSelectedSlot('')
@@ -139,7 +144,7 @@ export default function AppointmentSummary() {
     if (selectedService.id) {
       setError('')
     } else {
-      navigate("/salon/")
+      // navigate("/salon/")
     }
   })
 
@@ -173,11 +178,17 @@ export default function AppointmentSummary() {
     <>
     <LoadingBackdrop loading={loading}/>
     <div className={styles.card}>
-      {!selectedService.id ? (
-        dropdownList
-      ) : (
+      {
+        admin ?
         <p className={styles.serviceLabel}>{listName}</p>
-      )}
+        :
+        !selectedService.id ? (
+          dropdownList
+        ) : (
+          <p className={styles.serviceLabel}>{listName}</p>
+        )
+      }
+      
       <p className={styles.error}>
         {error === 'service' ? ' Select a treatment or service first ... ' : ''}
       </p>
@@ -188,7 +199,7 @@ export default function AppointmentSummary() {
           navigate("/salon")
         }}
       >
-        {selectedService.id ? ' Change selection' : ''}
+        {selectedService.id && !admin ? ' Change selection' : ''}
       </li>
       <h2>{selectedSlot.buttonLabel}</h2>
       <p>{format(selectedDateGlobal, 'EEEE do MMMM')}</p>

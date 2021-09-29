@@ -1,13 +1,19 @@
 import React, {useContext, useEffect, useState} from 'react'
+import {graphql, useStaticQuery} from 'gatsby'
 import { makeStyles } from '@material-ui/core/styles'
 import firebase from 'gatsby-plugin-firebase'
 import 'firebase/firestore'
-import { Card, Grid, Typography } from '@material-ui/core'
+import { Button, Card, Grid, Typography } from '@material-ui/core'
 import NameSearch from '../components/subcomponents/NameSearch'
 import MemberDetails from './subcomponents/MemberDetails'
 import { AdminContext } from '../context/AdminContext'
+import { BookingContext } from '../context/BookingContext'
 import { useTheme} from '@material-ui/core/styles'
 import { useMediaQuery } from '@material-ui/core'
+import TextButton from '../components/subcomponents/buttons/TextButton'
+import AdminBooking from './AdminBooking'
+import AlertDialog from './subcomponents/AlertDialog'
+import { DialogTitle, DialogContent, DialogContentText } from '@material-ui/core'
 
 
 const useStyles = makeStyles(theme => ({
@@ -27,6 +33,18 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function Consultation() {
+  const {userObject} = useContext(AdminContext)
+  const {setSelectedService} = useContext(BookingContext)
+  const data = useStaticQuery(graphql`
+    query ServicesNameQuery {
+    allService {
+      nodes {
+        id
+        name
+      }
+    }
+  }
+  `)
   
   const [members, setMembers] = useState([])
   useEffect(() => {
@@ -48,7 +66,7 @@ export default function Consultation() {
   const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
  //const [value, setValue] = React.useState(null);
 
-  const {userObject} = useContext(AdminContext)
+  
 
  /*  const handleClose = () => {
     setDialogValue({
@@ -73,15 +91,16 @@ export default function Consultation() {
     handleClose();
   }; */
 
-  const [dialogValue, setDialogValue] = React.useState({
+  const [dialogValue, setDialogValue] = useState({
     name: null,
     email: '',
     telephone: '',
     defaultService: '',
     durationService: 0,
   });
+  const [showBooking, setShowBooking] = useState(false)
 
-
+  const [userObjectLocal, setUserObjectLocal] = useState()
   useEffect(() => {
     setDialogValue({
       name: null,
@@ -90,25 +109,68 @@ export default function Consultation() {
       defaultService: null,
       durationService: null,
     })
+    setUserObjectLocal(userObject)
   }, [userObject])
 
-
+  const handleClick = () => {
+    // may need to handle this checking userObject has properties and values
+    if (userObject) {
+      if (userObject[0].userConsulted) {
+      data.allService.nodes.forEach(service => {
+        if (userObject[0].defaultService === service.id) {
+          console.log("match")
+          setSelectedService({
+            id: service.id, name: service.name
+          })
+        }
+      })
+      setShowBooking(!showBooking)
+    }else {
+      setShowAlert(true)
+    }
+    } 
+    
+  }
+const [showAlert, setShowAlert] = useState(false)
+  const closeAlertDialog = () => {
+    setShowAlert(false)
+  }
   return (
     <div>
       <Card className={matchesLg ? classes.containerLg : classes.containerSm} variant="outlined">
-        <Grid container >
+        <Grid container justifyContent="flex-start">
+          <Grid onClick={() => {setShowBooking(false)}} style={{padding:"1em"}} item container justifyContent="flex-start" xs={4}>
+          <NameSearch data={members} />
+          {userObject ? "" : <Typography variant="body1"> Select name to begin</Typography>}
+          </Grid>
+          <Grid item xs={5}>
+
+          </Grid>
           <Grid item xs={3}>
-          <NameSearch data={members}/>
+            
+            <TextButton action={handleClick}>
+            ADD BOOKING
+            </TextButton>
+          
+          
           </Grid>
           <Grid item xs={12}>
-          {userObject ? "" : <Typography variant="body1"> select name to begin</Typography>}
+          
           </Grid>
           <Grid item xs={4}>
           </Grid>
         </Grid>  
       </Card>
-      {userObject ? <MemberDetails data={members}/> : ""}
-      
+      {showBooking ? <AdminBooking user={userObject}/> : ""}
+      {userObject && !showBooking ? <MemberDetails data={members}/> : ""}
+      <AlertDialog openDialog={showAlert} action={closeAlertDialog}>
+      <DialogTitle>{"Customer not consulted"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Be sure to provide a consultation before attempting a booking!
+          </DialogContentText>
+        </DialogContent>
+      </AlertDialog>
     </div>
   )
 }

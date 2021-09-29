@@ -17,7 +17,7 @@ import Modal from '@material-ui/core/Modal'
 import Backdrop from '@material-ui/core/Backdrop'
 import Fade from '@material-ui/core/Fade'
 import DatePicker from './subcomponents/DatePicker'
-import { Button, IconButton } from '@material-ui/core'
+import { IconButton } from '@material-ui/core'
 
 import { AdminContext } from '../context/AdminContext'
 import { AuthContext } from '../context/AuthContext'
