@@ -33,6 +33,7 @@ export default function AppointmentSummary({userDetails}) {
   }
   // Context
   const { user } = useContext(AuthContext)
+  const { memberInfo } = useContext(AuthContext)
   const { admin } = useContext(AuthContext)
   const { setShowLogin } = useContext(AuthContext)
 
@@ -67,6 +68,7 @@ export default function AppointmentSummary({userDetails}) {
         bookingDate: selectedDateGlobal,
         bookingTime: selectedSlot.id,
         durationService: durationSelectedService(),
+        telephone: admin ? userDetails[0].telephone : memberInfo.telephone,
       }).then(result => returnResult(result.data),
       setSlots([])
       )

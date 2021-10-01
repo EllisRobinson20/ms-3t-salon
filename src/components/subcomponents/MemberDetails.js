@@ -137,6 +137,7 @@ export default function MemberDetails({ data }) {
     setResult({ error: isError, message: message, subMessage: subMessage })
     setTimeout(function() {
       setResult('')
+      window.location.reload()
     }, 3000)
   }
 

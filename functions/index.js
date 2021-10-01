@@ -113,6 +113,33 @@ exports.sendEmailNotification=functions.firestore
         </html>`,
       }).then((res) => {
         console.log("Successful booking");
+        transporter.sendMail({
+          from: "ms3tsalon@outlook.com",
+          to: "twistedtechniques@hotmail.co.uk",
+          subject: "New Booking",
+          text: "email body",
+          html: `<html>
+          <body>
+          <h2>A new Booking has been made</h2>
+                  
+                  </br><p>User details provided below:</p>
+                  </br>
+                  <div style="border:2px solid grey; 
+                  border-radius:5px; padding: 1em;">
+                  </br><p>Name: <strong>${data.name}</strong></p>
+                  </br><p>Service: <strong>${serviceName}</strong></p>
+                    </br>
+                    <h6><strong>Date: </strong> 
+                    ${format(bookingDateBST,
+      "EEEE do LLLL HH:mm")},
+        </h6>
+                    </br>  
+                  </div>
+                  </br>
+          </br>
+          </body>
+          </html>`,
+        });
       }).catch((err) => {
         console.log(err);
       });
@@ -555,6 +582,7 @@ exports.bookProvisionalIfAvail = functions.https.onCall((data, context) => {
                 startISO: formatISO(startTime),
                 finishISO:
                 formatISO(addMinutes(startTime, data.durationService)),
+                telephone: data.telephone,
               })
               .then((documentReference) => {
                 console.

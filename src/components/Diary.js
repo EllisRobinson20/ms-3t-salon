@@ -1,8 +1,8 @@
-import { Container, Grid } from '@material-ui/core'
-import React, { useEffect, useContext } from 'react'
+import { Button, Container, Grid } from '@material-ui/core'
+import React, { useEffect, useContext, useState } from 'react'
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { getDay, parseISO, add } from 'date-fns'
+import { getDay, parseISO, add, format } from 'date-fns'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { useMediaQuery } from '@material-ui/core'
 
@@ -18,9 +18,15 @@ import Backdrop from '@material-ui/core/Backdrop'
 import Fade from '@material-ui/core/Fade'
 import DatePicker from './subcomponents/DatePicker'
 import { IconButton } from '@material-ui/core'
+import AlertDialog from './subcomponents/AlertDialog'
+import { DialogTitle, DialogContent, DialogContentText } from '@material-ui/core'
 
 import { AdminContext } from '../context/AdminContext'
 import { AuthContext } from '../context/AuthContext'
+
+import { AddBoxOutlined } from '@material-ui/icons'
+import TextButton from './subcomponents/buttons/TextButton'
+
 
 /**
  * Adds two numbers together.
@@ -71,10 +77,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     height: '100%',
   },
-  t: {
-    color: 'yellow!important',
-    background: 'red!important',
-  },
+
   d: {
     width: '100%',
   },
@@ -97,32 +100,80 @@ export default function Diary() {
     window.open('tel:0')
   }
   const { deviceIsMobile } = useContext(AuthContext)
-  const { datePicker } = useContext(AdminContext)
+  const { datePicker, setDatePicker } = useContext(AdminContext)
   const { dateStart } = useContext(AdminContext)
   const { dateEnd } = useContext(AdminContext)
   const theme = useTheme()
   const matchesMd = useMediaQuery(theme.breakpoints.down('md'))
   const matchesSm = useMediaQuery(theme.breakpoints.down('sm'))
-
+  const ref = firebase.firestore().collection('bookingHistory')
+  const bookings = []
+  
   useEffect(() => {
     // Data is correct only in use effect with dateStart or no dependency
     // does not work with datePicker as dependency
   }, [dateStart])
-  const ref = firebase.firestore().collection('bookingHistory')
-  const bookings = []
-  useEffect(() => {
+  
+  
+  /* useEffect(() => {
+    console.log("picker dependant use effect fired")
     const bookingsRef = ref
       .where('dateOfBooking', '>', dateStart)
-      .where('dateOfBooking', '<', dateEnd)
+      .where('dateOfBooking', '<', add(dateEnd, {days: 1}))
       .get()
     bookingsRef.then(results => {
       results.docs.forEach(doc => {
-        //console.log(doc.data(), doc.id)
-        bookings.push(doc.data(), doc.id)
+        bookings.push([doc.data(), doc.id])
       })
-      sortBookings(results)
+      sortBookings()
     })
-  }, [datePicker])
+ 
+  }, [datePicker]) */
+  useEffect(() => {
+    ref
+    .where('dateOfBooking', '>', dateStart)
+      .where('dateOfBooking', '<', add(dateEnd, {days: 1}))
+      .onSnapshot(results => {
+        console.log("bookings length", bookings.length)
+        console.log("document changed")
+        results.docChanges().forEach(doc => {
+          if (doc.type === "added") {
+            console.log("document in" ,doc.doc.data())
+            bookings.push([doc.doc.data(), doc.doc.id])
+            
+          }
+          
+        })
+        sortBookings()
+      })
+  }, [dateStart])
+/*   useEffect(() => {
+    console.log("bookings changed")
+  
+  sortBookings()
+} , [bookings]) */
+
+ /*  useEffect(() => {
+    console.log("use effect called")
+    const queryData = ref
+    .where('dateOfBooking', '>', dateStart)
+      .where('dateOfBooking', '<', add(dateEnd, {days: 1}))
+      queryData.onSnapshot(results => {
+        console.log("bookings length", bookings.length)
+        console.log("document changed")
+        results.docChanges().forEach(doc => {
+          if (doc.type === "added") {
+            console.log("document in" ,doc.doc.data())
+            bookings.push([doc.doc.data(), doc.doc.id])
+            
+          }
+          
+        })
+        sortBookings()
+      })
+      
+}) */
+
 
   const classes = useStyles()
   //modal
@@ -141,19 +192,42 @@ export default function Diary() {
   // type: "booking",
   // startTime: moment("2018-02-23T11:30:00"),
   // endTime: moment("2018-02-23T13:30:00"),
-  const [bookingDetails, setBookingDetails] = React.useState({
+  const [bookingDetails, setBookingDetails] = useState({
     name: 'data.name',
     service: 'data.selectedService',
     start: 'startTime',
     finish: 'finishTime',
+    email: 'email',
+    telephone: 'tel'
   })
+  const [userTel, setUserTel] = useState()
   const setSelectedBooking = data => {
-    setBookingDetails({
-      name: data.name,
-      service: data.selectedService,
-      start: getButtonLabel(data.startTimeMinutes),
-      finish: getButtonLabel(data.startTimeMinutes + data.durationMinutes),
+  setBookingDetails({
+      id: data[1],
+      name: data[0].name,
+      service: data[0].selectedService,
+      start: getButtonLabel(data[0].startTimeMinutes),
+      finish: getButtonLabel(data[0].startTimeMinutes + data[0].durationMinutes),
+      date: format(data[0].dateOfBooking.toDate(), "do MMM y"),
+      email: data[0].email,
+      telephone: data[0].telephone
     })
+    
+    /* const userRef = user
+    .where('email', '==', "ellis.codmidlands@gmail.com")
+    userRef.get().then(doc => {
+      if (doc.exists) {
+        console.log("Document data:", doc.data());
+    } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+        console.log("email deets", doc)
+    }
+    }) */
+    /* const userTel = userRef.telephone
+    setUserTel(userTel)
+    console.log("email deets", bookingDetails.email)
+    console.log("email deets", userRef) */
     handleOpen()
   }
   const removeHyphens = (string) => {
@@ -162,39 +236,39 @@ export default function Diary() {
   };
   const renderDetails = data => {
     return (
-      <div>
-        <Card
-          elevation={0}
-          style={{ width: '100%', height: '100%' }}
-          onClick={() => {
-            setSelectedBooking(data)
-          }}
-        >
-          <CardContent>
-            <Grid
-              container
-              spacing={0}
-              style={{ display: matchesSm ? 'none' : '' }}
-            >
-              {/* <Grid style={{ paddingTop: '1em' }} item container xs={12}>
-                <Grid item container xs={12} justifyContent="flex-start">
-                  <Typography variant="body2" color="textSecondary">
-                    Name: <strong>{data.name}</strong>
+      
+        
+          <Typography onClick={() => {
+          setSelectedBooking(data)}} style={{ fontSize: matchesSm ? '0.8em' : '' }} variant="body1" component="p">
+                    <strong>{removeHyphens(data[0].selectedService)}</strong>
+                    
                   </Typography>
-                </Grid>
-              </Grid> */}
-              <Grid style={{ paddingTop: '1em' }} item container xs={12}>
-                <Grid item container xs={12} justifyContent="flex-start">
-                  <Typography variant="body1" component="p">
-                    <strong>{removeHyphens(data.selectedService)}</strong>
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-      </div>
+         
     )
+  }
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [cancellationResult, setCancellationResult] = useState()
+  const closeDialog = () => {
+    setShowConfirm(false)
+  }
+  const openDialog = () => {
+    setShowConfirm(true)
+  }
+  const resetView = () => {
+    setCancellationResult();
+    sortBookings()
+    setOpen(false)
+    //window.location.reload()
+  }
+  const handleCancelBooking = () => {
+    firebase.firestore().collection('bookingHistory').doc(bookingDetails.id).delete().then(() => {
+      setCancellationResult("Document successfully deleted!");
+      setTimeout(() => {resetView()}, 2500)
+      closeDialog()
+  }).catch((error) => {
+      setCancellationResult("Error removing document: ", error);
+      closeDialog()
+  })
   }
   // Modal
   const renderModal = () => {
@@ -216,26 +290,15 @@ export default function Diary() {
             <div className={matchesSm ? classes.paperSm : classes.paper}>
               <Card>
                 <CardContent>
-                  <Grid container spacing={1}>
-                    <Grid item container xs={0} justifyContent="center">
+                  <Grid container spacing={2}>
+                    <Grid item container xs={11} justifyContent="flex-start">
                       <Typography
                         className={classes.title}
                         color="textSecondary"
                       ></Typography>
-                    </Grid>
-                    <Grid item container xs={11} justifyContent="center">
-                      <Typography
-                        variant="h6"
-                        className={classes.title}
-                        color="textSecondary"
-                      >
-                        Booking
-                      </Typography>
-                    </Grid>
-                    <Grid item container xs={1} justifyContent="flex-end">
                       {deviceIsMobile ? (
                         <p>
-                          <a href='tel:0'>
+                          <a href={`tel:${bookingDetails.telephone}`}>
                             <IconButton aria-label={'call'}>
                               <CallIcon />
                             </IconButton>
@@ -245,15 +308,37 @@ export default function Diary() {
                         ''
                       )}
                     </Grid>
+                    {/* <Grid item container xs={11} justifyContent="center">
+                      <Typography
+                        variant="h6"
+                        className={classes.title}
+                        color="textSecondary"
+                      >
+                        Booking
+                      </Typography>
+                    </Grid> */}
+                    <Grid item container xs={1} justifyContent="flex-end">
+                      <Button onClick={() => {setOpen(false)}} style={{marginBottom: "2em"}} size="small">Close</Button>
+                    </Grid>
+                    <Grid item container justifyContent="center" xs={12}>
+                    <Typography variant="body2" component="h5">
+                        {cancellationResult}
+                      </Typography>
+                    </Grid>
                     <Grid item xs={12}>
-                      <Typography variant="h5" component="h2"></Typography>
+                    <Typography
+                        className={classes.title}
+                        color="textSecondary"
+                      >
+                        Date: <strong>{bookingDetails.date }</strong>
+                      </Typography>
                     </Grid>
                     <Grid item xs={12}>
                       <Typography
                         className={classes.title}
                         color="textSecondary"
                       >
-                        Name: <strong>{bookingDetails.name}</strong>
+                        Name: <strong>{bookingDetails.name}</strong> ({bookingDetails.email})
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>
@@ -266,7 +351,7 @@ export default function Diary() {
                     </Grid>
                     <Grid item xs={12} gutterBottom>
                       <Typography color="textSecondary">
-                        Tel: <strong>0781234567</strong>
+                        Tel: <strong>{bookingDetails.telephone}</strong>
                       </Typography>
                     </Grid>
                     <Grid item xs={6}>
@@ -279,9 +364,18 @@ export default function Diary() {
                         Finish: <strong>{bookingDetails.finish}</strong>
                       </Typography>
                     </Grid>
-                    <Grid item xs={12}>
-                      <Typography variant="h5" component="h2"></Typography>
+                    <Grid item xs={6} container justifyContent="flex-start">
+                      <TextButton action={openDialog}>Cancel Booking</TextButton>
+                      <AlertDialog openDialog={showConfirm} action={closeDialog} confirm={handleCancelBooking}>
+                      <DialogTitle>{"Delete booking"}</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-slide-description">
+                            This action will permanently remove this booking, are you sure?
+                          </DialogContentText>
+                        </DialogContent>
+                      </AlertDialog>
                     </Grid>
+                    
                   </Grid>
                 </CardContent>
               </Card>
@@ -293,64 +387,67 @@ export default function Diary() {
   }
   // Booking data
   const [bookingState, setBookingState] = React.useState({
-    monday: [],
-    tuesday: [],
-    wednesday: [],
-    thursday: [],
-    friday: [],
-    saturday: [],
-    sunday: [],
+    MON: [],
+    TUE: [],
+    WED: [],
+    THUR: [],
+    FRI: [],
+    SAT: [],
+    SUN: [],
   })
-  const bookingData = {
-    monday: [],
-    tuesday: [],
-    wednesday: [],
-    thursday: [],
-    friday: [],
-    saturday: [],
-  }
+  
 
   const sortBookings = () => {
+    const bookingData = {
+      MON: [],
+      TUE: [],
+      WED: [],
+      THUR: [],
+      FRI: [],
+      SAT: [],
+    }
+    console.log("mmmmmore data: ", bookingData)
     bookings.forEach(booking => {
-      switch (getDay(parseISO(booking.startISO))) {
+      switch (getDay(parseISO(booking[0].startISO))) {
         case 1:
           // monday
-          bookingData.monday.push({
-            id: booking.id,
+          bookingData.MON.push({
+            id: booking[1],
             name: renderDetails(booking),
             type: 'booking',
-            startTime: moment(booking.dateOfBooking.toDate()),
+            startTime: moment(booking[0].dateOfBooking.toDate()),
             endTime: moment(
-              add(booking.dateOfBooking.toDate(), {
-                minutes: booking.durationMinutes,
+              add(booking[0].dateOfBooking.toDate(), {
+                minutes: booking[0].durationMinutes,
               })
             ),
           })
           break
         case 2:
           // tuesday
-          bookingData.tuesday.push({
-            id: booking.id,
+          bookingData.TUE.push({
+            
             name: renderDetails(booking),
             type: 'booking',
-            startTime: moment(booking.dateOfBooking.toDate()),
+            startTime: moment(booking[0].dateOfBooking.toDate()),
             endTime: moment(
-              add(booking.dateOfBooking.toDate(), {
-                minutes: booking.durationMinutes,
+              add(booking[0].dateOfBooking.toDate(), {
+                minutes: booking[0].durationMinutes,
               })
             ),
           })
           break
         case 3:
           // wednesday
-          bookingData.wednesday.push({
-            id: booking.id,
+          //console.log('text', booking[1])
+          bookingData.WED.push({
+            //id: booking[1],
             name: renderDetails(booking),
             type: 'booking',
-            startTime: moment(booking.dateOfBooking.toDate()),
+            startTime: moment(booking[0].dateOfBooking.toDate()),
             endTime: moment(
-              add(booking.dateOfBooking.toDate(), {
-                minutes: booking.durationMinutes,
+              add(booking[0].dateOfBooking.toDate(), {
+                minutes: booking[0].durationMinutes,
               })
             ),
           })
@@ -358,42 +455,42 @@ export default function Diary() {
         case 4:
           //thursday
 
-          bookingData.thursday.push({
-            id: booking.id,
+          bookingData.THUR.push({
+            //id: booking[1],
             name: renderDetails(booking),
             type: 'booking',
-            startTime: moment(booking.dateOfBooking.toDate()),
+            startTime: moment(booking[0].dateOfBooking.toDate()),
             endTime: moment(
-              add(booking.dateOfBooking.toDate(), {
-                minutes: booking.durationMinutes,
+              add(booking[0].dateOfBooking.toDate(), {
+                minutes: booking[0].durationMinutes,
               })
             ),
           })
           break
         case 5:
           // friday
-          bookingData.friday.push({
-            id: booking.id,
+          bookingData.FRI.push({
+            //id: booking[1],
             name: renderDetails(booking),
             type: 'booking',
-            startTime: moment(booking.dateOfBooking.toDate()),
+            startTime: moment(booking[0].dateOfBooking.toDate()),
             endTime: moment(
-              add(booking.dateOfBooking.toDate(), {
-                minutes: booking.durationMinutes,
+              add(booking[0].dateOfBooking.toDate(), {
+                minutes: booking[0].durationMinutes,
               })
             ),
           })
           break
         case 6:
           // saturday
-          bookingData.saturday.push({
-            id: booking.id,
+          bookingData.SAT.push({
+            //id: booking[1],
             name: renderDetails(booking),
             type: 'booking',
-            startTime: moment(booking.dateOfBooking.toDate()),
+            startTime: moment(booking[0].dateOfBooking.toDate()),
             endTime: moment(
-              add(booking.dateOfBooking.toDate(), {
-                minutes: booking.durationMinutes,
+              add(booking[0].dateOfBooking.toDate(), {
+                minutes: booking[0].durationMinutes,
               })
             ),
           })
@@ -405,6 +502,7 @@ export default function Diary() {
     setBookingState(bookingData)
   }
 
+  
   return (
     <div className={classes.root}>
       {/* {sortBookings()} */}
