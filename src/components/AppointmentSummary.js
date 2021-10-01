@@ -185,7 +185,16 @@ useEffect(() => {
         <p className={styles.serviceLabel}>{listName}</p>
         :
         !selectedService.id ? (
-          dropdownList
+          // dropdownList state value removed
+          <li
+        className={styles.changeSelection}
+        onClick={() => {
+          setSelectedService('')
+          navigate("/salon")
+        }}
+      >
+        { !admin ? ' Select a service' : ''}
+      </li>
         ) : (
           <p className={styles.serviceLabel}>{listName}</p>
         )
