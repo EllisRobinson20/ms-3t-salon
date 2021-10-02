@@ -221,8 +221,6 @@ export default function MemberDetails({ data }) {
           value={
             typeof dialogValue.telephone === 'string'
               ? dialogValue.telephone
-              : userObject
-              ? userObject[0].telephone
               : ''
           }
           onChange={event =>

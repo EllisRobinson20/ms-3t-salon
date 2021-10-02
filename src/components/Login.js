@@ -118,7 +118,7 @@ export default function Login() {
             <br />
             <br />
           </div>
-          <input type="submit" value="Login" />
+          <input className={styles.button} type="submit" value="Login" />
         </form>
       </div>
       </Paper>

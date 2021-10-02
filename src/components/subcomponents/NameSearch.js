@@ -164,7 +164,8 @@ const randomPassword = ()  => {
               telephone: '',
               password: '',
             })
-          } else {
+          } else 
+          if (newValue !== null){
             setValue(newValue)
             setUserObject(data.map((edge) => (
                 edge[0].email === newValue.email ?  
@@ -180,6 +181,7 @@ const randomPassword = ()  => {
                 :
                 {}
   )).filter(value => Object.keys(value).length !== 0))
+              
           }
         }}
         filterOptions={(options, params) => {
