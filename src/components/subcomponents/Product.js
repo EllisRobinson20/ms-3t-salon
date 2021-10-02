@@ -15,6 +15,9 @@ const useStyles = makeStyles(theme => ({
         maxWidth: '60%',
         margin: '0 auto 1em'
     },
+    buttonText: {
+      backgroundColor: "#d52349"
+    },
 }))
 
 const Product = ({ product }) => {
@@ -32,7 +35,7 @@ const Product = ({ product }) => {
         />
         </Card>
         <h3>${product.priceRangeV2.maxVariantPrice.amount}</h3>
-        <Button href={`/shop/${product.handle}`} variant="contained" color="secondary" size="large">More</Button>
+        <Button className={classes.buttonText} href={`/shop/${product.handle}`} variant="contained" color="secondary" size="large">More</Button>
       </Card>
     </article>
   )

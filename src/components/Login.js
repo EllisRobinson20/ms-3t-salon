@@ -209,7 +209,7 @@ export default function Login() {
             <br />
             <br />
           </div>
-          <input type="submit" value="Login" />
+          <input className={styles.button} type="submit" value="Login" />
         </form>
         <Typography variant="body2">Forgot password?</Typography>
         <Link style={{color: '#d52349'}} to={''} onClickCapture={toggleReset}>

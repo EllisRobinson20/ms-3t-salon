@@ -27,7 +27,8 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginTop: 'auto',
-    backgroundColor: '#e4dcc5'
+    backgroundColor: '#e4dcc5',
+    color: '#fff!important'
   },
   title: {
       marginBottom: '2em'
