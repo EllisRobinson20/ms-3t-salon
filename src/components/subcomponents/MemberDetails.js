@@ -17,6 +17,7 @@ import { MenuItem } from '@material-ui/core'
 
 
 
+
 export default function MemberDetails({ data }) {
   const graphQLData = useStaticQuery(graphql`
   query AdminServiceQuery {
@@ -60,9 +61,19 @@ export default function MemberDetails({ data }) {
         console.log("userObject ", userObject[0][key])
         memberData = {
           ...memberData,
-          [key]: replaceIfAltered(dialogValue[key], userObject[0][key]),
+          [key]: replaceIfAltered(dialogValue[key], userObject[0][key], key),
         }
         console.log(memberData)
+        /* if (key === "costServicePence") {
+          console.log("cost service pence called")
+          memberData = {
+            ...memberData,
+            costServicePence: memberData.costServicePence ,
+          }
+        } else
+        if (key === "durationService") {
+          console.log("duration service called")
+        } */
       })
       /* console.log('res')
       console.log(memberData) */
@@ -80,10 +91,10 @@ export default function MemberDetails({ data }) {
         .doc(userObject[0].id)
         .update({
           telephone: data.telephone,
-          costServicePence: parseInt(data.costServicePence * 100.0),
+          costServicePence: parseInt(data.costServicePence /* * 100.0 */),
           defaultService: data.defaultService,
           userConsulted: true,
-          durationService: parseInt(parseFloat(data.durationService) * 60.0),
+          durationService: parseInt(parseFloat(data.durationService) /* * 60.0 */),
         }).then((result) => {
           console.log("result", result)
         })
@@ -101,16 +112,16 @@ export default function MemberDetails({ data }) {
     // if dialog values are not empty nor equal to useObject
   }
 
-  const replaceIfAltered = (newValue, oldValue) => {
-     console.log('testing old and new', oldValue, newValue)
+  const replaceIfAltered = (newValue, oldValue, key) => {
+     console.log('testing old and new', oldValue, newValue, key)
+     //const old = key === "costServicePence" ? oldValue / 100 : key === "durationService" ? oldValue / 60 : oldValue
+     console.log('old', oldValue)
     const checkNew = checkFields(newValue, oldValue)
     const checkOld = checkField(newValue, oldValue)
     console.log("check variables", checkOld, checkNew)
     return checkNew
       ? newValue
-      : checkOld
-      ? oldValue
-      : console.log('no change to dataObject')
+      : oldValue
   }
   const checkFields = (newValue, oldValue) => {
     const equal = _.isEqual(oldValue, newValue)
@@ -137,7 +148,7 @@ export default function MemberDetails({ data }) {
     setResult({ error: isError, message: message, subMessage: subMessage })
     setTimeout(function() {
       setResult('')
-      window.location.reload()
+      //window.location.reload()
     }, 3000)
   }
 
@@ -196,7 +207,7 @@ export default function MemberDetails({ data }) {
           {result ? result.subMessage : ''}
         </Typography>
       </Grid>
-      <Grid item xs={12} md={6}>
+      {/* <Grid item xs={12} md={6}>
         <Typography variant="h6">
           {typeof dialogValue.name === 'string'
             ? dialogValue.name
@@ -213,8 +224,8 @@ export default function MemberDetails({ data }) {
             ? userObject[0].email
             : ''}
         </Typography>
-      </Grid>
-      <Grid item xs={12} md={6}>
+      </Grid> */}
+      <Grid item xs={12} md={12}>
         <TextField
           margin="dense"
           id="tel"
@@ -232,11 +243,11 @@ export default function MemberDetails({ data }) {
           label="telephone"
           type="tel"
           name="telephone"
-          style={{ color: 'black', width: matchesLg? '22%': matchesMd ? '44%': matchesSm? '60%': '' }}
+          style={{ color: 'black', width: matchesLg? '60%': matchesMd ? '44%': matchesSm? '60%': '' }}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
-      <FormControl variant="standard" style={{width: matchesLg? '22%': matchesMd ? '44%': matchesSm? '60%': ''}}>
+      <Grid item xs={12} md={12}>
+      <FormControl variant="standard" style={{width: matchesLg? '60%': matchesMd ? '44%': matchesSm? '60%': ''}}>
         <InputLabel id="simple-select-label">Choose Service</InputLabel>
         <Select
           labelId="simple-select-label"
@@ -270,8 +281,8 @@ export default function MemberDetails({ data }) {
         </Select>
       </FormControl>
       </Grid>
-      <Grid item xs={12} md={6}>
-      <FormControl variant="standard" style={{width: matchesLg? '22%': matchesMd ? '44%': matchesSm? '60%': ''}}>
+      <Grid item xs={12} md={12}>
+      <FormControl variant="standard" style={{width: matchesLg? '60%': matchesMd ? '44%': matchesSm? '60%': ''}}>
         <InputLabel id="duration-select">Add Duration (hours)</InputLabel>
         <Select
           labelId="duration-select"
@@ -283,7 +294,7 @@ export default function MemberDetails({ data }) {
           onChange={event =>
             setDialogValue({
               ...dialogValue,
-              durationService: event.target.value,
+              durationService: typeof event.target.value === "number" ? event.target.value*60 : event.target.value,
             })
           }
         >
@@ -294,12 +305,12 @@ export default function MemberDetails({ data }) {
       </FormControl>
       </Grid>
 
-      <Grid item xs={12} md={6} container>
+      <Grid item xs={12} md={12} container>
         <Grid item container justifyContent="flex-end" spacing={0} xs={1}>
           
         </Grid>
         <Grid item xs={10}>
-        <FormControl variant="standard" style={{width: matchesLg? '22%': matchesMd ? '44%': matchesSm? '60%': ''}}>
+        <FormControl variant="standard" style={{width: matchesLg? '71%': matchesMd ? '44%': matchesSm? '60%': ''}}>
         <InputLabel id="price-select">Price (£)</InputLabel>
         <Select
           labelId="price-select"
@@ -311,7 +322,7 @@ export default function MemberDetails({ data }) {
           onChange={event =>
             setDialogValue({
               ...dialogValue,
-              costServicePence: event.target.value,
+              costServicePence: typeof event.target.value === "number" ? event.target.value*100 : event.target.value,
             })
           }
         >
@@ -323,16 +334,16 @@ export default function MemberDetails({ data }) {
         </Grid>
       </Grid>
 
-      <Grid item xs={1} lg={2}></Grid>
-      <Grid item xs={10} lg={2}>
+      <Grid item xs={1} lg={1}></Grid>
+      <Grid item xs={10}>
         <Button
-          style={{marginLeft:'auto', marginBottom: '2em', marginTop: '1em', width:'80%'}}
+          style={{marginLeft:'auto',marginRight:'auto', marginBottom: '2em', marginTop: '1em', width:'80%'}}
           size="large"
           variant="contained"
           color="primary"
           onClick={updateMemberDetails}
         >
-          Next
+          Update
         </Button>
 
       </Grid>

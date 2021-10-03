@@ -10,6 +10,7 @@ import { Grid, IconButton, Typography } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { CircularProgress } from '@material-ui/core'
 
+
 const isBrowser = typeof window !== "undefined"
 
 
@@ -51,11 +52,6 @@ const resetIfNoAvail = (avail) => {
         <div>
             <Grid container>
         <Grid item xs={1}>
-        <Link to={lastPage}>
-          <IconButton href={lastPage} color="textSecondary" aria-label="upload picture" component="span">
-          <ArrowBackIcon/>
-          </IconButton>
-        </Link>
         </Grid>
         <Grid item xs={10}>
           <Typography variant="h4">

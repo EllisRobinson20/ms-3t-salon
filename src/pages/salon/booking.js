@@ -25,6 +25,7 @@ const {selectedService} = useContext(BookingContext);
 const {setSlots} = useContext(BookingContext);
 // last page state for the back button
 const {lastPage} = useContext(NavigationContext);
+
 // Local state
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState();
