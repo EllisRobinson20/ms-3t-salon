@@ -30,7 +30,26 @@ const buttonTheme = createTheme({
 })
 
 export default function Services({ location, data }) {
-
+  // state
+  setPageState(location.pathname)
+  const [viewModel, setViewModel] = useState({
+    duration: 0,
+    price: 0,
+    buttonLabel: '',
+    message: '',
+  })
+  // context
+  const { setPageState } = useContext(NavigationContext)
+  const { lastPage } = useContext(NavigationContext)
+  const { deviceIsMobile } = useContext(AuthContext)
+  const { admin } = useContext(AuthContext)
+  const { memberInfo } = useContext(AuthContext)
+  const { setSelectedService } = useContext(BookingContext)
+  const { serviceListRef } = useContext(BookingContext)
+  // data
+  const services = data.allService.edges
+  const profilePicture = data.allCloudinaryMedia.edges[2].node.secure_url
+  // styles
   const useStyles = makeStyles(theme => ({
     root: {
       marginTop: '2em',
@@ -70,133 +89,124 @@ export default function Services({ location, data }) {
       display: 'none',
     },
   }))
-  // fetch in the members data dynamically. match the members name by the id of user object
-  
-  // get the service data by graphql
-    // service data already in the graphql page query
-  // run the following conditions :
-    // user consulted - if yes get details from here NOTE: will need to match the selected service to change only the price for this service 
-    // - if not get details from db
-    // if consultation only or price varible or duration variable - consultation first
-
-    // THe data is returning undefined. this could be due to the db not all having the same values. try to put the bools into all documents
-  const [viewModel, setViewModel] = useState({
-    duration: 0,
-    price: 0,
-    buttonLabel: "",
-    message: "",
-  })
-  
-  
-  const { setPageState } = useContext(NavigationContext)
-  const { lastPage } = useContext(NavigationContext)
-  const { deviceIsMobile } = useContext(AuthContext)
-  const { admin } = useContext(AuthContext)
-  setPageState(location.pathname)
-  const {memberInfo} = useContext(AuthContext)
-  const { setSelectedService } = useContext(BookingContext)
-  const { serviceListRef } = useContext(BookingContext)
-
-  const services = data.allService.edges
-  const profilePicture = data.allCloudinaryMedia.edges[2].node.secure_url
   const theme = useTheme()
   const classes = useStyles()
   const matchesMd = useMediaQuery(theme.breakpoints.down('md'))
   const matchesSm = useMediaQuery(theme.breakpoints.down('sm'))
-  const updateView = (serviceDetails) => {
-    console.log("updateView called")
+  // functions
+  const updateView = serviceDetails => {
+    console.log('updateView called')
     console.log(serviceDetails)
-    if (memberInfo.userConsulted && memberInfo.defaultService === serviceDetails.node.id) {
+    if (
+      memberInfo.userConsulted &&
+      memberInfo.defaultService === serviceDetails.node.id
+    ) {
       // using member info
-      console.log("condition 1")
-      setViewModel({...viewModel, 
-        duration: `${memberInfo.durationService/60} hrs`,
-        price: `£${memberInfo.costServicePence/100}`,
-        buttonLabel: "Book Now",
-        message: "",
+      console.log('condition 1')
+      setViewModel({
+        ...viewModel,
+        duration: `${memberInfo.durationService / 60} hrs`,
+        price: `£${memberInfo.costServicePence / 100}`,
+        buttonLabel: 'Book Now',
+        message: '',
         consultation: false,
       })
-    } else
-    if (!memberInfo.userConsulted) {
-
-      if (!serviceDetails.node.consultationOnly && serviceDetails.node.variablePrice && !serviceDetails.node.variableDuration) {
-        console.log("condition 2")
-        setViewModel({...viewModel, 
-          duration: `${serviceDetails.node.durationMinutes/60} hrs`,
-          price: `From £${serviceDetails.node.pricePence/100}`,
-          buttonLabel: "Call Now",
-          message: "Call us to get a consultation",
+    } else if (!memberInfo.userConsulted) {
+      if (
+        !serviceDetails.node.consultationOnly &&
+        serviceDetails.node.variablePrice &&
+        !serviceDetails.node.variableDuration
+      ) {
+        console.log('condition 2')
+        setViewModel({
+          ...viewModel,
+          duration: `${serviceDetails.node.durationMinutes / 60} hrs`,
+          price: `From £${serviceDetails.node.pricePence / 100}`,
+          buttonLabel: 'Call Now',
+          message: 'Call us to get a consultation',
           consultation: true,
         })
-      } else
-      if (!serviceDetails.node.consultationOnly && !serviceDetails.node.variablePrice && serviceDetails.node.variableDuration) {
-        console.log("condition 3")
-        setViewModel({...viewModel, 
-          duration: `From ${serviceDetails.node.durationMinutes/60} hrs`,
-          price: `£${serviceDetails.node.pricePence/100}`,
-          buttonLabel: "Call Now",
-          message: "Call us to get a consultation",
+      } else if (
+        !serviceDetails.node.consultationOnly &&
+        !serviceDetails.node.variablePrice &&
+        serviceDetails.node.variableDuration
+      ) {
+        console.log('condition 3')
+        setViewModel({
+          ...viewModel,
+          duration: `From ${serviceDetails.node.durationMinutes / 60} hrs`,
+          price: `£${serviceDetails.node.pricePence / 100}`,
+          buttonLabel: 'Call Now',
+          message: 'Call us to get a consultation',
           consultation: true,
         })
-       
-      } else
-      if (!serviceDetails.node.consultationOnly && !serviceDetails.node.variablePrice && !serviceDetails.node.variableDuration) {
-        console.log("condition 4")
-        setViewModel({...viewModel, 
-          duration: `${serviceDetails.node.durationMinutes/60} hrs`,
-          price: `£${serviceDetails.node.pricePence/100}`,
-          buttonLabel: "Book now",
-          message: "",
+      } else if (
+        !serviceDetails.node.consultationOnly &&
+        !serviceDetails.node.variablePrice &&
+        !serviceDetails.node.variableDuration
+      ) {
+        console.log('condition 4')
+        setViewModel({
+          ...viewModel,
+          duration: `${serviceDetails.node.durationMinutes / 60} hrs`,
+          price: `£${serviceDetails.node.pricePence / 100}`,
+          buttonLabel: 'Book now',
+          message: '',
           consultation: false,
         })
-      } 
-      else
-      if (serviceDetails.node.consultationOnly && serviceDetails.node.variableDuration) {
-        console.log("condition 5")
-        setViewModel({...viewModel, 
-          duration: `From ${serviceDetails.node.durationMinutes/60} hrs`,
-          price: "",
-          buttonLabel: "Call Now",
-          message: "Call us to get a consultation",
+      } else if (
+        serviceDetails.node.consultationOnly &&
+        serviceDetails.node.variableDuration
+      ) {
+        console.log('condition 5')
+        setViewModel({
+          ...viewModel,
+          duration: `From ${serviceDetails.node.durationMinutes / 60} hrs`,
+          price: '',
+          buttonLabel: 'Call Now',
+          message: 'Call us to get a consultation',
           consultation: true,
         })
-      } else
-      if (serviceDetails.node.variablePrice && serviceDetails.node.variableDuration) {
-        console.log("condition 6")
-        setViewModel({...viewModel, 
-          duration: `From ${serviceDetails.node.durationMinutes/60} hrs`,
-          price: `From £${serviceDetails.node.pricePence/100}`,
-          buttonLabel: "Call Now",
-          message: "Call us to get a consultation",
+      } else if (
+        serviceDetails.node.variablePrice &&
+        serviceDetails.node.variableDuration
+      ) {
+        console.log('condition 6')
+        setViewModel({
+          ...viewModel,
+          duration: `From ${serviceDetails.node.durationMinutes / 60} hrs`,
+          price: `From £${serviceDetails.node.pricePence / 100}`,
+          buttonLabel: 'Call Now',
+          message: 'Call us to get a consultation',
           consultation: true,
         })
-      } 
-    } else
-    if (memberInfo.userConsulted && serviceDetails.node.id !== memberInfo.defaultService) {
-      console.log("condition 7")
-      setViewModel({...viewModel, 
-        duration: `From ${serviceDetails.node.durationMinutes/60} hrs`,
-        price: `From £${serviceDetails.node.pricePence/100}`,
-        buttonLabel: "Call Now",
-        message: "Call us to get a consultation",
+      }
+    } else if (
+      memberInfo.userConsulted &&
+      serviceDetails.node.id !== memberInfo.defaultService
+    ) {
+      console.log('condition 7')
+      setViewModel({
+        ...viewModel,
+        duration: `From ${serviceDetails.node.durationMinutes / 60} hrs`,
+        price: `From £${serviceDetails.node.pricePence / 100}`,
+        buttonLabel: 'Call Now',
+        message: 'Call us to get a consultation',
         consultation: true,
       })
     }
   }
-  const isBrowser = typeof window !== "undefined"
+  const isBrowser = typeof window !== 'undefined'
   const [windowState, setWindowState] = useState(false)
   if (isBrowser) {
     window.onscroll = function(ev) {
-      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-          setWindowState(true)
-      }
-      else {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        setWindowState(true)
+      } else {
         setWindowState(false)
       }
-  };
+    }
   }
-    
-  
   return (
     <Layout>
       <Grid
@@ -211,12 +221,17 @@ export default function Services({ location, data }) {
               <>
                 <Card on elevation={3} className={clsx(classes.detailsCard)}>
                   <CardContent>
-                    <img src={profilePicture} alt="Stylists profile" style={{borderRadius: '20px'}}></img>
+                    <img
+                      src={profilePicture}
+                      alt="Stylists profile"
+                      style={{ borderRadius: '20px' }}
+                    ></img>
                     <Typography gutterBottom variant="h4" component="div">
                       {service.node.name}
                     </Typography>
                     <Typography gutterBottom variant="h6" component="div">
-                      Duration: {viewModel.duration} {/* {service.node.durationMinutes / 60} hour */}
+                      Duration: {viewModel.duration}{' '}
+                      {/* {service.node.durationMinutes / 60} hour */}
                     </Typography>
                     <Typography gutterBottom variant="h6" component="div">
                       {service.node.consultationOnly ? (
@@ -228,28 +243,29 @@ export default function Services({ location, data }) {
                       )}
                     </Typography>
                   </CardContent>
-                  
-                    <Typography
-                      variant="body"
-                      color="text.secondary"
-                      className={classes.consultationLabel}
-                    >
-                      {viewModel.message} {/* Call to book a consultation */}
-                    </Typography>
-                  
-                    <CardActions className={classes.c}>
-                      <ThemeProvider theme={buttonTheme}>
-                      {viewModel.consultation ? 
-                      <a href={deviceIsMobile ? "tel:07517140732" : "#contact"}>
-                      <Button
-                        size="large"
-                        color="primary"
-                        variant="contained" 
-                      >
-                        {viewModel.buttonLabel}{/* Call for Consultation */}
-                      </Button>
-                    </a> 
-                      :
+                  <Typography
+                    variant="body"
+                    color="text.secondary"
+                    className={classes.consultationLabel}
+                  >
+                    {viewModel.message} {/* Call to book a consultation */}
+                  </Typography>
+                  <CardActions className={classes.c}>
+                    <ThemeProvider theme={buttonTheme}>
+                      {viewModel.consultation ? (
+                        <a
+                          href={deviceIsMobile ? 'tel:07517140732' : '#contact'}
+                        >
+                          <Button
+                            size="large"
+                            color="primary"
+                            variant="contained"
+                          >
+                            {viewModel.buttonLabel}
+                            {/* Call for Consultation */}
+                          </Button>
+                        </a>
+                      ) : (
                         <Link to="./booking">
                           <Button
                             size="large"
@@ -265,56 +281,53 @@ export default function Services({ location, data }) {
                             {viewModel.buttonLabel} {/* Book Now */}
                           </Button>
                         </Link>
-                      }
-                      </ThemeProvider>
-                    </CardActions>
+                      )}
+                    </ThemeProvider>
+                  </CardActions>
                 </Card>
-                {
-                  windowState ?
+                {windowState ? (
                   <ThemeProvider theme={buttonTheme}>
-                  <Link to="./booking">
-                    <Button
-                      size="large"
-                      color="primary"
-                      variant="contained"
-                      className={clsx(
-                        serviceListRef &&
-                          matchesMd &&
-                          !viewModel.consultation
-                          ? classes.stickyButton
-                          : classes.buttonHidden
-                      )}
-                      onClick={() => {
-                        setSelectedService({
-                          id: service.node.id,
-                          name: service.node.name,
-                        })
-                      }}
-                    >
-                      {viewModel.buttonLabel} {/* Book Now */}
-                    </Button>
-                  </Link>
-                  <a href="tel:07517140732">
-                    <Button
-                      size="large"
-                      color="primary"
-                      variant="contained"
-                      className={clsx(
-                        serviceListRef &&
-                          deviceIsMobile &&
-                          viewModel.consultation
-                          ? classes.stickyButton
-                          : classes.buttonHidden
-                      )}
-                    >
-                      {viewModel.buttonLabel}{/* Call for Consultation */}
-                    </Button>
-                  </a>
-                </ThemeProvider>
-                :
-                ""
-                }
-                
+                    <Link to="./booking">
+                      <Button
+                        size="large"
+                        color="primary"
+                        variant="contained"
+                        className={clsx(
+                          serviceListRef && matchesMd && !viewModel.consultation
+                            ? classes.stickyButton
+                            : classes.buttonHidden
+                        )}
+                        onClick={() => {
+                          setSelectedService({
+                            id: service.node.id,
+                            name: service.node.name,
+                          })
+                        }}
+                      >
+                        {viewModel.buttonLabel} {/* Book Now */}
+                      </Button>
+                    </Link>
+                    <a href="tel:07517140732">
+                      <Button
+                        size="large"
+                        color="primary"
+                        variant="contained"
+                        className={clsx(
+                          serviceListRef &&
+                            deviceIsMobile &&
+                            viewModel.consultation
+                            ? classes.stickyButton
+                            : classes.buttonHidden
+                        )}
+                      >
+                        {viewModel.buttonLabel}
+                        {/* Call for Consultation */}
+                      </Button>
+                    </a>
+                  </ThemeProvider>
+                ) : (
+                  ''
+                )}
               </>
             ) : (
               ''
@@ -332,16 +345,16 @@ export default function Services({ location, data }) {
               <ArrowBackIcon />
             </IconButton>
           </Link>
-          
-          {!admin ? 
-          <>
-          <Typography variant="h4">Select A Service</Typography>
-          <ServicesList action={updateView}/>
-          </>
-          :
-          <Typography variant="h4">Bookings not allowed here for Admin!</Typography>
-          }
-          
+          {!admin ? (
+            <>
+              <Typography variant="h4">Select A Service</Typography>
+              <ServicesList action={updateView} />
+            </>
+          ) : (
+            <Typography variant="h4">
+              Bookings not allowed here for Admin!
+            </Typography>
+          )}
         </Grid>
         <Grid item xs={12}></Grid>
       </Grid>

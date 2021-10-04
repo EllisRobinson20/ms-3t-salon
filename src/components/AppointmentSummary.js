@@ -9,7 +9,6 @@ import LoadingBackdrop from './subcomponents/LoadingBackdrop'
 import AlertDialog from './subcomponents/AlertDialog'
 import { DialogTitle, DialogContent, DialogContentText } from '@material-ui/core'
 
-
 export default function AppointmentSummary({userDetails}) {
   // Data
   const data = useStaticQuery(graphql`
@@ -36,9 +35,7 @@ export default function AppointmentSummary({userDetails}) {
   const { memberInfo } = useContext(AuthContext)
   const { admin } = useContext(AuthContext)
   const { setShowLogin } = useContext(AuthContext)
-
   const {showSignUpConfirmation, setShowSignUpConfirmation} = useContext(AuthContext)
-  
   const { selectedService, setSelectedService } = useContext(BookingContext)
   const { selectedSlot, setSelectedSlot } = useContext(BookingContext)
   const { selectedDateGlobal, setNewDate } = useContext(BookingContext)
@@ -54,13 +51,10 @@ export default function AppointmentSummary({userDetails}) {
   // Functions
   const bookProvisionalIfAvail = () => {
     setLoading(true)
-    /* console.log(user) */
-    // ! Must Check Auth First
     if (user ) {
       const bookingAttempt = firebase
         .functions()
         .httpsCallable('bookProvisionalIfAvail')
-      /* console.log('booking attempt fired') */
       bookingAttempt({
         name: admin ? userDetails[0].name : user.displayName,
         email: admin ? userDetails[0].email : user.email,
@@ -74,7 +68,6 @@ export default function AppointmentSummary({userDetails}) {
       )
     } else {
       setShowLogin(true);
-      // need to keep the details of the booking if they login or sign up
     }
     
   }
@@ -84,7 +77,6 @@ export default function AppointmentSummary({userDetails}) {
       console.log(result)
       console.log("result")
       setShowSignUpConfirmation(true)
-      /* console.log(result) */
     } else {
       console.log(result)
       console.log("result")
@@ -94,7 +86,7 @@ export default function AppointmentSummary({userDetails}) {
       )
     }
   }
-
+// functions
   const setListState = data => {
     setSelectedService({ id: data.id, name: data.name })
     setListName(data.name)
@@ -102,20 +94,13 @@ export default function AppointmentSummary({userDetails}) {
   const closeAlertDialog = () => {
     setShowSignUpConfirmation(false)
   }
+  // side effects
   useEffect(() => {
     setListName(selectedService.name)
-    /* console.log("user") */
-    
   }, [])
-
-useEffect(() => {
-  console.log("userDetails",userDetails)
-  console.log("also admin true: ",admin)
-})
   useEffect(() => {
     setSlots([])
     setSelectedSlot('')
-    /* console.log('selected service is' + selectedService.id) */
     data.allService.nodes.forEach(service => {
       if (service.id === selectedService.id) {
         listItems.push(
@@ -141,23 +126,13 @@ useEffect(() => {
       </select>
     )
   }, [selectedService.id])
-  // Clear the error message when a service is selected
   useEffect(() => {
     if (selectedService.id) {
       setError('')
     } else {
-      // navigate("/salon/")
     }
   })
 
-  // finish this maybe give an id or class name etc
-
-  // check booking. if this time slot is still available allow booking. May want to  book the slot provisionally
-  //enable button only if is avalability
-  //state to tell client if no avail
-
-  // enable only if there is a timeslot selected
-  // enable only if there is a service selected
   useEffect(() => {
     setButtonIsEnabled(
       selectedSlot && selectedService.id && isAvailability ? true : false
@@ -169,10 +144,7 @@ useEffect(() => {
     const m = d.getMinutes()
     const s = Math.floor(selectedSlot.id / 60)
     const sm = (selectedSlot.id / 60 - s) * 60
-    /* console.log(h + ' : ' + s)
-    console.log('sm ' + sm) */
     if (h !== s && m !== sm) {
-      /* console.log('sm is not true') */
       setSelectedSlot('')
     }
   }, [selectedDateGlobal])
@@ -199,7 +171,6 @@ useEffect(() => {
           <p className={styles.serviceLabel}>{listName}</p>
         )
       }
-      
       <p className={styles.error}>
         {error === 'service' ? ' Select a treatment or service first ... ' : ''}
       </p>

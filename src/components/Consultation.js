@@ -167,7 +167,7 @@ export default function Consultation() {
         {userObject ? (
           <Paper
             elevation={5}
-            style={{ margin: '0 auto', padding: '1em', maxWidth: '60vw' }}
+            style={{ margin: '0 auto', padding: '1em', maxWidth: '690vw' }}
           >
             <Grid container justifyContent="flex-end">
               <TextButton action={handleClick}>ADD BOOKING</TextButton>

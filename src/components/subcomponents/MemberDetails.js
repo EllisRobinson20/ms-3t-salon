@@ -57,34 +57,17 @@ export default function MemberDetails({ data }) {
         durationService: null,
       }
       Object.keys(memberData).forEach(key => {
-        console.log("doalogValue ", dialogValue[key])
-        console.log("userObject ", userObject[0][key])
         memberData = {
           ...memberData,
           [key]: replaceIfAltered(dialogValue[key], userObject[0][key], key),
         }
-        console.log(memberData)
-        /* if (key === "costServicePence") {
-          console.log("cost service pence called")
-          memberData = {
-            ...memberData,
-            costServicePence: memberData.costServicePence ,
-          }
-        } else
-        if (key === "durationService") {
-          console.log("duration service called")
-        } */
       })
-      /* console.log('res')
-      console.log(memberData) */
       resolve(memberData)
     })
     populateData
       .then(data => {
         if (/(?:(\(?(?:0(?:0|11)\)?[\s-]?\(?|\+?)44\)?[\s-]?(?:\(?0\)?[\s-]?)?)|\(?0)((?:\d{5}\)?[\.\s-]?\d{4,5})|(?:\d{4}\)?[\.\s-]?(?:\d{3}[\.\s-]?\d{3}))|(?:\d{4}\)?[\.\s-]?(?:\d{5}))|(?:\d{3}\)?[\.\s-]?\d{3}[\.\s-]?\d{3,4})|(?:\d{2}\)?[\.\s-]?\d{4}[\.\s-]?\d{4}))(?:[\s-]?((?:x|ext[\.\s]*|\#)\d{3,4})?)/.test(data.telephone))
         {
-        console.log("matching regex")
-
         firebase
         .firestore()
         .collection('members')
@@ -108,8 +91,6 @@ export default function MemberDetails({ data }) {
         console.log(err)
         onResult(true, 'Oops!... Something went wrong', 'please try again')
       })
-
-    // if dialog values are not empty nor equal to useObject
   }
 
   const replaceIfAltered = (newValue, oldValue, key) => {
@@ -125,16 +106,13 @@ export default function MemberDetails({ data }) {
   }
   const checkFields = (newValue, oldValue) => {
     const equal = _.isEqual(oldValue, newValue)
-    //console.log('check new')
     //console.log(!equal /* && oldValue === undefined */ && newValue !== null && !!newValue)
     return (
-      !equal /* && oldValue === undefined */ && newValue !== null && !!newValue
+      !equal && newValue !== null && !!newValue
     )
   }
   const checkField = (newValue, oldValue) => {
     const equal = _.isEqual(oldValue, newValue)
-    /* console.log('check old')
-    console.log(!!oldValue) */
     return (
       !equal &&
       oldValue !== null &&
@@ -171,19 +149,7 @@ export default function MemberDetails({ data }) {
     durationService: 0,
     costService: 0,
   })
-
-  /* const handleSubmit = event => {
-    event.preventDefault()
-    setValue({
-      name: dialogValue.name,
-      email: dialogValue.email,
-      telephone: dialogValue.telephone,
-      durationService: dialogValue.durationService,
-      defaultService: dialogValue.defaultService,
-      costService: dialogValue.costService,
-    })
-    handleClose()
-  } */
+  
   useEffect(() => {
     console.log("object cgange")
     console.log(userObject)
