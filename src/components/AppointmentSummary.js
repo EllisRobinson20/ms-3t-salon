@@ -130,6 +130,7 @@ export default function AppointmentSummary({ userDetails }) {
       </select>
     )
   }, [selectedService.id])
+  // Clear the error message when a service is selected
   useEffect(() => {
     if (selectedService.id) {
       setError('')
