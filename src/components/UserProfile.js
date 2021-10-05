@@ -60,6 +60,7 @@ export default function UserProfile({ details }) {
               {userDetails ? userDetails.email : details.email}
             </Typography>
           </Grid>
+
           <Grid
             item
             container

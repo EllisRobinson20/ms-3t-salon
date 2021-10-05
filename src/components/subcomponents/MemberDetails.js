@@ -58,11 +58,26 @@ export default function MemberDetails({ data }) {
         durationService: null,
       }
       Object.keys(memberData).forEach(key => {
+        console.log("doalogValue ", dialogValue[key])
+        console.log("userObject ", userObject[0][key])
         memberData = {
           ...memberData,
           [key]: replaceIfAltered(dialogValue[key], userObject[0][key], key),
         }
+        console.log(memberData)
+        /* if (key === "costServicePence") {
+          console.log("cost service pence called")
+          memberData = {
+            ...memberData,
+            costServicePence: memberData.costServicePence ,
+          }
+        } else
+        if (key === "durationService") {
+          console.log("duration service called")
+        } */
       })
+      /* console.log('res')
+      console.log(memberData) */
       resolve(memberData)
     })
     populateData
@@ -98,6 +113,8 @@ export default function MemberDetails({ data }) {
       .catch(err => {
         onResult(true, 'Oops!... Something went wrong', 'please try again')
       })
+
+    // if dialog values are not empty nor equal to useObject
   }
 
   const replaceIfAltered = (newValue, oldValue) => {
@@ -111,6 +128,8 @@ export default function MemberDetails({ data }) {
   }
   const checkField = (newValue, oldValue) => {
     const equal = _.isEqual(oldValue, newValue)
+    /* console.log('check old')
+    console.log(!!oldValue) */
     return (
       !equal &&
       oldValue !== null &&

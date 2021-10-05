@@ -60,6 +60,7 @@ export default function AppointmentSummary({ userDetails }) {
       const bookingAttempt = firebase
         .functions()
         .httpsCallable('bookProvisionalIfAvail')
+      /* console.log('booking attempt fired') */
       bookingAttempt({
         name: admin ? userDetails[0].name : user.displayName,
         email: admin ? userDetails[0].email : user.email,
@@ -78,6 +79,7 @@ export default function AppointmentSummary({ userDetails }) {
     setLoading(false)
     if (result) {
       setShowSignUpConfirmation(true)
+      /* console.log(result) */
     } else {
       alert(
         'Sorry your booking time has already been taken ' +
@@ -92,15 +94,17 @@ export default function AppointmentSummary({ userDetails }) {
   const closeAlertDialog = () => {
     setShowSignUpConfirmation(false)
   }
-  // side effects
   useEffect(() => {
     setListName(selectedService.name)
+    /* console.log("user") */
+    
   }, [])
 
   const listItems = []
   useEffect(() => {
     setSlots([])
     setSelectedSlot('')
+    /* console.log('selected service is' + selectedService.id) */
     data.allService.nodes.forEach(service => {
       if (service.id === selectedService.id) {
         listItems.push(
@@ -126,14 +130,22 @@ export default function AppointmentSummary({ userDetails }) {
       </select>
     )
   }, [selectedService.id])
-
   useEffect(() => {
     if (selectedService.id) {
       setError('')
     } else {
+      // navigate("/salon/")
     }
   })
 
+  // finish this maybe give an id or class name etc
+
+  // check booking. if this time slot is still available allow booking. May want to  book the slot provisionally
+  //enable button only if is avalability
+  //state to tell client if no avail
+
+  // enable only if there is a timeslot selected
+  // enable only if there is a service selected
   useEffect(() => {
     setButtonIsEnabled(
       selectedSlot && selectedService.id && isAvailability ? true : false
@@ -146,7 +158,10 @@ export default function AppointmentSummary({ userDetails }) {
     const m = d.getMinutes()
     const s = Math.floor(selectedSlot.id / 60)
     const sm = (selectedSlot.id / 60 - s) * 60
+    /* console.log(h + ' : ' + s)
+    console.log('sm ' + sm) */
     if (h !== s && m !== sm) {
+      /* console.log('sm is not true') */
       setSelectedSlot('')
     }
   }, [selectedDateGlobal])
