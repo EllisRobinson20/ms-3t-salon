@@ -4,19 +4,18 @@ import { graphql } from 'gatsby'
 import ProductDetail from '../components/subcomponents/ProductDetail'
 
 const ProductPageTemplate = ({ data }) => {
-    return (
-        <Layout>
-            <ProductDetail  product={data.shopifyProduct}/>
-        </Layout>
-    )
+  return (
+    <Layout>
+      <ProductDetail product={data.shopifyProduct} />
+    </Layout>
+  )
 }
 
 export default ProductPageTemplate
 
-
 export const data = graphql`
-query ProductLayOutQuery($handle: String!) {
-  shopifyProduct(handle: {eq: $handle}) {
+  query ProductLayOutQuery($handle: String!) {
+    shopifyProduct(handle: { eq: $handle }) {
       handle
       images {
         id
@@ -30,12 +29,12 @@ query ProductLayOutQuery($handle: String!) {
       id
       shopifyId
       variants {
-          sku
-          title
-          price
-          id
+        sku
+        title
+        price
+        id
       }
       legacyResourceId
+    }
   }
-}
 `

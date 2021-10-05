@@ -11,6 +11,10 @@ import { CircularProgress } from '@material-ui/core'
 const isBrowser = typeof window !== 'undefined'
 
 export default function AdminBooking({ user }) {
+  // state
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState()
+  // context
   // get the availability of the chosen date returned from function
   const { isAvailability, setAvailability } = useContext(BookingContext)
   // need a reference to the chosen service in here
@@ -19,15 +23,14 @@ export default function AdminBooking({ user }) {
   const { setSlots } = useContext(BookingContext)
   // last page state for the back button
   const { lastPage } = useContext(NavigationContext)
-  // Local state
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState()
+
   // functions
   const resetIfNoAvail = avail => {
     if (avail === false) {
       setSlots([])
     }
   }
+  // firebase function call
   const getAvailabilityForDate = day => {
     if (isBrowser) {
       setLoading(true)

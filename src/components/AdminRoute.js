@@ -1,20 +1,19 @@
 import React, { useContext, useLayoutEffect, useState } from 'react'
-import { navigate } from 'gatsby'
 import { AuthContext } from '../context/AuthContext'
-import Login from './Login'
 import { Card } from '@material-ui/core'
 
 const isBrowser = typeof window !== 'undefined'
 
 const AdminRoute = ({ component: Component, location, ...rest }) => {
-  const { user } = useContext(AuthContext)
-  const { admin } = useContext(AuthContext)
+  // state
   const [userAllowed, setUserAllowed] = useState(false)
-
+  // context
+  const { admin } = useContext(AuthContext)
+  // side effects
   useLayoutEffect(() => {
-      setUserAllowed(admin ? true : false)
+    setUserAllowed(admin ? true : false)
   })
-
+  // functions
   const RestrictedAccess = () => (
     <Card>
       <h1>Restricted Access</h1>

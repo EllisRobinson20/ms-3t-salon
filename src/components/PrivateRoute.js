@@ -5,6 +5,7 @@ import { AuthContext } from '../context/AuthContext'
 const isBrowser = typeof window !== 'undefined'
 
 const PrivateRoute = ({ component: Component, location, ...rest }) => {
+  // context
   const { user } = useContext(AuthContext)
   const { setShowLogin } = useContext(AuthContext)
   if (isBrowser) {

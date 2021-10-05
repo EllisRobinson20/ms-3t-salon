@@ -1,5 +1,5 @@
-import React, { useState, useContext} from 'react'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import React, { useState, useContext } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
@@ -52,13 +52,10 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function ProfileEdit() {
-  const { user } = useContext(AuthContext)
-  const { memberInfo } = useContext(AuthContext)
-  const { setShowLogin } = useContext(AuthContext)
-  const { admin } = useContext(AuthContext)
-
-  const classes = useStyles()
-  const theme = useTheme()
+  // state
+  const [dense, setDense] = useState(false)
+  const [secondary, setSecondary] = useState(true)
+  const [fieldToEdit, setFieldToEdit] = useState(null)
   const [dialogValue, setDialogValue] = useState({
     name: '',
     email: '',
@@ -68,12 +65,17 @@ export default function ProfileEdit() {
     res: null,
     error: null,
   })
+  // context
+  const { user } = useContext(AuthContext)
+  const { memberInfo } = useContext(AuthContext)
+  const { setShowLogin } = useContext(AuthContext)
+  const { admin } = useContext(AuthContext)
+  // styles
+  const classes = useStyles()
+  // test for error message to force sign out
   const authPromptMessage =
     'This operation is sensitive and requires recent authentication. Log in again before retrying this request.'
-  const [dense, setDense] = useState(false)
-  const [secondary, setSecondary] = useState(true)
-  const [fieldToEdit, setFieldToEdit] = useState(null)
-
+  // functions
   const handleUpdate = () => {
     if (fieldToEdit !== null && fieldToEdit === 'name') {
       firebase
@@ -160,288 +162,280 @@ export default function ProfileEdit() {
 
   return (
     <div>
-      {
-        !admin ? 
+      {!admin ? (
         <Grid container spacing={2}>
-        <Grid item sm={12} container md={6}>
-          <Grid item container justifyContent="center" xs={12}>
-            {response.res ? <p>{response.res}</p> : null}
-            {response.error ? (
-              <p style={{ color: '#e5607c' }}>{response.error}</p>
-            ) : null}
-          </Grid>
-          <Grid item xs={12}>
-            <List dense={dense} className={classes.listGroup}>
-              <ListItem>
-                <ListItemAvatar>
-                  <Tooltip title="enter your name">
-                    <Avatar></Avatar>
-                  </Tooltip>
-                </ListItemAvatar>
-                {fieldToEdit === 'name' ? (
-                  <>
-                    <TextField
-                      margin="dense"
-                      id="name"
-                      label="name"
-                      type="text"
-                      name="name"
-                      onChange={event =>
-                        setDialogValue({
-                          ...dialogValue,
-                          name: event.target.value,
-                        })
-                      }
-                    ></TextField>
-                  </>
-                ) : (
-                  <>
-                    <ListItemText
-                      primary={user.displayName}
-                      secondary={secondary ? 'name' : null}
-                    />
-                  </>
-                )}
-                <ListItemSecondaryAction>
+          <Grid item sm={12} container md={6}>
+            <Grid item container justifyContent="center" xs={12}>
+              {response.res ? <p>{response.res}</p> : null}
+              {response.error ? (
+                <p style={{ color: '#e5607c' }}>{response.error}</p>
+              ) : null}
+            </Grid>
+            <Grid item xs={12}>
+              <List dense={dense} className={classes.listGroup}>
+                <ListItem>
+                  <ListItemAvatar>
+                    <Tooltip title="enter your name">
+                      <Avatar></Avatar>
+                    </Tooltip>
+                  </ListItemAvatar>
                   {fieldToEdit === 'name' ? (
                     <>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        href="#"
-                        onClick={() => {
-                          setFieldToEdit(null)
-                        }}
-                      >
-                        cancel
-                      </Button>
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        size="small"
-                        href="#"
-                        onClick={() => {
-                          setFieldToEdit('name')
-                          handleUpdate()
-                        }}
-                      >
-                        submit
-                      </Button>
+                      <TextField
+                        margin="dense"
+                        id="name"
+                        label="name"
+                        type="text"
+                        name="name"
+                        onChange={event =>
+                          setDialogValue({
+                            ...dialogValue,
+                            name: event.target.value,
+                          })
+                        }
+                      ></TextField>
                     </>
                   ) : (
-                    <IconButton edge="end" aria-label="delete">
-                      <EditIcon
-                        className={classes.editButton}
-                        onClick={() => {
-                          setResponse({ ...response, error: null, res: null })
-                          setFieldToEdit('name')
-                        }}
-                      />
-                    </IconButton>
-                  )}
-                </ListItemSecondaryAction>
-              </ListItem>
-              <Divider />
-              <ListItem>
-                <ListItemAvatar>
-                  <Tooltip title="your email address">
-                    <Avatar>E</Avatar>
-                  </Tooltip>
-                </ListItemAvatar>
-                {fieldToEdit === 'email' ? (
-                  <TextField
-                    margin="dense"
-                    id="email"
-                    label="email"
-                    type="email"
-                    name="email"
-                    onChange={event =>
-                      setDialogValue({
-                        ...dialogValue,
-                        email: event.target.value,
-                      })
-                    }
-                  ></TextField>
-                ) : (
-                  <ListItemText
-                    primary={user.email}
-                    secondary={secondary ? 'email' : null}
-                  />
-                )}
-                <ListItemSecondaryAction>
-                  {fieldToEdit === 'email' ? (
                     <>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        href="#"
-                        onClick={() => {
-                          setFieldToEdit(null)
-                        }}
-                      >
-                        cancel
-                      </Button>
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        size="small"
-                        href="#"
-                        onClick={() => {
-                          setFieldToEdit('email')
-                          handleUpdate()
-                        }}
-                      >
-                        submit
-                      </Button>
-                    </>
-                  ) : (
-                    <IconButton edge="end" aria-label="delete">
-                      <EditIcon
-                        className={classes.editButton}
-                        onClick={() => {
-                          setResponse({ ...response, error: null, res: null })
-                          setFieldToEdit('email')
-                        }}
+                      <ListItemText
+                        primary={user.displayName}
+                        secondary={secondary ? 'name' : null}
                       />
-                    </IconButton>
+                    </>
                   )}
-                </ListItemSecondaryAction>
-              </ListItem>
-              <Divider />
-              <ListItem>
-                <ListItemAvatar>
-                  <Tooltip title="convenient contact number">
-                    <Avatar>T</Avatar>
-                  </Tooltip>
-                </ListItemAvatar>
-                {fieldToEdit === 'tel' ? (
-                  <>
+                  <ListItemSecondaryAction>
+                    {fieldToEdit === 'name' ? (
+                      <>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          href="#"
+                          onClick={() => {
+                            setFieldToEdit(null)
+                          }}
+                        >
+                          cancel
+                        </Button>
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          size="small"
+                          href="#"
+                          onClick={() => {
+                            setFieldToEdit('name')
+                            handleUpdate()
+                          }}
+                        >
+                          submit
+                        </Button>
+                      </>
+                    ) : (
+                      <IconButton edge="end" aria-label="delete">
+                        <EditIcon
+                          className={classes.editButton}
+                          onClick={() => {
+                            setResponse({ ...response, error: null, res: null })
+                            setFieldToEdit('name')
+                          }}
+                        />
+                      </IconButton>
+                    )}
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <Divider />
+                <ListItem>
+                  <ListItemAvatar>
+                    <Tooltip title="your email address">
+                      <Avatar>E</Avatar>
+                    </Tooltip>
+                  </ListItemAvatar>
+                  {fieldToEdit === 'email' ? (
                     <TextField
                       margin="dense"
-                      id="tel"
-                      label="telephone"
-                      type="tel"
-                      name="telephone"
+                      id="email"
+                      label="email"
+                      type="email"
+                      name="email"
                       onChange={event =>
                         setDialogValue({
                           ...dialogValue,
-                          telephone: event.target.value,
+                          email: event.target.value,
                         })
                       }
                     ></TextField>
-                  </>
-                ) : (
-                  <>
+                  ) : (
                     <ListItemText
-                      /* primary={
-                        Object.keys(memberInfo.telephone).length === 0
-                          ? ''
-                          : memberInfo.telephone
-                      } */
-                      primary={memberInfo.telephone}
-                      secondary={secondary ? 'telephone' : null}
+                      primary={user.email}
+                      secondary={secondary ? 'email' : null}
                     />
-                  </>
-                )}
-
-                <ListItemSecondaryAction>
+                  )}
+                  <ListItemSecondaryAction>
+                    {fieldToEdit === 'email' ? (
+                      <>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          href="#"
+                          onClick={() => {
+                            setFieldToEdit(null)
+                          }}
+                        >
+                          cancel
+                        </Button>
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          size="small"
+                          href="#"
+                          onClick={() => {
+                            setFieldToEdit('email')
+                            handleUpdate()
+                          }}
+                        >
+                          submit
+                        </Button>
+                      </>
+                    ) : (
+                      <IconButton edge="end" aria-label="delete">
+                        <EditIcon
+                          className={classes.editButton}
+                          onClick={() => {
+                            setResponse({ ...response, error: null, res: null })
+                            setFieldToEdit('email')
+                          }}
+                        />
+                      </IconButton>
+                    )}
+                  </ListItemSecondaryAction>
+                </ListItem>
+                <Divider />
+                <ListItem>
+                  <ListItemAvatar>
+                    <Tooltip title="convenient contact number">
+                      <Avatar>T</Avatar>
+                    </Tooltip>
+                  </ListItemAvatar>
                   {fieldToEdit === 'tel' ? (
                     <>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        href="#"
-                        onClick={() => {
-                          setFieldToEdit(null)
-                        }}
-                      >
-                        cancel
-                      </Button>
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        size="small"
-                        href="#"
-                        onClick={() => {
-                          setFieldToEdit('telephone')
-                          handleUpdate()
-                        }}
-                      >
-                        submit
-                      </Button>
+                      <TextField
+                        margin="dense"
+                        id="tel"
+                        label="telephone"
+                        type="tel"
+                        name="telephone"
+                        onChange={event =>
+                          setDialogValue({
+                            ...dialogValue,
+                            telephone: event.target.value,
+                          })
+                        }
+                      ></TextField>
                     </>
                   ) : (
-                    <IconButton edge="end" aria-label="delete">
-                      <EditIcon
-                        className={classes.editButton}
-                        onClick={() => {
-                          setResponse({ ...response, error: null, res: null })
-                          setFieldToEdit('tel')
-                        }}
+                    <>
+                      <ListItemText
+                        primary={memberInfo.telephone}
+                        secondary={secondary ? 'telephone' : null}
                       />
-                    </IconButton>
+                    </>
                   )}
-                </ListItemSecondaryAction>
-              </ListItem>
-            </List>
-          </Grid>
-        </Grid>
-        <Grid item container justifyContent="center" sm={12} md={6}>
-          {memberInfo.userConsulted ? (
-            <div className={classes.listGroup}>
-              <List dense={dense}>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Tooltip title="name of service allocated on consultation">
-                      <Avatar>S</Avatar>
-                    </Tooltip>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={removeHyphens(memberInfo.defaultService)}
-                    secondary={secondary ? 'my service' : null}
-                  />
-                </ListItem>
-                <Divider />
-                <ListItem>
-                  <ListItemAvatar>
-                    <Tooltip title="estimated time of treatment or service">
-                      <Avatar>D</Avatar>
-                    </Tooltip>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={`${memberInfo.durationService / 60} hrs`}
-                    secondary={secondary ? 'duration' : null}
-                  />
-                </ListItem>
-                <Divider />
-                <ListItem>
-                  <ListItemAvatar>
-                    <Tooltip title="cost for the service">
-                      <Avatar>C</Avatar>
-                    </Tooltip>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={`£${memberInfo.costServicePence / 100}`}
-                    secondary={secondary ? 'cost' : null}
-                  />
+
+                  <ListItemSecondaryAction>
+                    {fieldToEdit === 'tel' ? (
+                      <>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          href="#"
+                          onClick={() => {
+                            setFieldToEdit(null)
+                          }}
+                        >
+                          cancel
+                        </Button>
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          size="small"
+                          href="#"
+                          onClick={() => {
+                            setFieldToEdit('telephone')
+                            handleUpdate()
+                          }}
+                        >
+                          submit
+                        </Button>
+                      </>
+                    ) : (
+                      <IconButton edge="end" aria-label="delete">
+                        <EditIcon
+                          className={classes.editButton}
+                          onClick={() => {
+                            setResponse({ ...response, error: null, res: null })
+                            setFieldToEdit('tel')
+                          }}
+                        />
+                      </IconButton>
+                    )}
+                  </ListItemSecondaryAction>
                 </ListItem>
               </List>
-            </div>
-          ) : (
-            <>
-              <Typography variant="body1">
-                Need something specific ?{' '}
-              </Typography>
-              <Link href="tel:+07517140732"> Call for consultation</Link>
-            </>
-          )}
+            </Grid>
+          </Grid>
+          <Grid item container justifyContent="center" sm={12} md={6}>
+            {memberInfo.userConsulted ? (
+              <div className={classes.listGroup}>
+                <List dense={dense}>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Tooltip title="name of service allocated on consultation">
+                        <Avatar>S</Avatar>
+                      </Tooltip>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={removeHyphens(memberInfo.defaultService)}
+                      secondary={secondary ? 'my service' : null}
+                    />
+                  </ListItem>
+                  <Divider />
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Tooltip title="estimated time of treatment or service">
+                        <Avatar>D</Avatar>
+                      </Tooltip>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={`${memberInfo.durationService / 60} hrs`}
+                      secondary={secondary ? 'duration' : null}
+                    />
+                  </ListItem>
+                  <Divider />
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Tooltip title="cost for the service">
+                        <Avatar>C</Avatar>
+                      </Tooltip>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={`£${memberInfo.costServicePence / 100}`}
+                      secondary={secondary ? 'cost' : null}
+                    />
+                  </ListItem>
+                </List>
+              </div>
+            ) : (
+              <>
+                <Typography variant="body1">
+                  Need something specific ?{' '}
+                </Typography>
+                <Link href="tel:+07517140732"> Call for consultation</Link>
+              </>
+            )}
+          </Grid>
         </Grid>
-      </Grid>
-      :
-      <>
-      </>
-      }
-      
+      ) : (
+        <></>
+      )}
     </div>
   )
 }

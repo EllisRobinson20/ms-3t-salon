@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useState, useContext} from 'react';
 import {graphql, useStaticQuery} from 'gatsby'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {Divider, useMediaQuery} from '@material-ui/core';
@@ -8,8 +8,6 @@ import { Button, Typography } from '@material-ui/core';
 import { BookingContext } from '../context/BookingContext';
 import { AuthContext } from '../context/AuthContext';
 import { navigate } from 'gatsby-link';
-
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,13 +34,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SpacingGrid() {
+  // state
+  const [spacing, setSpacing] = useState(2);
+  // context
   const {setSelectedService} = useContext(BookingContext);
   const { deviceIsMobile } = useContext(AuthContext)
-  const [spacing, setSpacing] = React.useState(2);
+  // styles
   const classes = useStyles();
   const theme = useTheme();
   const matchesSm = useMediaQuery(theme.breakpoints.down('xs'));
   const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  // data
   const data = useStaticQuery(graphql`
   query PriceListComponentQuery {
     allService {
@@ -59,10 +61,9 @@ export default function SpacingGrid() {
     }
   }
   `)
-
-  const handleChange = (event) => {
+  /* const handleChange = (event) => {
     setSpacing(Number(event.target.value));
-  };
+  }; */
 
   return (
     <Grid container className={classes.root} spacing={2}>

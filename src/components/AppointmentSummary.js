@@ -7,9 +7,32 @@ import format from 'date-fns/format'
 import firebase from 'gatsby-plugin-firebase'
 import LoadingBackdrop from './subcomponents/LoadingBackdrop'
 import AlertDialog from './subcomponents/AlertDialog'
-import { DialogTitle, DialogContent, DialogContentText } from '@material-ui/core'
+import {
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+} from '@material-ui/core'
 
-export default function AppointmentSummary({userDetails}) {
+export default function AppointmentSummary({ userDetails }) {
+  // State
+  const [buttonIsEnabled, setButtonIsEnabled] = useState(false)
+  const [listName, setListName] = useState('')
+  const [dropdownList, setDropdownList] = useState()
+  const [loading, setLoading] = useState(false)
+  // Context
+  const { user } = useContext(AuthContext)
+  const { memberInfo } = useContext(AuthContext)
+  const { admin } = useContext(AuthContext)
+  const { setShowLogin } = useContext(AuthContext)
+  const { showSignUpConfirmation, setShowSignUpConfirmation } = useContext(
+    AuthContext
+  )
+  const { selectedService, setSelectedService } = useContext(BookingContext)
+  const { selectedSlot, setSelectedSlot } = useContext(BookingContext)
+  const { selectedDateGlobal } = useContext(BookingContext)
+  const { isAvailability } = useContext(BookingContext)
+  const { error, setError } = useContext(BookingContext)
+  const { setSlots } = useContext(BookingContext)
   // Data
   const data = useStaticQuery(graphql`
     query ListServicesQuery {
@@ -30,28 +53,10 @@ export default function AppointmentSummary({userDetails}) {
       }
     }
   }
-  // Context
-  const { user } = useContext(AuthContext)
-  const { memberInfo } = useContext(AuthContext)
-  const { admin } = useContext(AuthContext)
-  const { setShowLogin } = useContext(AuthContext)
-  const {showSignUpConfirmation, setShowSignUpConfirmation} = useContext(AuthContext)
-  const { selectedService, setSelectedService } = useContext(BookingContext)
-  const { selectedSlot, setSelectedSlot } = useContext(BookingContext)
-  const { selectedDateGlobal, setNewDate } = useContext(BookingContext)
-  const { isAvailability, setAvailability } = useContext(BookingContext)
-  const { error, setError } = useContext(BookingContext)
-  const { setSlots } = useContext(BookingContext)
-  // State
-  const [buttonIsEnabled, setButtonIsEnabled] = useState(false)
-  const [listName, setListName] = useState('')
-  const [dropdownList, setDropdownList] = useState()
-  const [loading, setLoading] = useState(false)
-  const listItems = []
-  // Functions
+  // Firebase Functions
   const bookProvisionalIfAvail = () => {
     setLoading(true)
-    if (user ) {
+    if (user) {
       const bookingAttempt = firebase
         .functions()
         .httpsCallable('bookProvisionalIfAvail')
@@ -63,30 +68,23 @@ export default function AppointmentSummary({userDetails}) {
         bookingTime: selectedSlot.id,
         durationService: durationSelectedService(),
         telephone: admin ? userDetails[0].telephone : memberInfo.telephone,
-      }).then(result => returnResult(result.data),
-      setSlots([])
-      )
+      }).then(result => returnResult(result.data), setSlots([]))
     } else {
-      setShowLogin(true);
+      setShowLogin(true)
     }
-    
   }
+  // functions
   const returnResult = result => {
     setLoading(false)
     if (result) {
-      console.log(result)
-      console.log("result")
       setShowSignUpConfirmation(true)
     } else {
-      console.log(result)
-      console.log("result")
       alert(
         'Sorry your booking time has already been taken ' +
           'please try another time slot'
       )
     }
   }
-// functions
   const setListState = data => {
     setSelectedService({ id: data.id, name: data.name })
     setListName(data.name)
@@ -98,6 +96,8 @@ export default function AppointmentSummary({userDetails}) {
   useEffect(() => {
     setListName(selectedService.name)
   }, [])
+
+  const listItems = []
   useEffect(() => {
     setSlots([])
     setSelectedSlot('')
@@ -126,6 +126,7 @@ export default function AppointmentSummary({userDetails}) {
       </select>
     )
   }, [selectedService.id])
+
   useEffect(() => {
     if (selectedService.id) {
       setError('')
@@ -138,6 +139,7 @@ export default function AppointmentSummary({userDetails}) {
       selectedSlot && selectedService.id && isAvailability ? true : false
     )
   }, [selectedSlot, selectedService.id, isAvailability])
+
   useEffect(() => {
     const d = new Date(selectedDateGlobal)
     const h = d.getHours()
@@ -150,57 +152,60 @@ export default function AppointmentSummary({userDetails}) {
   }, [selectedDateGlobal])
   return (
     <>
-    <LoadingBackdrop loading={loading}/>
-    <div className={styles.card}>
-      {
-        admin ?
-        <p className={styles.serviceLabel}>{listName}</p>
-        :
-        !selectedService.id ? (
+      <LoadingBackdrop loading={loading} />
+      <div className={styles.card}>
+        {admin ? (
+          <p className={styles.serviceLabel}>{listName}</p>
+        ) : !selectedService.id ? (
           // dropdownList state value removed
           <li
-        className={styles.changeSelection}
-        onClick={() => {
-          setSelectedService('')
-          navigate("/salon")
-        }}
-      >
-        { !admin ? ' Select a service' : ''}
-      </li>
+            className={styles.changeSelection}
+            onClick={() => {
+              setSelectedService('')
+              navigate('/salon')
+            }}
+          >
+            {!admin ? ' Select a service' : ''}
+          </li>
         ) : (
           <p className={styles.serviceLabel}>{listName}</p>
-        )
-      }
-      <p className={styles.error}>
-        {error === 'service' ? ' Select a treatment or service first ... ' : ''}
-      </p>
-      <li
-        className={styles.changeSelection}
-        onClick={() => {
-          setSelectedService('')
-          navigate("/salon")
-        }}
+        )}
+        <p className={styles.error}>
+          {error === 'service'
+            ? ' Select a treatment or service first ... '
+            : ''}
+        </p>
+        <li
+          className={styles.changeSelection}
+          onClick={() => {
+            setSelectedService('')
+            navigate('/salon')
+          }}
+        >
+          {selectedService.id && !admin ? ' Change selection' : ''}
+        </li>
+        <h2>{selectedSlot.buttonLabel}</h2>
+        <p>{format(selectedDateGlobal, 'EEEE do MMMM')}</p>
+        <Link
+          className={`${buttonIsEnabled ? styles.btn : styles.btnDisabled}`}
+          to={'#'}
+          onClick={e => {
+            bookProvisionalIfAvail()
+            e.preventDefault()
+          }}
+        >
+          {buttonIsEnabled ? 'Book Now' : 'Select Date and Time to Book'}
+        </Link>
+      </div>
+      <AlertDialog
+        openDialog={showSignUpConfirmation}
+        action={closeAlertDialog}
       >
-        {selectedService.id && !admin ? ' Change selection' : ''}
-      </li>
-      <h2>{selectedSlot.buttonLabel}</h2>
-      <p>{format(selectedDateGlobal, 'EEEE do MMMM')}</p>
-      <Link
-        className={`${buttonIsEnabled ? styles.btn : styles.btnDisabled}`}
-        to={'#'}
-        onClick={(e) => {
-          bookProvisionalIfAvail()
-          e.preventDefault()
-        }}
-      >
-        {buttonIsEnabled ? 'Book Now' : 'Select Date and Time to Book'}
-      </Link>
-    </div>
-    <AlertDialog openDialog={showSignUpConfirmation} action={closeAlertDialog}>
-      <DialogTitle>{"Booking successful"}</DialogTitle>
+        <DialogTitle>{'Booking successful'}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Your booking has been made with us. Please check your inbox for confimation.
+            Your booking has been made with us. Please check your inbox for
+            confimation.
           </DialogContentText>
         </DialogContent>
       </AlertDialog>

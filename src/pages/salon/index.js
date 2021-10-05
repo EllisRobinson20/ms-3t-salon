@@ -1,5 +1,5 @@
 import { graphql, Link } from 'gatsby'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import 'firebase/firestore'
 import Layout from '../../components/Layout'
 import { NavigationContext } from '../../context/NavigationContext'
@@ -13,7 +13,6 @@ import {
 } from '@material-ui/core/styles'
 import { useMediaQuery } from '@material-ui/core'
 import ServicesList from '../../components/subcomponents/ServicesList'
-
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
@@ -31,13 +30,13 @@ const buttonTheme = createTheme({
 
 export default function Services({ location, data }) {
   // state
-  setPageState(location.pathname)
   const [viewModel, setViewModel] = useState({
     duration: 0,
     price: 0,
     buttonLabel: '',
     message: '',
   })
+  const [windowState, setWindowState] = useState(false)
   // context
   const { setPageState } = useContext(NavigationContext)
   const { lastPage } = useContext(NavigationContext)
@@ -92,17 +91,24 @@ export default function Services({ location, data }) {
   const theme = useTheme()
   const classes = useStyles()
   const matchesMd = useMediaQuery(theme.breakpoints.down('md'))
-  const matchesSm = useMediaQuery(theme.breakpoints.down('sm'))
+
+  const isBrowser = typeof window !== 'undefined'
+  // trigger bottom action button on mobile
+  if (isBrowser) {
+    window.onscroll = function(ev) {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        setWindowState(true)
+      } else {
+        setWindowState(false)
+      }
+    }
+  }
   // functions
   const updateView = serviceDetails => {
-    console.log('updateView called')
-    console.log(serviceDetails)
     if (
       memberInfo.userConsulted &&
       memberInfo.defaultService === serviceDetails.node.id
     ) {
-      // using member info
-      console.log('condition 1')
       setViewModel({
         ...viewModel,
         duration: `${memberInfo.durationService / 60} hrs`,
@@ -117,7 +123,6 @@ export default function Services({ location, data }) {
         serviceDetails.node.variablePrice &&
         !serviceDetails.node.variableDuration
       ) {
-        console.log('condition 2')
         setViewModel({
           ...viewModel,
           duration: `${serviceDetails.node.durationMinutes / 60} hrs`,
@@ -131,7 +136,6 @@ export default function Services({ location, data }) {
         !serviceDetails.node.variablePrice &&
         serviceDetails.node.variableDuration
       ) {
-        console.log('condition 3')
         setViewModel({
           ...viewModel,
           duration: `From ${serviceDetails.node.durationMinutes / 60} hrs`,
@@ -145,7 +149,6 @@ export default function Services({ location, data }) {
         !serviceDetails.node.variablePrice &&
         !serviceDetails.node.variableDuration
       ) {
-        console.log('condition 4')
         setViewModel({
           ...viewModel,
           duration: `${serviceDetails.node.durationMinutes / 60} hrs`,
@@ -158,7 +161,6 @@ export default function Services({ location, data }) {
         serviceDetails.node.consultationOnly &&
         serviceDetails.node.variableDuration
       ) {
-        console.log('condition 5')
         setViewModel({
           ...viewModel,
           duration: `From ${serviceDetails.node.durationMinutes / 60} hrs`,
@@ -171,7 +173,6 @@ export default function Services({ location, data }) {
         serviceDetails.node.variablePrice &&
         serviceDetails.node.variableDuration
       ) {
-        console.log('condition 6')
         setViewModel({
           ...viewModel,
           duration: `From ${serviceDetails.node.durationMinutes / 60} hrs`,
@@ -185,7 +186,6 @@ export default function Services({ location, data }) {
       memberInfo.userConsulted &&
       serviceDetails.node.id !== memberInfo.defaultService
     ) {
-      console.log('condition 7')
       setViewModel({
         ...viewModel,
         duration: `From ${serviceDetails.node.durationMinutes / 60} hrs`,
@@ -196,17 +196,11 @@ export default function Services({ location, data }) {
       })
     }
   }
-  const isBrowser = typeof window !== 'undefined'
-  const [windowState, setWindowState] = useState(false)
-  if (isBrowser) {
-    window.onscroll = function(ev) {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        setWindowState(true)
-      } else {
-        setWindowState(false)
-      }
-    }
-  }
+
+  // Side effects
+  useEffect(() => {
+    setPageState(location.pathname)
+  }, [])
   return (
     <Layout>
       <Grid

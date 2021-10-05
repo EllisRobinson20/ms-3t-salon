@@ -75,20 +75,6 @@ export default function Consultation() {
     }
   `)
   const ref = firebase.firestore().collection('members')
-  useEffect(() => {
-   
-      ref.onSnapshot(results => {
-      setMembers([])
-      results.docChanges().forEach(doc => {
-        
-        if (doc.type === "added") {
-          console.log("snapshot added listener called")
-          console.log(doc.doc.data())
-        setMembers(members => [...members, [doc.doc.data(), doc.doc.id]])
-        }
-      })
-    })
-  }, [])
   // styles
   const classes = useStyles()
   const theme = useTheme()
@@ -117,6 +103,21 @@ export default function Consultation() {
   const closeAlertDialog = () => {
     setShowAlert(false)
   }
+  // side effects
+  useEffect(() => {
+   
+    ref.onSnapshot(results => {
+    setMembers([])
+    results.docChanges().forEach(doc => {
+      
+      if (doc.type === "added") {
+        console.log("snapshot added listener called")
+        console.log(doc.doc.data())
+      setMembers(members => [...members, [doc.doc.data(), doc.doc.id]])
+      }
+    })
+  })
+}, [])
   return (
     <Grid container>
       <Grid
