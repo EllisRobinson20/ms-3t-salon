@@ -3,10 +3,9 @@ import React, {useContext} from 'react'
 import { AuthContext } from '../../context/AuthContext'
 
 export default function LoginPrompt() {
-    //context
     const {setShowLogin} = useContext(AuthContext)
-    //functions
     const openLogin = () => {
+        // set login state to true
         setShowLogin(true)
     }
     return (

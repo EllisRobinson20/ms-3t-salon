@@ -5,8 +5,10 @@ import 'firebase/firestore'
 import { getDay, parseISO, add, format } from 'date-fns'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { useMediaQuery } from '@material-ui/core'
+
 import Timetable from 'react-timetable-events'
 import moment from 'moment'
+
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
@@ -17,14 +19,14 @@ import Fade from '@material-ui/core/Fade'
 import DatePicker from './subcomponents/DatePicker'
 import { IconButton } from '@material-ui/core'
 import AlertDialog from './subcomponents/AlertDialog'
-import {
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-} from '@material-ui/core'
+import { DialogTitle, DialogContent, DialogContentText } from '@material-ui/core'
+
 import { AdminContext } from '../context/AdminContext'
 import { AuthContext } from '../context/AuthContext'
+
+import { AddBoxOutlined } from '@material-ui/icons'
 import TextButton from './subcomponents/buttons/TextButton'
+
 
 /**
  * Adds two numbers together.
@@ -94,48 +96,89 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function Diary() {
-  // state ...
-  // ... modal
-  const [open, setOpen] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
-  const [cancellationResult, setCancellationResult] = useState()
-  // ... Booking data
-  const [bookingState, setBookingState] = React.useState({
-    MON: [],
-    TUE: [],
-    WED: [],
-    THUR: [],
-    FRI: [],
-    SAT: [],
-    SUN: [],
-  })
-  // context
+  const callSalon = () => {
+    window.open('tel:0')
+  }
   const { deviceIsMobile } = useContext(AuthContext)
+  const { datePicker, setDatePicker } = useContext(AdminContext)
   const { dateStart } = useContext(AdminContext)
   const { dateEnd } = useContext(AdminContext)
-  // styles
-  const classes = useStyles()
   const theme = useTheme()
+  const matchesMd = useMediaQuery(theme.breakpoints.down('md'))
   const matchesSm = useMediaQuery(theme.breakpoints.down('sm'))
   const ref = firebase.firestore().collection('bookingHistory')
   const bookings = []
-  // side effects ...
-  // ... get data
+  
+  useEffect(() => {
+    // Data is correct only in use effect with dateStart or no dependency
+    // does not work with datePicker as dependency
+  }, [dateStart])
+  
+  
+  /* useEffect(() => {
+    console.log("picker dependant use effect fired")
+    const bookingsRef = ref
+      .where('dateOfBooking', '>', dateStart)
+      .where('dateOfBooking', '<', add(dateEnd, {days: 1}))
+      .get()
+    bookingsRef.then(results => {
+      results.docs.forEach(doc => {
+        bookings.push([doc.data(), doc.id])
+      })
+      sortBookings()
+    })
+ 
+  }, [datePicker]) */
   useEffect(() => {
     ref
-      .where('dateOfBooking', '>', dateStart)
-      .where('dateOfBooking', '<', add(dateEnd, { days: 1 }))
+    .where('dateOfBooking', '>', dateStart)
+      .where('dateOfBooking', '<', add(dateEnd, {days: 1}))
       .onSnapshot(results => {
+        console.log("bookings length", bookings.length)
+        console.log("document changed")
         results.docChanges().forEach(doc => {
-          if (doc.type === 'added') {
+          if (doc.type === "added") {
+            console.log("document in" ,doc.doc.data())
             bookings.push([doc.doc.data(), doc.doc.id])
+            
           }
+          
         })
         sortBookings()
       })
   }, [dateStart])
+/*   useEffect(() => {
+    console.log("bookings changed")
+  
+  sortBookings()
+} , [bookings]) */
 
-  // functions
+ /*  useEffect(() => {
+    console.log("use effect called")
+    const queryData = ref
+    .where('dateOfBooking', '>', dateStart)
+      .where('dateOfBooking', '<', add(dateEnd, {days: 1}))
+      queryData.onSnapshot(results => {
+        console.log("bookings length", bookings.length)
+        console.log("document changed")
+        results.docChanges().forEach(doc => {
+          if (doc.type === "added") {
+            console.log("document in" ,doc.doc.data())
+            bookings.push([doc.doc.data(), doc.doc.id])
+            
+          }
+          
+        })
+        sortBookings()
+      })
+      
+}) */
+
+
+  const classes = useStyles()
+  //modal
+  const [open, setOpen] = React.useState(false)
+
   const handleOpen = () => {
     setOpen(true)
   }
@@ -143,47 +186,68 @@ export default function Diary() {
   const handleClose = () => {
     setOpen(false)
   }
+  // Modal Details
+  // id: 1,
+  // name: renderDetails(1),
+  // type: "booking",
+  // startTime: moment("2018-02-23T11:30:00"),
+  // endTime: moment("2018-02-23T13:30:00"),
   const [bookingDetails, setBookingDetails] = useState({
     name: 'data.name',
     service: 'data.selectedService',
     start: 'startTime',
     finish: 'finishTime',
     email: 'email',
-    telephone: 'tel',
+    telephone: 'tel'
   })
+  const [userTel, setUserTel] = useState()
   const setSelectedBooking = data => {
-    setBookingDetails({
+  setBookingDetails({
       id: data[1],
       name: data[0].name,
       service: data[0].selectedService,
       start: getButtonLabel(data[0].startTimeMinutes),
-      finish: getButtonLabel(
-        data[0].startTimeMinutes + data[0].durationMinutes
-      ),
-      date: format(data[0].dateOfBooking.toDate(), 'do MMM y'),
+      finish: getButtonLabel(data[0].startTimeMinutes + data[0].durationMinutes),
+      date: format(data[0].dateOfBooking.toDate(), "do MMM y"),
       email: data[0].email,
-      telephone: data[0].telephone,
+      telephone: data[0].telephone
     })
+    
+    /* const userRef = user
+    .where('email', '==', "ellis.codmidlands@gmail.com")
+    userRef.get().then(doc => {
+      if (doc.exists) {
+        console.log("Document data:", doc.data());
+    } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+        console.log("email deets", doc)
+    }
+    }) */
+    /* const userTel = userRef.telephone
+    setUserTel(userTel)
+    console.log("email deets", bookingDetails.email)
+    console.log("email deets", userRef) */
     handleOpen()
   }
-  const removeHyphens = string => {
-    const alteredString = string.replace(/-/g, ' ')
-    return alteredString
-  }
+  const removeHyphens = (string) => {
+    const alteredString = string.replace(/-/g, " ");
+    return alteredString;
+  };
   const renderDetails = data => {
     return (
-      <Typography
-        onClick={() => {
-          setSelectedBooking(data)
-        }}
-        style={{ fontSize: matchesSm ? '0.8em' : '' }}
-        variant="body1"
-        component="p"
-      >
-        <strong>{removeHyphens(data[0].selectedService)}</strong>
-      </Typography>
+      
+        
+          <Typography onClick={() => {
+          setSelectedBooking(data)}} style={{ fontSize: matchesSm ? '0.8em' : '' }} variant="body1" component="p">
+                    <strong>{removeHyphens(data[0].selectedService)}</strong>
+                    
+                  </Typography>
+         
     )
   }
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [cancellationResult, setCancellationResult] = useState()
   const closeDialog = () => {
     setShowConfirm(false)
   }
@@ -191,29 +255,20 @@ export default function Diary() {
     setShowConfirm(true)
   }
   const resetView = () => {
-    setCancellationResult()
+    setCancellationResult();
     sortBookings()
     setOpen(false)
     //window.location.reload()
   }
-  // Firebase Function
   const handleCancelBooking = () => {
-    firebase
-      .firestore()
-      .collection('bookingHistory')
-      .doc(bookingDetails.id)
-      .delete()
-      .then(() => {
-        setCancellationResult('Document successfully deleted!')
-        setTimeout(() => {
-          resetView()
-        }, 2500)
-        closeDialog()
-      })
-      .catch(error => {
-        setCancellationResult('Error removing document: ', error)
-        closeDialog()
-      })
+    firebase.firestore().collection('bookingHistory').doc(bookingDetails.id).delete().then(() => {
+      setCancellationResult("Document successfully deleted!");
+      setTimeout(() => {resetView()}, 2500)
+      closeDialog()
+  }).catch((error) => {
+      setCancellationResult("Error removing document: ", error);
+      closeDialog()
+  })
   }
   // Modal
   const renderModal = () => {
@@ -253,28 +308,29 @@ export default function Diary() {
                         ''
                       )}
                     </Grid>
-                    <Grid item container xs={1} justifyContent="flex-end">
-                      <Button
-                        onClick={() => {
-                          setOpen(false)
-                        }}
-                        style={{ marginBottom: '2em' }}
-                        size="small"
+                    {/* <Grid item container xs={11} justifyContent="center">
+                      <Typography
+                        variant="h6"
+                        className={classes.title}
+                        color="textSecondary"
                       >
-                        Close
-                      </Button>
+                        Booking
+                      </Typography>
+                    </Grid> */}
+                    <Grid item container xs={1} justifyContent="flex-end">
+                      <Button onClick={() => {setOpen(false)}} style={{marginBottom: "2em"}} size="small">Close</Button>
                     </Grid>
                     <Grid item container justifyContent="center" xs={12}>
-                      <Typography variant="body2" component="h5">
+                    <Typography variant="body2" component="h5">
                         {cancellationResult}
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography
+                    <Typography
                         className={classes.title}
                         color="textSecondary"
                       >
-                        Date: <strong>{bookingDetails.date}</strong>
+                        Date: <strong>{bookingDetails.date }</strong>
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>
@@ -282,8 +338,7 @@ export default function Diary() {
                         className={classes.title}
                         color="textSecondary"
                       >
-                        Name: <strong>{bookingDetails.name}</strong> (
-                        {bookingDetails.email})
+                        Name: <strong>{bookingDetails.name}</strong> ({bookingDetails.email})
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>
@@ -291,8 +346,7 @@ export default function Diary() {
                         className={classes.title}
                         color="textSecondary"
                       >
-                        For:{' '}
-                        <strong>{removeHyphens(bookingDetails.service)}</strong>
+                        For: <strong>{removeHyphens(bookingDetails.service)}</strong>
                       </Typography>
                     </Grid>
                     <Grid item xs={12} gutterBottom>
@@ -311,23 +365,17 @@ export default function Diary() {
                       </Typography>
                     </Grid>
                     <Grid item xs={6} container justifyContent="flex-start">
-                      <TextButton action={openDialog}>
-                        Cancel Booking
-                      </TextButton>
-                      <AlertDialog
-                        openDialog={showConfirm}
-                        action={closeDialog}
-                        confirm={handleCancelBooking}
-                      >
-                        <DialogTitle>{'Delete booking'}</DialogTitle>
+                      <TextButton action={openDialog}>Cancel Booking</TextButton>
+                      <AlertDialog openDialog={showConfirm} action={closeDialog} confirm={handleCancelBooking}>
+                      <DialogTitle>{"Delete booking"}</DialogTitle>
                         <DialogContent>
                           <DialogContentText id="alert-dialog-slide-description">
-                            This action will permanently remove this booking,
-                            are you sure?
+                            This action will permanently remove this booking, are you sure?
                           </DialogContentText>
                         </DialogContent>
                       </AlertDialog>
                     </Grid>
+                    
                   </Grid>
                 </CardContent>
               </Card>
@@ -337,6 +385,18 @@ export default function Diary() {
       </div>
     )
   }
+  // Booking data
+  const [bookingState, setBookingState] = React.useState({
+    MON: [],
+    TUE: [],
+    WED: [],
+    THUR: [],
+    FRI: [],
+    SAT: [],
+    SUN: [],
+  })
+  
+
   const sortBookings = () => {
     const bookingData = {
       MON: [],
@@ -346,12 +406,13 @@ export default function Diary() {
       FRI: [],
       SAT: [],
     }
+    console.log("mmmmmore data: ", bookingData)
     bookings.forEach(booking => {
       switch (getDay(parseISO(booking[0].startISO))) {
         case 1:
           // monday
           bookingData.MON.push({
-            //id: booking[1],
+            id: booking[1],
             name: renderDetails(booking),
             type: 'booking',
             startTime: moment(booking[0].dateOfBooking.toDate()),
@@ -365,6 +426,7 @@ export default function Diary() {
         case 2:
           // tuesday
           bookingData.TUE.push({
+            
             name: renderDetails(booking),
             type: 'booking',
             startTime: moment(booking[0].dateOfBooking.toDate()),
@@ -377,6 +439,7 @@ export default function Diary() {
           break
         case 3:
           // wednesday
+          //console.log('text', booking[1])
           bookingData.WED.push({
             //id: booking[1],
             name: renderDetails(booking),
@@ -439,6 +502,7 @@ export default function Diary() {
     setBookingState(bookingData)
   }
 
+  
   return (
     <div className={classes.root}>
       {/* {sortBookings()} */}

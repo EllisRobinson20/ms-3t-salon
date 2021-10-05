@@ -7,8 +7,6 @@ import firebase from 'gatsby-plugin-firebase'
 import 'firebase/firestore'
 
 export default function UserProfile({ details }) {
-  // state
-  const [userDetails, setUserDetails] = useState()
   // functions
   const removeHyphens = string => {
     const alteredString = string.replace(/-/g, ' ')
@@ -17,6 +15,8 @@ export default function UserProfile({ details }) {
   const getFirstLetter = string => {
     return string.charAt(0)
   }
+  // state
+  const [userDetails, setUserDetails] = useState()
   // data
   const ref = firebase.firestore().collection('members')
   useEffect(() => {
@@ -56,11 +56,10 @@ export default function UserProfile({ details }) {
             <Typography variant="h4">
               {userDetails ? userDetails.name : details.name}
             </Typography>
-            <Typography style={{ marginBottom: '1em' }} variant="h6">
+            <Typography style={{marginBottom: '1em'}} variant="h6">
               {userDetails ? userDetails.email : details.email}
             </Typography>
           </Grid>
-
           <Grid
             item
             container
@@ -135,7 +134,7 @@ export default function UserProfile({ details }) {
                   £
                   {`${
                     userDetails
-                      ? userDetails.costServicePence / 100
+                      ? userDetails.costServicePence /100
                       : details.costServicePence / 100
                   }`}
                 </LightText>

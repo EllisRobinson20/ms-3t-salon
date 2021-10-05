@@ -1,4 +1,4 @@
-import React, { createContext } from 'react'
+import React, {createContext} from 'react'
 import ProfileContextProvider from './ProfileContext'
 import AuthContextProvider from './AuthContext'
 import BookingContextProvider from './BookingContext'
@@ -8,18 +8,20 @@ import AdminContextProvider from './AdminContext'
 export const GlobalContext = createContext({})
 
 const GlobalProvider = ({ children }) => {
-  return (
-    <>
-      <AdminContextProvider>
+    return (
+        <>
+        <AdminContextProvider>
         <NavigationContextProvider>
-          <AuthContextProvider>
+        <AuthContextProvider>
             <ProfileContextProvider>
-              <BookingContextProvider>{children}</BookingContextProvider>
-            </ProfileContextProvider>
-          </AuthContextProvider>
+                <BookingContextProvider>
+                        {children}
+                </BookingContextProvider>
+            </ProfileContextProvider>     
+        </AuthContextProvider>
         </NavigationContextProvider>
-      </AdminContextProvider>
-    </>
-  )
+        </AdminContextProvider>
+        </>
+    )
 }
 export default GlobalProvider

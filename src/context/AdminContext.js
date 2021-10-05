@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react'
-import { startOfWeek, add } from 'date-fns'
+import { getDay, startOfWeek, add } from 'date-fns'
 
 export const AdminContext = createContext()
 

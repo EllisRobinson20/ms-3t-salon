@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { useState, useContext } from 'react'
+import React, {useContext} from 'react'
 import { Link } from 'gatsby'
 import clsx from 'clsx'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
@@ -17,25 +17,33 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import HomeIcon from '@material-ui/icons/Home'
-import Storefront from '@material-ui/icons/Storefront'
-import InfoIcon from '@material-ui/icons/Info'
+import Storefront from '@material-ui/icons/Storefront';
+import InfoIcon from '@material-ui/icons/Info';
 import { Event } from '@material-ui/icons'
 import { Face } from '@material-ui/icons'
-import { AuthContext } from '../context/AuthContext'
+import { AuthContext } from '../context/AuthContext';
+
+
 import Nav from '../components/Nav'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
-import { Container } from '@material-ui/core'
-import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { Container} from '@material-ui/core'
+
+
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Profile from '../components/Profile'
 import { ProfileContext } from '../context/ProfileContext'
 import { SvgIcon } from '@material-ui/core'
-import { mdiContentCut } from '@mdi/js'
+import { mdiContentCut } from '@mdi/js';
+
+import Login from './Login'
 
 const drawerWidth = 240
+
 const useStyles = makeStyles(theme => ({
   nav: {
     textAlign: 'center',
-    color: 'black',
+    color: 'black'
   },
   root: {
     display: 'flex',
@@ -45,7 +53,7 @@ const useStyles = makeStyles(theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-
+    
     background: 'none',
   },
   appBarShift: {
@@ -98,20 +106,19 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const Header = ({ siteTitle }) => {
-  // state
-  const [open, setOpen] = React.useState(false)
-  // context
-  const { showProfile, setShowProfile } = useContext(ProfileContext)
-  const { admin } = useContext(AuthContext)
 
-  // styles
-  const classes = useStyles()
-  const theme = useTheme()
-  const breakWidth = useMediaQuery('(min-width:981px)')
-  // functions
+  
+  const {showProfile, setShowProfile} = useContext(ProfileContext);
+  const {admin} = useContext(AuthContext);
   function handleProfileModal() {
     setShowProfile(!showProfile)
   }
+
+  const classes = useStyles()
+
+  const theme = useTheme()
+  const [open, setOpen] = React.useState(false)
+
   function handleDrawerOpen() {
     setOpen(true)
   }
@@ -119,14 +126,17 @@ const Header = ({ siteTitle }) => {
   function handleDrawerClose() {
     setOpen(false)
   }
-  // components
-  const SVGIcon = (props, path) => {
-    return (
-      <SvgIcon {...props}>
-        <path d={path} />
-      </SvgIcon>
-    )
-  }
+  
+  const breakWidth = useMediaQuery('(min-width:981px)')
+ 
+  const SVGIcon = (props , path) => {
+  return (
+    <SvgIcon {...props}>
+      <path d={path} />
+    </SvgIcon>
+  );
+}
+  
 
   return (
     <div className={classes.root}>
@@ -144,15 +154,12 @@ const Header = ({ siteTitle }) => {
             aria-label="Open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            className={clsx(
-              classes.menuButton,
-              (breakWidth && classes.hide) || (open && classes.hide)
-            )}
+            className={clsx(classes.menuButton, breakWidth && classes.hide || open && classes.hide)}
           >
             <MenuIcon className={classes.menuIcon} />
           </IconButton>
           <Container className={classes.nav}>
-            <Nav />
+          <Nav/>
           </Container>
           <IconButton
             color="inherit"
@@ -161,7 +168,7 @@ const Header = ({ siteTitle }) => {
             edge="start"
             className={clsx(classes.menuButton, open && classes.hide)}
           >
-            <AccountCircleIcon className={classes.menuIcon} />
+          <AccountCircleIcon  className={classes.menuIcon}/>
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -195,14 +202,16 @@ const Header = ({ siteTitle }) => {
           </Link>
           <Link to="/salon">
             <ListItem button>
-              <ListItemIcon>{SVGIcon(null, mdiContentCut)}</ListItemIcon>
+              <ListItemIcon>
+              {SVGIcon(null, mdiContentCut)}  
+              </ListItemIcon>
               <ListItemText>Salon</ListItemText>
             </ListItem>
           </Link>
           <Link to="/shop">
             <ListItem button>
               <ListItemIcon>
-                <Storefront className={classes.menuIcon} />
+              <Storefront  className={classes.menuIcon}/>
               </ListItemIcon>
               <ListItemText>Shop</ListItemText>
             </ListItem>
@@ -215,7 +224,6 @@ const Header = ({ siteTitle }) => {
               <ListItemText>About</ListItemText>
             </ListItem>
           </Link>
-          {/* blog removed. uncomment to add blog to navigation */}
           {/* <Link to="/blog">
             <ListItem button>
               <ListItemIcon>
@@ -224,31 +232,31 @@ const Header = ({ siteTitle }) => {
               <ListItemText>Blog</ListItemText>
             </ListItem>
           </Link> */}
-          {admin ? (
-            <>
-              <Link to="/admin">
-                <ListItem button>
-                  <ListItemIcon>
-                    <Event className={classes.menuIcon} />
-                  </ListItemIcon>
-                  <ListItemText>Diary</ListItemText>
-                </ListItem>
-              </Link>
-              <Link to="/admin/consultation">
-                <ListItem button>
-                  <ListItemIcon>
-                    <Face />
-                  </ListItemIcon>
-                  <ListItemText>Consultation</ListItemText>
-                </ListItem>
-              </Link>
-            </>
-          ) : (
-            <></>
-          )}
+          {admin ? 
+          <>
+          <Link to="/admin">
+          <ListItem button>
+            <ListItemIcon>
+            <Event  className={classes.menuIcon}/>
+            </ListItemIcon>
+            <ListItemText>Diary</ListItemText>
+          </ListItem>
+        </Link>
+        <Link to="/admin/consultation">
+          <ListItem button>
+            <ListItemIcon>
+              <Face />
+            </ListItemIcon>
+            <ListItemText>Consultation</ListItemText>
+          </ListItem>
+        </Link>
+        </>
+        :
+        <></>
+        }
         </List>
       </Drawer>
-      <Profile />
+    <Profile/>
     </div>
   )
 }

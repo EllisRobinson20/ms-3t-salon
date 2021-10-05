@@ -9,9 +9,10 @@ import { graphql, Link, useStaticQuery } from 'gatsby'
 import OpeningTimes from './subcomponents/OpeningTimes'
 
 export default function Footer() {
-  // context
+  const callSalon = () => {
+    window.open('tel:07517140732')
+  }
   const { deviceIsMobile } = useContext(AuthContext)
-  // data
   const mapImage = useStaticQuery(graphql`
     query MapLocationQuery {
       allCloudinaryMedia(

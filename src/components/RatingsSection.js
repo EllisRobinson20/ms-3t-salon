@@ -1,89 +1,74 @@
 import React from 'react'
-import Rating from '@material-ui/lab/Rating'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import Rating from '@material-ui/lab/Rating';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { graphql, useStaticQuery } from 'gatsby'
 import { Typography, Container, Divider } from '@material-ui/core'
-import { useMediaQuery } from '@material-ui/core'
-import CardCarousel from './subcomponents/CardCarousel'
+import {useMediaQuery} from '@material-ui/core';
+import CardCarousel from './subcomponents/CardCarousel';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    marginTop: '2em',
-  },
-  container40: {
-    width: '40vw',
-  },
-  container60: {
-    width: '60vw',
-  },
-  container90: {
-    width: '90vw',
-  },
-  rating: {
-    marginTop: '1.5em',
-  },
-}))
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        marginTop: '2em'
+    },
+    container40: {
+        width: '40vw'
+    },
+    container60: {
+        width: '60vw'
+    },
+    container90: {
+        width: '90vw'
+    },
+    rating: {
+        marginTop: '1.5em'
+    },
+  }));
 
 export default function RatingsSection() {
-  // styles
-  const classes = useStyles()
-  const theme = useTheme()
-  const matchesSm = useMediaQuery(theme.breakpoints.down('xs'))
-  const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'))
-  // data
-  const data = useStaticQuery(graphql`
+    const data = useStaticQuery(graphql`
     query ListReviewQuery {
-      allReview {
+        allReview {
         edges {
-          node {
+            node {
             id
             rating
             name
             comment
-          }
+            }
         }
-      }
+        }
     }
-  `)
-  // functions
-  const getRatingsAverage = () => {
-    let rating = 0
+`)
+const getRatingsAverage = () => {
+    let rating = 0;
     if (data) {
-      data.allReview.edges.forEach(dbEntry => {
-        rating += dbEntry.node.rating
-        /* console.log("total: "+rating) */
-      })
-      rating = rating / data.allReview.edges.length
-      /* console.log("total2: "+rating) */
+        data.allReview.edges.forEach(dbEntry => {
+            rating += dbEntry.node.rating
+            /* console.log("total: "+rating) */
+            
+        });
+        rating = rating/data.allReview.edges.length
+        /* console.log("total2: "+rating) */
     }
-    return rating
-  }
+    return rating;
+}
 
-  return (
-    <div className={classes.root}>
-      <Container
-        className={
-          matchesSm
-            ? classes.container90
-            : matchesMd
-            ? classes.container60
-            : classes.container40
-        }
-      >
-        <Typography variant="h3"> Customer Reviews</Typography>
-        <Divider />
-        <Typography variant="h5"> Heres what my clients have to say</Typography>
-        <Rating
-          name="half-rating-read"
-          defaultValue={getRatingsAverage()}
-          precision={0.5}
-          readOnly
-          size="large"
-        />
-        <Container className={classes.rating}>
-          <CardCarousel data={data.allReview.edges} type={'review'} />
-        </Container>
-      </Container>
-    </div>
-  )
+const classes = useStyles();
+const theme = useTheme();
+const matchesSm = useMediaQuery(theme.breakpoints.down('xs'));
+const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+    return (
+        <div className={classes.root}>
+            <Container className={matchesSm ? classes.container90: matchesMd ? classes.container60 :  classes.container40}>
+                <Typography variant="h3" > Customer Reviews</Typography>
+                <Divider/>
+                <Typography variant="h5"> Heres what my clients have to say</Typography>
+                <Rating name="half-rating-read" defaultValue={getRatingsAverage()} precision={0.5} readOnly size="large" />
+                <Container className={classes.rating}>
+                <CardCarousel data={data.allReview.edges} type={"review"} />
+                </Container>
+            </Container>  
+        </div>
+    )
 }

@@ -2,7 +2,6 @@ import React from 'react'
 import { graphql, useStaticQuery } from 'gatsby'
 
 export default function OpeningTimes() {
-  // data
   const data = useStaticQuery(graphql`
     query OperatingHoursComponentQuery {
       allOperatingHours {
@@ -16,7 +15,7 @@ export default function OpeningTimes() {
       }
     }
   `)
-  // functions
+  // get timelabel
   /**
    * Adds two numbers together.
    * @param {int} timeMinutes The first number.
@@ -45,6 +44,7 @@ export default function OpeningTimes() {
       )
     }
   }
+
   const getDay = day => {
     let result = ''
     data.allOperatingHours.edges.forEach(edge => {
@@ -59,9 +59,14 @@ export default function OpeningTimes() {
   const getTime = day => {
     // get the node which has matching day
     const currentDay = getDay(day)
+    /* console.log('currentDay')
+    console.log(currentDay) */
     // subtract the numbers, if > 0 return "startTime.formated - endTime.formatted
     const diff = currentDay.closingTimeMinutes - currentDay.openingTimeMinutes
-    // check for 0 diff or string "Sunday"
+    // if not retun closed
+    // if day == sunday return closed
+    /* console.log("diff test")
+    console.log(diff >= 0) */
     return diff >= 0 ? diff === 0 ? "Closed  " :
      `${getLabel(currentDay.openingTimeMinutes)} - ${getLabel(currentDay.closingTimeMinutes)}`
 : currentDay === "Sunday" ? "Closed   " : "Closed   "

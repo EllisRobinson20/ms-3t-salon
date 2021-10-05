@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, {useContext} from 'react'
 import Layout from '../components/Layout'
 import SEO from '../components/seo'
 import { makeStyles } from '@material-ui/core/styles'
@@ -8,7 +8,8 @@ import SectionGallery from '../components/SectionGallery'
 import SectionPriceList from '../components/SectionPriceList'
 import { Grid } from '@material-ui/core'
 import SectionPromotion from '../components/SectionPromotion'
-import { NavigationContext } from '../context/NavigationContext'
+import { NavigationContext } from "../context/NavigationContext";
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,51 +21,53 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: theme.spacing(4),
   },
   borders: {
-    backgroundColor: '#e4dcc5',
-  },
-}))
+    backgroundColor: '#e4dcc5'
+  }
+}));
 
-const IndexPage = ({ location }) => {
-  // state
-  const [features, setFeatures] = useState(true)
-  const [info, setInfo] = useState(true)
-  // context
-  const { setPageState } = useContext(NavigationContext)
-  setPageState(location.pathname)
-  // styles
+const IndexPage = ({location}) => {
+  const {setPageState} = useContext(NavigationContext);
+  setPageState(location.pathname);
   const classes = useStyles()
-  // functions
+  const [features, setFeatures] = React.useState(true)
+  const [info, setInfo] = React.useState(true)
+
   function handleClick(id) {
-    switch (id) {
-      case 'features':
+    switch(id) {
+      case "features":
         setFeatures(!features)
-        break
-      case 'info':
+        break;
+      case "info":
         setInfo(!info)
         break
     }
   }
 
-  return (
+  return(
     <Layout>
       <SEO title="Home" />
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <MainHeader />
+        <MainHeader/>
         </Grid>
-        <Grid item xs={0}></Grid>
-        <Grid item xs={12}>
-          <RatingsSection />
-          <SectionGallery />
+        <Grid item  xs={0}>
         </Grid>
-        <Grid item xs={0}></Grid>
+        <Grid item  xs={12}>
+        <RatingsSection/>
+        <SectionGallery/>
+        </Grid>
+        <Grid item  xs={0}>
+
+        </Grid>
         <Grid item md={12} xs={0}>
-          <SectionPriceList />
+        <SectionPriceList/>
         </Grid>
         <Grid item md={12} xs={0}>
-          <SectionPromotion />
+        <SectionPromotion/>
         </Grid>
+        
       </Grid>
+   
     </Layout>
   )
 }

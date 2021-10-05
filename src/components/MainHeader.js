@@ -24,15 +24,14 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function MainHeader() {
-  // state
-  const [headerClick, setHeaderClick] = useState(['Book Now', '/salon/'])
-  // styles
   const theme = useTheme()
   const classes = useStyles()
   const matchesSm = useMediaQuery(theme.breakpoints.down('xs'))
   const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
-  // data
+  const matchesXl = useMediaQuery(theme.breakpoints.up('xl'))
+
+  const [headerClick, setHeaderClick] = useState(["Book Now", "/salon/"])
   const queryData = useStaticQuery(graphql`
     query HeaderImageQuery {
       allCloudinaryMedia(
@@ -82,7 +81,7 @@ export default function MainHeader() {
             <div className={styles.col4 + ' ' + styles.col12medium}>
               <section
                 onClick={() => {
-                  setHeaderClick(['Shop', '/shop/'])
+                  setHeaderClick(["Shop", "/shop/"])
                 }}
                 className={styles.middle}
               >
@@ -94,12 +93,9 @@ export default function MainHeader() {
               </section>
             </div>
             <div className={styles.col4 + ' ' + styles.col12medium}>
-              <section
-                onClick={() => {
-                  setHeaderClick(['Book Now', '/salon/'])
-                }}
-                className={styles.middle}
-              >
+              <section onClick={() => {
+                setHeaderClick(["Book Now", "/salon/"])
+              }} className={styles.middle}>
                 <i className={styles.icon}></i>
                 <header>
                   <h2>Hair Services</h2>
@@ -108,12 +104,9 @@ export default function MainHeader() {
               </section>
             </div>
             <div className={styles.col4 + ' ' + styles.col12medium}>
-              <section
-                onClick={() => {
-                  setHeaderClick(['Consultation', '#contact'])
-                }}
-                className={styles.middle}
-              >
+              <section onClick={() => {
+                setHeaderClick(["Consultation", "#contact"])
+              }} className={styles.middle}>
                 <i className={styles.icon}></i>
                 <header>
                   <h2>Consultation</h2>

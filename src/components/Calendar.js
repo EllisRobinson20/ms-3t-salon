@@ -9,7 +9,7 @@ import { Typography } from '@material-ui/core';
 
 export default function Calendar(props) {
  // Context
-  const {selectedService, setSelectedService} = useContext(BookingContext);
+  const {selectedService} = useContext(BookingContext);
   const {selectedDateGlobal, setNewDate} = useContext(BookingContext);
   const {setError} = useContext(BookingContext);
   const {deviceIsMobile} = useContext(AuthContext);
@@ -59,7 +59,7 @@ const renderCells = () =>{
       
       const monthStart = dateFns.startOfMonth(currentMonth);
       const monthEnd = dateFns.endOfMonth(monthStart);
-      const startDate = dateFns.startOfWeek(monthStart);
+      const startDate = dateFns.startOfWeek(monthStart, {weekStartsOn: 1});
       const endDate = dateFns.endOfWeek(monthEnd);
 
       const dateFormat = "d";
