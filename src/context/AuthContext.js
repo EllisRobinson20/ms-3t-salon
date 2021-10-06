@@ -53,6 +53,8 @@ const AuthContextProvider = ({ children }) => {
             }
         })
     }
+    // real time listener on members collection
+    const ref = firebase.firestore().collection('members')
     useEffect(() => {
         firebase.auth().onAuthStateChanged(user => {
             setUser(user)
@@ -69,12 +71,19 @@ const AuthContextProvider = ({ children }) => {
                 user.getIdTokenResult().then(idTokenResult => {
                     setAdmin(idTokenResult.claims.admin ? true : false)
                   }).then(() => {
-                    return firebase.firestore().collection('members').doc(user.uid).get()
-                  }).then((ref) => {
-                        return ref.data()
-                  }).then((userProfile) => {
-                    setMemberInfo(userProfile)
-                  })       
+
+
+
+                    ref.doc(user.uid).onSnapshot({
+                        // Listen for document metadata changes
+                        includeMetadataChanges: true
+                    }, (doc) => {
+                        console.log("auth context setting member info: ", doc.data())
+                        setMemberInfo(doc.data())
+                    });
+
+
+                  })      
             }
             if (showLogin) {setShowLogin(false)} 
         })

@@ -10,6 +10,7 @@ import { NavigationContext } from "../../context/NavigationContext";
 import { Grid, IconButton, Typography } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { CircularProgress } from '@material-ui/core'
+import { AuthContext } from '../../context/AuthContext'
 
 const isBrowser = typeof window !== "undefined"
 
@@ -25,6 +26,8 @@ const {selectedService} = useContext(BookingContext);
 const {setSlots} = useContext(BookingContext);
 // last page state for the back button
 const {lastPage} = useContext(NavigationContext);
+// getting the member info for isConsulted
+const {memberInfo} = useContext(AuthContext)
 
 // Local state
 const [loading, setLoading] = useState(false);
@@ -39,7 +42,7 @@ const getAvailabilityForDate = (day) => {
 if (isBrowser) {
   setLoading(true)
 const availability = firebase.functions().httpsCallable('getAvailabilityForDate');
-  availability({date: day, serviceName: selectedService.id })
+  availability({date: day, serviceName: selectedService.id, isConsulted: memberInfo.userConsulted, duration: memberInfo.durationService})
 .then( result => { const isAvail = result.data.length > 0
   result.data.error === "Business Closed" ? setError("Salon Closed") : isAvail ? setSlots(result.data) : setError("No Availability")
   setLoading(false)

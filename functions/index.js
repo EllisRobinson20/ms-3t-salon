@@ -300,6 +300,10 @@ exports.getAvailabilityForDate = functions.https.onCall((data, context) => {
   dayOfWeek = format(selectedDate, "eeee");
   console.log("dayOfWeek is : ");
   console.log(dayOfWeek);
+  console.log("data.isConsulted : ");
+  console.log(data.isConsulted);
+  console.log("data.duration : ");
+  console.log(data.duration);
 
   const businessClosed = (day) => {
     return getDay(day) === 0 || getDay(day) === 1 || getDay(day) === 2;
@@ -324,6 +328,11 @@ exports.getAvailabilityForDate = functions.https.onCall((data, context) => {
       error: "Business Closed",
     };
   }
+  const getDurationService = (result) => {
+    return data.isConsulted ?
+      data.duration :
+      result;
+  };
 
   return Promise.all([
     bookingHistory,
@@ -341,7 +350,8 @@ exports.getAvailabilityForDate = functions.https.onCall((data, context) => {
   }).then((results) => {
     const businessStart = results[1].data().openingTimeMinutes;
     const businessClose = results[1].data().closingTimeMinutes;
-    const durationService = results[2].data().durationMinutes;
+    const durationService = getDurationService(
+        results[2].data().durationMinutes);
     if (bookings.length == 0) {
       // diff between start time and close time
       const diff = businessClose - businessStart;

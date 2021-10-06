@@ -36,24 +36,13 @@ const closeAlertDialog = () => {
 
 const renderLayout = () => {
   return (
-            <StaticQuery
-              query={graphql`
-                query SiteTitleQuery {
-                  site {
-                    siteMetadata {
-                      title
-                    }
-                  }
-                }
-              `}
-            render={data => (
+            
             <>
-              <Header siteTitle={data.site.siteMetadata.title} />
+              <Header />
               <main>{children}</main>
               {thisPage === "/salon" && deviceIsMobile ||thisPage === "/salon/" && deviceIsMobile || thisPage === "/admin/consultation" || thisPage === "/admin" ? "" : <Footer/>}
             </>
-            )}
-            />    
+                
   )
 }
 
