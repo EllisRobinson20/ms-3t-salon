@@ -2,10 +2,12 @@ import React from 'react'
 import Layout from '../components/Layout'
 import { graphql } from 'gatsby'
 import ProductDetail from '../components/subcomponents/ProductDetail'
+import SEO from '../components/seo'
 
 const ProductPageTemplate = ({ data }) => {
     return (
         <Layout>
+            <SEO title={data.shopifyProduct.description}/>
             <ProductDetail  product={data.shopifyProduct}/>
         </Layout>
     )

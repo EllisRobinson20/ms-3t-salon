@@ -23,19 +23,7 @@ export default function AppointmentSummary({userDetails}) {
       }
     }
   `)
-  const servicesRef = data.allService.nodes
-  const durationSelectedService = () => {
-    for (var i = 0; i < servicesRef.length; i++) {
-      if (servicesRef[i].id === selectedService.id && !memberInfo.userConsulted) {
-        return servicesRef[i].durationMinutes
-      } else {
-        if (!!memberInfo.userConsulted) {
-          console.log("returning member info: ", memberInfo)
-          return memberInfo.durationService
-        }
-      }
-    }
-  }
+  
   // Context
   const { user } = useContext(AuthContext)
   const { memberInfo } = useContext(AuthContext)
@@ -56,6 +44,19 @@ export default function AppointmentSummary({userDetails}) {
   const [loading, setLoading] = useState(false)
   const listItems = []
   // Functions
+  const servicesRef = data.allService.nodes
+  const durationSelectedService = () => {
+    for (var i = 0; i < servicesRef.length; i++) {
+      if (servicesRef[i].id === selectedService.id && !memberInfo.userConsulted) {
+        return servicesRef[i].durationMinutes
+      } else {console.log("returning member info: ", memberInfo)
+        if (!!memberInfo.userConsulted) {
+          
+          return memberInfo.durationService
+        }
+      }
+    }
+  }
   const bookProvisionalIfAvail = () => {
     setLoading(true)
     /* console.log(user) */
@@ -71,7 +72,7 @@ export default function AppointmentSummary({userDetails}) {
         service: selectedService.id,
         bookingDate: selectedDateGlobal,
         bookingTime: selectedSlot.id,
-        durationService: durationSelectedService(),
+        durationService: admin ? userDetails[0].durationService : durationSelectedService(),
         telephone: admin ? userDetails[0].telephone : memberInfo.telephone,
       }).then(result => returnResult(result.data),
       setSlots([])
@@ -222,6 +223,7 @@ useEffect(() => {
         className={`${buttonIsEnabled ? styles.btn : styles.btnDisabled}`}
         to={'#'}
         onClick={(e) => {
+          
           bookProvisionalIfAvail()
           e.preventDefault()
         }}

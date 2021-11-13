@@ -40,6 +40,10 @@ function SEO({ description, lang, meta, title }) {
           content: `minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no`,
         },
         {
+          httpEquiv: `X-UA-Compatible`,
+          content: `ie=edge`
+        },
+        {
           name: `description`,
           content: metaDescription,
         },
@@ -71,6 +75,18 @@ function SEO({ description, lang, meta, title }) {
           name: `twitter:description`,
           content: metaDescription,
         },
+        {
+          name: `keywords`,
+          content: `Hairdressers in Ashfield, African Caribbean hairstyles, 
+          Afro hair specialist, Weaves, Dreadlocks, Braids, Cornrows / Cainrows, 
+          Box Braids, Keratin and Caramel Treatment, locs, hair products, 
+          salon in Sutton near Mansfield, Ms3T or Ms 3T Salon, silk press, relaxers, tape hair,
+          colours, caster oil, crochet`
+        },
+        {
+          name: `author`,
+          content: `Latoyah`
+        }
       ].concat(meta)}
     />
   )

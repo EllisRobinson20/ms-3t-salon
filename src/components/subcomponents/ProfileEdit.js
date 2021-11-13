@@ -338,7 +338,7 @@ export default function ProfileEdit() {
                           ? ''
                           : memberInfo.telephone
                       } */
-                      primary={memberInfo.telephone}
+                      primary={memberInfo ? memberInfo.telephone : ''}
                       secondary={secondary ? 'telephone' : null}
                     />
                   </>
@@ -387,7 +387,7 @@ export default function ProfileEdit() {
           </Grid>
         </Grid>
         <Grid item container justifyContent="center" sm={12} md={6}>
-          {memberInfo.userConsulted ? (
+          {memberInfo/* .userConsulted */ ? (
             <div className={classes.listGroup}>
               <List dense={dense}>
                 <ListItem>

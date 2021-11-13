@@ -46,7 +46,6 @@ const resetIfNoAvail = (avail) => {
     } , 2000)
     })
     }
-    
     };
     return (
         <div>

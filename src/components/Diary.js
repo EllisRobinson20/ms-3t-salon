@@ -241,9 +241,7 @@ export default function Diary() {
           <Typography onClick={() => {
           setSelectedBooking(data)}} style={{ fontSize: matchesSm ? '0.8em' : '' }} variant="body1" component="p">
                     <strong>{removeHyphens(data[0].selectedService)}</strong>
-                    
-                  </Typography>
-         
+          </Typography>
     )
   }
   const [showConfirm, setShowConfirm] = useState(false)
@@ -262,7 +260,7 @@ export default function Diary() {
   }
   const handleCancelBooking = () => {
     firebase.firestore().collection('bookingHistory').doc(bookingDetails.id).delete().then(() => {
-      setCancellationResult("Document successfully deleted!");
+      setCancellationResult("Booking successfully deleted!");
       setTimeout(() => {resetView()}, 2500)
       closeDialog()
   }).catch((error) => {

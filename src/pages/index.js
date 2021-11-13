@@ -45,7 +45,7 @@ const IndexPage = ({location}) => {
 
   return(
     <Layout>
-      <SEO title="Home" />
+      <SEO title="View hairstyles prices and treatments" />
       <Grid container spacing={2}>
         <Grid item xs={12}>
         <MainHeader/>

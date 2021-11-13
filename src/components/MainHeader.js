@@ -27,9 +27,11 @@ export default function MainHeader() {
   const theme = useTheme()
   const classes = useStyles()
   const matchesSm = useMediaQuery(theme.breakpoints.down('xs'))
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'))
+  const mdDown = useMediaQuery(theme.breakpoints.down('md'))
   const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
-  const matchesXl = useMediaQuery(theme.breakpoints.up('xl'))
+  const lgDown = useMediaQuery(theme.breakpoints.down('lg'))
 
   const [headerClick, setHeaderClick] = useState(["Book Now", "/salon/"])
   const queryData = useStaticQuery(graphql`
@@ -47,17 +49,29 @@ export default function MainHeader() {
       }
     }
   `)
-  const headerPicture = queryData.allCloudinaryMedia.edges[0].node.secure_url
+  const headerPicture = (sm, md, xl) => {
+    switch(sm, md, xl) {
+      case sm:
+        return 'https://res.cloudinary.com/dq9anzbe3/image/upload/c_scale,w_1226/v1628855279/salon/salon-theme-header/salon4.jpg';
+      case md:
+        return queryData.allCloudinaryMedia.edges[0].node.secure_url
+      case xl:
+        return queryData.allCloudinaryMedia.edges[0].node.secure_url
+      default:
+        return queryData.allCloudinaryMedia.edges[0].node.secure_url
+    }
+  }
+  
 
   return (
     <div>
       <section id={styles.header}>
         <h1>Hair by </h1>
-        <h1>
-          <Link className="signature" to="index.html">
-            Ms. 3T Salon
+        <h2>
+          <Link className="signature large" to="index.html">
+            Ms.3T Salon
           </Link>
-        </h1>
+        </h2>
 
         <section
           id={styles.banner}
@@ -73,7 +87,7 @@ export default function MainHeader() {
           style={{
             marginLeft: 'auto',
             marginRight: 'auto',
-            backgroundImage: 'url(' + headerPicture + ')',
+            backgroundImage: 'url(' + headerPicture(smDown, mdDown, lgDown) + ')',
           }}
         ></section>
         <section id={styles.intro} className={styles.container}>

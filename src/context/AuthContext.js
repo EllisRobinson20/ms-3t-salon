@@ -71,9 +71,6 @@ const AuthContextProvider = ({ children }) => {
                 user.getIdTokenResult().then(idTokenResult => {
                     setAdmin(idTokenResult.claims.admin ? true : false)
                   }).then(() => {
-
-
-
                     ref.doc(user.uid).onSnapshot({
                         // Listen for document metadata changes
                         includeMetadataChanges: true
@@ -81,8 +78,6 @@ const AuthContextProvider = ({ children }) => {
                         console.log("auth context setting member info: ", doc.data())
                         setMemberInfo(doc.data())
                     });
-
-
                   })      
             }
             if (showLogin) {setShowLogin(false)} 

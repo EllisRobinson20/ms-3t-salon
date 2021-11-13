@@ -92,7 +92,7 @@ export default function Consultation() {
   // styles
   const classes = useStyles()
   const theme = useTheme()
-  const matchesSm = useMediaQuery(theme.breakpoints.down('xs'))
+  const matchesSm = useMediaQuery(theme.breakpoints.down('sm'))
   const matchesMd = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const matchesLg = useMediaQuery(theme.breakpoints.between('md', 'lg'))
   // functions
@@ -167,7 +167,7 @@ export default function Consultation() {
         {userObject ? (
           <Paper
             elevation={5}
-            style={{ margin: '0 auto', padding: '1em', maxWidth: '60vw' }}
+            style={{ margin: '0 auto', padding: '1em', maxWidth: matchesSm ? '96vw' : '60vw' }}
           >
             <Grid container justifyContent="flex-end">
               <TextButton action={handleClick}>ADD BOOKING</TextButton>

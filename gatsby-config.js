@@ -2,7 +2,7 @@ require('dotenv').config();
 module.exports = {
   siteMetadata: {
     title: `Ms 3T Salon`,
-    description: `Afro hair styles and treatments, book an appointment online with us today. Hair care products for sale online, we are based in Suttin-in-Ashfield and deliver within the UK.`,
+    description: `African / Caribbean hair styles and treatments, book an appointment online with us today. Hair care products for sale online, we are based in Sutton-in-Ashfield and deliver within the UK.`,
     author: `@ellis`,
   },
   plugins: [
@@ -132,13 +132,13 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `gatsby-starter-default`,
-        short_name: `starter`,
+        name: `Ms 3T Salon Webshop`,
+        short_name: `webstore`,
         start_url: `/`,
         background_color: `#663399`,
         theme_color: `#663399`,
         display: `minimal-ui`,
-        icon: `src/images/gatsby-icon.png`, // This path is relative to the root of the site.
+        icon: `src/images/ms3t-favicon.png`, // This path is relative to the root of the site.
       },
     },
     {

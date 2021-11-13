@@ -5,6 +5,7 @@ import ProductListing from "../components/ProductListing"
 import { Grid, IconButton } from '@material-ui/core';
 import { NavigationContext } from "../context/NavigationContext";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import SEO from "../components/seo";
 
 
 
@@ -19,11 +20,14 @@ const ProductsPage = ({location, data }) => {
   
   return (
   <Layout>
-    <Grid container justifyContent="flex-start" style={{padding: "2em"}}>
-    <Link to={lastPage}><IconButton href="/" color="textSecondary" aria-label="upload picture" component="span">
-      <ArrowBackIcon/>
+    <SEO title="Buy hair products from us here"/> 
+    <Grid container justifyContent="flex-start" style={{padding: "2em 0", maxWidth: "55vw", margin: "0 auto"}}>
+    <Link to={lastPage}>
+      <IconButton href="/" color="textSecondary" aria-label="upload picture" component="span">
+       <ArrowBackIcon/>
     </IconButton>
     </Link>
+    <h1 style={{color: '#5d5d5d'}}>Product search</h1>
     </Grid>
     
     <ProductListing/>

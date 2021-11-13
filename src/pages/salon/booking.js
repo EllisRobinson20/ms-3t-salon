@@ -11,6 +11,7 @@ import { Grid, IconButton, Typography } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { CircularProgress } from '@material-ui/core'
 import { AuthContext } from '../../context/AuthContext'
+import SEO from '../../components/seo'
 
 const isBrowser = typeof window !== "undefined"
 
@@ -55,6 +56,7 @@ const availability = firebase.functions().httpsCallable('getAvailabilityForDate'
 };
   return (
     <Layout>
+      <SEO title="Salon booking page. Choose data and time"/>
       <Grid container>
         <Grid item xs={1}>
         <Link to={lastPage}>

@@ -24,6 +24,7 @@ import clsx from 'clsx'
 import { grey } from '@material-ui/core/colors'
 import { IconButton } from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import SEO from '../../components/seo'
 
 const buttonTheme = createTheme({
   palette: { primary: { main: '#d52349' }, secondary: grey },
@@ -69,6 +70,26 @@ export default function Services({ location, data }) {
     buttonHidden: {
       display: 'none',
     },
+    headerText: {
+      fontSize: '3em',
+      fontWeight: '300',
+      margin: '1em 0',
+      color: 'rgb(93,93,93,0.8)',
+      maxWidth: '450px',
+      margin: '0 auto'
+    },
+    headerTextHidden: {
+      opacity: 0,
+      height: 0
+    },
+    subheaderText: {
+      fontSize: '2em',
+      fontWeight: '200',
+      marginTop: '1em'
+    },
+    iconButton: {
+      margin: '0.9em 1em 0 0.6em'
+    }
   }))
   // fetch in the members data dynamically. match the members name by the id of user object
   
@@ -203,6 +224,10 @@ export default function Services({ location, data }) {
   
   return (
     <Layout>
+      <SEO title="Select a service or treatment from our Salon"/>
+      <Typography variant="h1" className={serviceListRef ? classes.headerTextHidden : classes.headerText}>
+      Browse our list of treatments
+      </Typography>
       <Grid
         container
         direction="row-reverse"
@@ -332,6 +357,7 @@ export default function Services({ location, data }) {
               color="textSecondary"
               aria-label="upload picture"
               component="span"
+              className={classes.iconButton}
             >
               <ArrowBackIcon />
             </IconButton>
@@ -339,7 +365,7 @@ export default function Services({ location, data }) {
           
           {!admin ? 
           <>
-          <Typography variant="h4">Select A Service</Typography>
+          <Typography variant="h4" className={classes.subheaderText}>Select your service</Typography>
           <ServicesList action={updateView}/>
           </>
           :

@@ -1,5 +1,6 @@
 import { Avatar, Grid, Typography } from '@material-ui/core'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
+import { AuthContext } from '../context/AuthContext'
 import Call from '@material-ui/icons/Call'
 import { AccessTime } from '@material-ui/icons'
 import LightText from './subcomponents/Text/LightText'
@@ -7,6 +8,8 @@ import firebase from 'gatsby-plugin-firebase'
 import 'firebase/firestore'
 
 export default function UserProfile({ details }) {
+  // context
+  const {setMemberInfo} = useContext(AuthContext)
   // functions
   const removeHyphens = string => {
     const alteredString = string.replace(/-/g, ' ')
@@ -33,6 +36,7 @@ export default function UserProfile({ details }) {
             userConsulted: doc.doc.data().userConsulted,
             durationService: doc.doc.data().durationService,
           })
+          setMemberInfo(userDetails)
         }
       })
     })
